@@ -1,0 +1,11 @@
+#!/bin/bash
+
+APHOME=/opt/USGS/AVOG2S/ExternalData/Ap_Forecast
+cd ${APHOME}
+
+#Historic averages
+wget ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/$1
+
+mv $1 NGDC_NOAA_Archive/$1
+
+

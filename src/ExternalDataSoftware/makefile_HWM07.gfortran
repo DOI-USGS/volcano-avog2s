@@ -1,0 +1,33 @@
+
+INSTALLDIR=/opt/USGS/AVOG2S
+HWMPATH=${INSTALLDIR}/ExternalData/HWM07
+
+FOR95 = gfortran
+# Note: "signal 8 (SIGFPE): Floating-point exception" will occure if:
+#         Optimization level 2 or 3 is used
+#         -fdefault-real-8
+#FCFLAGS = -O0 -g3 -Wall -fbounds-check -pedantic -fbacktrace -fimplicit-none -Wunderflow -Wuninitialized -ffpe-trap=invalid,zero,overflow -fdefault-real-8
+FCFLAGS =  -O1 -w -fno-math-errno -funsafe-math-optimizations -fno-trapping-math -fno-signaling-nans -fcx-limited-range -fno-rounding-math
+
+#Note: If you get an error requiring an explicit interface, follow the instructions at
+# modified as per http://stackoverflow.com/questions/21307765/gfortran-attribute-that-requires-an-explicit-interface-for-this-procedure
+#FFLAGS = -cpp -fno-whole-file
+FFLAGS = -cpp
+
+libra:
+	${FOR95} ${FCFLAGS} ${FFLAGS} hwm07e.f90 dwm07b.f90 apexcord.f90 -c
+	ar rcs libHWM07.a hwm07e.o dwm07b.o apexcord.o
+
+install: libra
+	install -d ${INSTALLDIR}/lib
+	install -d ${INSTALLDIR}/include/
+	install -d ${HWMPATH}
+	install -m 644 libHWM07.a ${INSTALLDIR}/lib/libHWM07.a
+	install -m 644 *.mod ${INSTALLDIR}/include/
+	install -m 644 *.dat ${HWMPATH}
+
+check:
+	$(FOR95) $(FFLAGS) checkhwm07.f90 hwm07e.f90 dwm07b.f90 apexcord.f90 -o checkhwm
+
+clean:
+	rm *.mod checkhwm

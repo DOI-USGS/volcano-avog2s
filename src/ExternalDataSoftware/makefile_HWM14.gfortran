@@ -1,0 +1,35 @@
+# Example *nix/mac makefile (trivial)
+
+INSTALLDIR=/opt/USGS/AVOG2S
+HWMPATH=${INSTALLDIR}/ExternalData/HWM14
+
+FOR95 = gfortran
+# Note: "signal 8 (SIGFPE): Floating-point exception" will occure if:
+#         Optimization level 3 is used
+#FCFLAGS = -O0 -g3 -Wall -fbounds-check -pedantic -fbacktrace -fimplicit-none -Wunderflow -Wuninitialized -ffpe-trap=invalid,zero,overflow -fdefault-real-8
+FCFLAGS =  -O2 -w 
+
+libra:
+	split -l 225 checkhwm14.f90   # We need pershift which starts at line 225
+	mv xab xab.f90
+	${FOR95} ${FCFLAGS} hwm14.f90 xab.f90 -c
+	ar rcs libHWM14.a hwm14.o xab.o
+
+install: libra
+	install -d ${INSTALLDIR}/lib
+	install -d ${INSTALLDIR}/include
+	install -d ${HWMPATH}
+	install -m 644 libHWM14.a ${INSTALLDIR}/lib/libHWM14.a
+	install -m 644 *.mod ${INSTALLDIR}/include/
+	install -m 644 *.dat ${HWMPATH}
+	install -m 644 hwm123114.bin ${HWMPATH}
+
+build:
+	gfortran checkhwm14.f90 hwm14.f90 -o check.gcc.exe	
+
+check: build
+	./check.gcc.exe > Check/result.txt
+	diff Check/result.txt Check/gfortran.txt
+
+clean:
+	rm *.mod *.exe *.o libHWM14.a

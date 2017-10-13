@@ -1,0 +1,36 @@
+
+INSTALLDIR=/opt/USGS/AVOG2S
+
+FC = gfortran
+FCFLAGS = -O3 -w -fno-math-errno -funsafe-math-optimizations -fno-trapping-math -fno-signaling-nans -fcx-limited-range -fno-rounding-math -fdefault-real-8
+
+all: libnrlmsis.a testgtd7
+
+LIBOBJS = physics_constants.o utils_spline.o physics_msis.o utils_constants.o
+
+%.o: %.f90
+	$(FC) $(FCFLAGS) -c $<
+
+%.o: %.F90
+	$(FC) $(CPPFLAGS) $(FCFLAGS) -c $<
+
+libnrlmsis.a: $(LIBOBJS)
+	$(AR) $(ARFLAGS) $@ $(LIBOBJS)
+
+testgtd7: testgtd7.f90 libnrlmsis.a
+	$(FC) $(FCFLAGS) $(LDFLAGS) -o $@ $< libnrlmsis.a
+
+utils_constants.o: utils_constants.f90
+physics_constants.o: physics_constants.f90 utils_constants.o
+utils_spline.o: utils_spline.f90 utils_constants.o
+physics_msis.o: physics_msis.f90 physics_constants.o utils_constants.o
+
+clean:
+	rm *.o *.mod
+
+install:
+	install -d ${INSTALLDIR}/lib
+	install -d ${INSTALLDIR}/include
+	install -m 644 libnrlmsis.a $(INSTALLDIR)/lib/
+	install -m 644 *.mod $(INSTALLDIR)/include/
+

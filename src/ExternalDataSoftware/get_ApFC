@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+#
+# For historic averages, see
+#ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/KP_AP
+
+#Current Kp values
+#http://www-app3.gfz-potsdam.de/kp_index/qlyymm.tab
+
+
+#http://www.swpc.noaa.gov/ftpdir/forecasts/daypre/0504daypre.txt
+
+APHOME=/opt/USGS/AVOG2S/ExternalData/Ap_Forecast
+cd ${APHOME}
+
+rm wwv.txt
+# Download latest value from NOAA Space Weather Prediction Center
+wget http://services.swpc.noaa.gov/text/wwv.txt
+
+# Note: if you miss some, you can back fill 30 days from this link
+#http://services.swpc.noaa.gov/text/daily-geomagnetic-indices.txt
+#http://services.swpc.noaa.gov/text/daily-solar-indices.txt
+
+Year=`grep Issued ${APHOME}/wwv.txt | cut -d" " -f2`
+Month=`grep Issued ${APHOME}/wwv.txt | cut -d" " -f3`
+Day=`grep Issued ${APHOME}/wwv.txt | cut -d" " -f4`
+Hour=`grep Issued ${APHOME}/wwv.txt | cut -d" " -f5`
+
+if [ "${Month}" == "Jan" ] 
+then  
+  Mon="01"
+fi
+if [ "${Month}" == "Feb" ] 
+then  
+  Mon="02"
+fi
+if [ "${Month}" == "Mar" ] 
+then  
+  Mon="03"
+fi
+if [ "${Month}" == "Apr" ] 
+then  
+  Mon="04"
+fi
+if [ "${Month}" == "May" ] 
+then  
+  Mon="05"
+fi
+if [ "${Month}" == "Jun" ] 
+then
+  Mon="06"
+fi
+if [ "${Month}" == "Jul" ] 
+then  
+  Mon="07"
+fi
+if [ "${Month}" == "Aug" ] 
+then  
+  Mon="08"
+fi
+if [ "${Month}" == "Sep" ] 
+then  
+  Mon="09"
+fi
+if [ "${Month}" == "Oct" ] 
+then  
+  Mon="10"
+fi
+if [ "${Month}" == "Nov" ] 
+then  
+  Mon="11"
+fi
+if [ "${Month}" == "Dec" ] 
+then  
+  Mon="12"
+fi
+
+
+Date="${Year}${Mon}${Day}_${Hour}Z"
+grep A-index ${APHOME}/wwv.txt | cut -d" " -f3 > ${APHOME}/SWPC/F107_${Date}.dat
+grep A-index ${APHOME}/wwv.txt | cut -d" " -f8 > ${APHOME}/SWPC/Ap_${Date}.dat
+
+rm F107.dat Ap.dat
+ln -s SWPC/F107_${Date}.dat F107.dat
+ln -s SWPC/Ap_${Date}.dat Ap.dat
+
