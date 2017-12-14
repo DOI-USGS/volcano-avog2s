@@ -29,7 +29,7 @@
 !
 !##############################################################################
 
-      MODULE G2S_globvar
+      module G2S_globvar
 
       implicit none
 
@@ -44,6 +44,13 @@
       logical, parameter ::     write_test_output = .false.
       integer, parameter ::     jout              = 180   ! This is for a equatorial cross-section
       integer, parameter ::     iout              = 361
+
+      integer        :: G2S_global_essential    = 6
+      integer        :: G2S_global_production   = 6
+      integer        :: G2S_global_debug        = 6
+      integer        :: G2S_global_info         = 6
+      integer        :: G2S_global_log          = 9
+      integer        :: G2S_global_error        = 0
 
       ! These are the variables specifying the restructured atmosphere
       integer      :: nz1
@@ -157,22 +164,22 @@
       integer :: fc_hour = 0
       real(kind=4) :: ap,f107
 
-      LOGICAL :: LOAD_HWT    = .false.
+      logical :: LOAD_HWT    = .false.
 
-      character(len=50) :: FILE_SH    = "out20_GS.nc"
-      character(len=50) :: FILE_T_HWT = "temper_HWT.raw"
-      character(len=50) :: FILE_U_HWT = "vx_HWT.raw"
-      character(len=50) :: FILE_V_HWT = "vy_HWT.raw"
-      character(len=50) :: FILE_T_RES = "T_res.raw"
-      character(len=50) :: FILE_U_RES = "U_res.raw"
-      character(len=50) :: FILE_V_RES = "V_res.raw"
-      character(len=50) :: FILE_TOPO  = "ETOPO1_Ice_c_gmt4.nc"
-      character(len=50) :: FILE_OUT_ROOT  = "InfraAtmos"
-      character(len=50) :: FILE_OUT_SONDE = "InfraAtmos01.met"
-      character(len=50) :: FILE_OUT_XSEC  = "InfraAtmos01.env"
-      character(len=50) :: FILE_OUT_GRID  = "Volc"
-      character(len=50) :: FILE_OUT
-      character(len=50) :: FILE_LL        = "ProfLonLat01.dat"
+      character(len=50) :: file_SH    = "out20_GS.nc"
+      character(len=50) :: file_T_HWT = "temper_HWT.raw"
+      character(len=50) :: file_U_HWT = "vx_HWT.raw"
+      character(len=50) :: file_V_HWT = "vy_HWT.raw"
+      character(len=50) :: file_T_RES = "T_res.raw"
+      character(len=50) :: file_U_RES = "U_res.raw"
+      character(len=50) :: file_V_RES = "V_res.raw"
+      character(len=50) :: file_TOPO  = "ETOPO1_Ice_c_gmt4.nc"
+      character(len=50) :: file_OUT_ROOT  = "InfraAtmos"
+      character(len=50) :: file_OUT_SONDE = "InfraAtmos01.met"
+      character(len=50) :: file_OUT_XSEC  = "InfraAtmos01.env"
+      character(len=50) :: file_OUT_GRID  = "Volc"
+      character(len=50) :: file_OUT
+      character(len=50) :: file_LL        = "ProfLonLat01.dat"
 
       integer :: data_len
 
@@ -203,15 +210,15 @@
       real(kind=4),dimension(:)      ,allocatable :: z_Met2_sp ! Met2 ''
       real(kind=4),dimension(:)      ,allocatable :: z_HWT_g2s_sp  ! z of HWT grid
 
-      INTEGER FFTW_MEASURE
-      PARAMETER (FFTW_MEASURE=0)
+      integer FFTW_MEASURE
+      parameter (FFTW_MEASURE=0)
 
-      END MODULE G2S_globvar
+      end module G2S_globvar
 
 !##############################################################################
 !##############################################################################
 
-      MODULE G2S_NCvars
+      module G2S_NCvars
 
       implicit none
 
@@ -226,6 +233,6 @@
 
       integer :: kn_var_id      = 0
 
-      END MODULE G2S_NCvars
+      end module G2S_NCvars
 
 

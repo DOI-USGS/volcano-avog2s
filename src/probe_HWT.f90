@@ -46,7 +46,7 @@
 !
 !##############################################################################
 
-      PROGRAM probe_HWT
+      program probe_HWT
 
       use G2S_globvar
 
@@ -89,41 +89,41 @@
         !   dz_prof : verticle increment
         ! Optionally, we can just feed it a command file with these 4 values
         ! along with all values for all these other variables
-      if (nargs.eq.10)THEN
+      if (nargs.eq.10)then
         ! parse the eight input parameters
-        write(*,*)"Parsing argument list: "
+        write(G2S_global_info,*)"Parsing argument list: "
         call getarg(1,lllinebuffer)
         read(lllinebuffer,*)inyear
-        write(*,*)"inyear",inyear
+        write(G2S_global_info,*)"inyear",inyear
         call getarg(2,lllinebuffer)
         read(lllinebuffer,*)inmonth
-        write(*,*)"inmonth",inmonth
+        write(G2S_global_info,*)"inmonth",inmonth
         call getarg(3,lllinebuffer)
         read(lllinebuffer,*)inday
-        write(*,*)"inday",inday
+        write(G2S_global_info,*)"inday",inday
         call getarg(4,lllinebuffer)
         read(lllinebuffer,*)inhour
-        write(*,*)"inhour",inhour
+        write(G2S_global_info,*)"inhour",inhour
         call getarg(5,lllinebuffer)
         read(lllinebuffer,*)lon_in
-        write(*,*)"lon_in",lon_in
+        write(G2S_global_info,*)"lon_in",lon_in
         call getarg(6,lllinebuffer)
         read(lllinebuffer,*)lat_in
-        write(*,*)"lat_in",lat_in
+        write(G2S_global_info,*)"lat_in",lat_in
         call getarg(7,lllinebuffer)
         read(lllinebuffer,*)ap
-        write(*,*)"ap",ap
+        write(G2S_global_info,*)"ap",ap
         call getarg(8,lllinebuffer)
         read(lllinebuffer,*)f107
-        write(*,*)"f107",f107
+        write(G2S_global_info,*)"f107",f107
         call getarg(9,lllinebuffer)
         read(lllinebuffer,*)zmax
-        write(*,*)"zmax",zmax
+        write(G2S_global_info,*)"zmax",zmax
         call getarg(10,lllinebuffer)
         read(lllinebuffer,*)dz_prof
-        write(*,*)"dz_prof",dz_prof
+        write(G2S_global_info,*)"dz_prof",dz_prof
 
-      elseif (nargs.eq.1)THEN
+      elseif (nargs.eq.1)then
         ! Assume single argument is a command file with the format
         !   inyear,inmonth,inday,inhour :  year, month, day, hour
         !   lon_in,lat_in : longitude, latitude of sonde point
@@ -132,30 +132,30 @@
         !   zmax, dz_prof : maximum altitude of output, vertical increment
         call getarg(1,lllinebuffer)
         read(lllinebuffer,*)controlfile
-        OPEN(UNIT=ct_unit,FILE=controlfile,STATUS='old')
+        open(unit=ct_unit,file=controlfile,status='old')
         read(ct_unit,*)inyear,inmonth,inday,inhour
-        write(*,*)"inyear,inmonth,inday,inhour",inyear,inmonth,inday,inhour
+        write(G2S_global_info,*)"inyear,inmonth,inday,inhour",inyear,inmonth,inday,inhour
         read(ct_unit,*)lon_in,lat_in
-        write(*,*)"lon_in,lat_in: ",lon_in,lat_in
+        write(G2S_global_info,*)"lon_in,lat_in: ",lon_in,lat_in
         read(ct_unit,'(a130)')apfile
         read(ct_unit,'(a130)')f107file
         read(ct_unit,*)zmax, dz_prof
-        write(*,*)"zmax, dz_prof: ",zmax, dz_prof
+        write(G2S_global_info,*)"zmax, dz_prof: ",zmax, dz_prof
 
-        IF(apfile.ne.f107file)THEN
+        if(apfile.ne.f107file)then
           ! Open and read individual Ap and F107files
-          OPEN(UNIT=ap_unit,FILE=apfile,STATUS='old')
+          open(unit=ap_unit,file=apfile,status='old')
           read(ap_unit,*)ap
           close(ap_unit)
-          OPEN(UNIT=f107_unit,FILE=f107file,STATUS='old')
+          open(unit=f107_unit,file=f107file,status='old')
           read(f107_unit,*)f107
           close(f107_unit)
-        ELSE
-          write(*,*)"Ap and F107 are equivalant, assume it is a directory to archive."
+        else
+          write(G2S_global_info,*)"Ap and F107 are equivalant, assume it is a directory to archive."
           ! Open archive file and get find the line for the requested day
           write(apfile,115)trim(adjustl(apfile)),'/',inyear
  115      format(a4,a1,i4)
-          OPEN(UNIT=ap_unit,FILE=apfile,STATUS='old')
+          open(unit=ap_unit,file=apfile,status='old')
           read(ap_unit,101)iy,im,id,ibar,inum,&
                            kp1,kp2,kp3,kp4,kp5,kp6,kp7,kp8,kp9,&
                            ap1,ap2,ap3,ap4,ap5,ap6,ap7,ap8,ap9,&
@@ -166,61 +166,61 @@
                              ap1,ap2,ap3,ap4,ap5,ap6,ap7,ap8,ap9,&
                              Cp,C9,ssnum,f107,f107q
           enddo
-          IF(inhour.le.3.0)THEN
+          if(inhour.le.3.0)then
             ap=ap1
-          ELSEIF(inhour.le.6.0)THEN
+          elseif(inhour.le.6.0)then
             ap=ap2
-          ELSEIF(inhour.le.9.0)THEN
+          elseif(inhour.le.9.0)then
             ap=ap3
-          ELSEIF(inhour.le.12.0)THEN
+          elseif(inhour.le.12.0)then
             ap=ap4
-          ELSEIF(inhour.le.15.0)THEN
+          elseif(inhour.le.15.0)then
             ap=ap5
-          ELSEIF(inhour.le.18.0)THEN
+          elseif(inhour.le.18.0)then
             ap=ap6
-          ELSEIF(inhour.le.21.0)THEN
+          elseif(inhour.le.21.0)then
             ap=ap7
-          ELSEIF(inhour.lt.24.0)THEN
+          elseif(inhour.lt.24.0)then
             ap=ap8
-          ENDIF
+          endif
 
- 101      FORMAT(3i2,i4,9i2,10i3,f3.1,i1,i3,f5.1,i1)
-        ENDIF
+ 101      format(3i2,i4,9i2,10i3,f3.1,i1,i3,f5.1,i1)
+        endif
         close(f107_unit)
-        write(*,*)"Using an ap value of  : ",ap
-        write(*,*)"Using a solar flux of : ",f107
+        write(G2S_global_info,*)"Using an ap value of  : ",ap
+        write(G2S_global_info,*)"Using a solar flux of : ",f107
 
       else
         ! Dump useage info to stdout:
-        write(*,*)"No command-line arguments given"
-        write(*,*)" "
-        write(*,*)"probe_HWT can be run in two modes:"
-        write(*,*)"  (1) command-line arguments"
-        write(*,*)"    probe_HWT followed by 10 command-line arguments"
-        write(*,*)"      year : integer"
-        write(*,*)"      month: integer"
-        write(*,*)"      day  : integer"
-        write(*,*)"      hour : real"
-        write(*,*)"      lon  : longitude of sonde point"
-        write(*,*)"      lat  : latitude of sonde point"
-        write(*,*)"      ap   : Ap planetary index"
-        write(*,*)"      f107 : F107 value"
-        write(*,*)"      zmax : maximum altitude of profile"
-        write(*,*)"      dz   : verticle increment"
-        write(*,*)"  (2) control file"
-        write(*,*)"    probe_HWT input_HWTprobe.ctr"
-        write(*,*)"      where input_HWTprobe.ctr has the following format:"
-        write(*,*)"      "
-        write(*,*)"        inyear,inmonth,inday,inhour  # time of sonde"
-        write(*,*)"        lon_in,lat_in  # longitude, latitude of sonde point"
-        write(*,*)"        ap_filename    # name of Ap file"
-        write(*,*)"        f107_filename  # name of F107 file"
-        write(*,*)"        zmax, dz_prof  # maximum altitude of output, vertical increment"
-        write(*,*)" "
-        write(*,*)" For example for Pavlof sonde"
-        write(*,*)"    ./probe_HWT 2013 5 13 19.6 -161.887 55.42 4.0 153.5 200.0 2.5"
+        write(G2S_global_info,*)"No command-line arguments given"
+        write(G2S_global_info,*)" "
+        write(G2S_global_info,*)"probe_HWT can be run in two modes:"
+        write(G2S_global_info,*)"  (1) command-line arguments"
+        write(G2S_global_info,*)"    probe_HWT followed by 10 command-line arguments"
+        write(G2S_global_info,*)"      year : integer"
+        write(G2S_global_info,*)"      month: integer"
+        write(G2S_global_info,*)"      day  : integer"
+        write(G2S_global_info,*)"      hour : real"
+        write(G2S_global_info,*)"      lon  : longitude of sonde point"
+        write(G2S_global_info,*)"      lat  : latitude of sonde point"
+        write(G2S_global_info,*)"      ap   : Ap planetary index"
+        write(G2S_global_info,*)"      f107 : F107 value"
+        write(G2S_global_info,*)"      zmax : maximum altitude of profile"
+        write(G2S_global_info,*)"      dz   : verticle increment"
+        write(G2S_global_info,*)"  (2) control file"
+        write(G2S_global_info,*)"    probe_HWT input_HWTprobe.ctr"
+        write(G2S_global_info,*)"      where input_HWTprobe.ctr has the following format:"
+        write(G2S_global_info,*)"      "
+        write(G2S_global_info,*)"        inyear,inmonth,inday,inhour  # time of sonde"
+        write(G2S_global_info,*)"        lon_in,lat_in  # longitude, latitude of sonde point"
+        write(G2S_global_info,*)"        ap_filename    # name of Ap file"
+        write(G2S_global_info,*)"        f107_filename  # name of F107 file"
+        write(G2S_global_info,*)"        zmax, dz_prof  # maximum altitude of output, vertical increment"
+        write(G2S_global_info,*)" "
+        write(G2S_global_info,*)" For example for Pavlof sonde"
+        write(G2S_global_info,*)"    ./probe_HWT 2013 5 13 19.6 -161.887 55.42 4.0 153.5 200.0 2.5"
 
-        stop
+        stop 1
       endif
 
       start_year = inyear
@@ -233,13 +233,13 @@
 
       nz_prof = floor(zmax/dz_prof)+1
       allocate(z_prof(nz_prof))
-      DO k = 1,nz_prof
+      do k = 1,nz_prof
         z_prof(k) = (k-1)*dz_prof
-      ENDDO
+      enddo
 
-      write(*,*)"Calculating sonde data from HWT at ",lon_in,lat_in
+      write(G2S_global_info,*)"Calculating sonde data from HWT at ",lon_in,lat_in
       open(55,file='sonde_ztuvrp.dat',status='replace')
-      DO k = 1,nz_prof
+      do k = 1,nz_prof
         alt = z_prof(k)
         call Get_WindTempRhoP_Empir(lon_in,lat_in,alt,              &
                     start_year,day,ihour,iminute,isecond, &
@@ -249,12 +249,12 @@
         density  = (pressure*100.0_4) / (temperature*287.058_4)/1000.0_4
         write(55,"(6E15.5)")alt,temperature,u_g2s,v_g2s,density,pressure
 
-      ENDDO
+      enddo
       close(55)
 
-      write(*,*)"Exited normally."
+      write(G2S_global_info,*)"Exited normally."
 
-      END PROGRAM probe_HWT
+      end program probe_HWT
 
 
 !##############################################################################
@@ -416,11 +416,11 @@
         monthdays = (/31,28,31,30,31,30,31,31,30,31,30,31/)
       endif
 
-      IF(imonth.eq.1)THEN
+      if(imonth.eq.1)then
         day_of_year = iday
-      ELSE
+      else
         day_of_year = sum(monthdays(1:imonth-1)) + iday
-      ENDIF
+      endif
 
       end function day_of_year
 

@@ -32,7 +32,7 @@
 !
 !##############################################################################
 
-      PROGRAM G2S_genSC
+      program G2S_genSC
 
       use G2S_globvar
       use MetReader
@@ -99,11 +99,11 @@
         ! assume the argument is an input control file
         read(lllinebuffer,'(a1)')testchar
         ! Assuming a standard ASCII character set
-        IF(ichar(testchar).ge.48.and.ichar(testchar).le.57)THEN
-          write(*,*)"Testing first character of command-line argument..."
-          write(*,*)"Input arg #1 is a number : ",testchar
-          write(*,*)"Assume this is a forecast hour."
-          write(*,*)"This section needs to be customized to your system: exiting"
+        if(ichar(testchar).ge.48.and.ichar(testchar).le.57)then
+          write(G2S_global_info,*)"Testing first character of command-line argument..."
+          write(G2S_global_info,*)"Input arg #1 is a number : ",testchar
+          write(G2S_global_info,*)"Assume this is a forecast hour."
+          write(G2S_global_info,*)"This section needs to be customized to your system: exiting"
           stop 1
 
          ! This section can be set up with system-specific paths so that only
@@ -111,38 +111,38 @@
 
           !read(lllinebuffer,*)fc_hour
           !iwf1 = 20
-          !If(fc_hour.ne. 0.and.fc_hour.ne. 3.and.fc_hour.ne. 6.and.fc_hour.ne. 9.and.&
+          !if(fc_hour.ne. 0.and.fc_hour.ne. 3.and.fc_hour.ne. 6.and.fc_hour.ne. 9.and.&
           !   fc_hour.ne.12.and.fc_hour.ne.15.and.fc_hour.ne.18.and.fc_hour.ne.21.and.&
-          !   fc_hour.ne.24.and.fc_hour.ne.27.and.fc_hour.ne.30)THEN
+          !   fc_hour.ne.24.and.fc_hour.ne.27.and.fc_hour.ne.30)then
           !  write(windfile,121)fc_hour
           !  ! Edit this format line to point to your windfile
           !  !  An example is below
 ! 121        format('/data/Windfiles/gfs/latest/latest.f',i2,'.nc')
           !else
-          !  write(*,*)"fc must be 0,3,6,9,12,15,18,21,24,27, or 30."
-          !  stop
+          !  write(G2S_global_info,*)"fc must be 0,3,6,9,12,15,18,21,24,27, or 30."
+          !  stop 1
           !endif
           !! Edit this format line to point to your Ap and F107 files
           !apfile   = "/opt/USGS/AVOG2S/ExternalData/Ap_Forecast/Ap.dat"
           !f107file = "/opt/USGS/AVOG2S/ExternalData/Ap_Forecast/F107.dat"
           !! Edit this format line to point to your coefficient files
-          !FILE_SH = "/data/Ground2Space/Model_SH/G2S_SH.nc"
+          !file_SH = "/data/Ground2Space/Model_SH/G2S_SH.nc"
 
           !! Read the latest 3-hourly Ap megnetic index which are downloaded and
           !! extracted from http://www.swpc.noaa.gov/ftpdir/latest/wwv.txt
           !! www.swpc.noaa.gov/products/geophysical-alert-wwv-text
-          !OPEN(UNIT=ap_unit,FILE=apfile,STATUS='old')
+          !open(unit=ap_unit,file=apfile,status='old')
           !read(ap_unit,*)ap
           !close(ap_unit)
-          !write(*,*)"Using an ap value of  : ",ap
+          !write(G2S_global_info,*)"Using an ap value of  : ",ap
       
           !! Read the latest 10.7cm solar flux index, also from www.txt
-          !OPEN(UNIT=f107_unit,FILE=f107file,STATUS='old')
+          !open(unit=f107_unit,file=f107file,status='old')
           !read(f107_unit,*)f107
           !close(f107_unit)
-          !write(*,*)"Using a solar flux of : ",f107
+          !write(G2S_global_info,*)"Using a solar flux of : ",f107
 
-        ELSE
+        else
           ! Loading an input control file
           !  Control file format example
           !     2008 8 8 4.6    ! year, month, day, hour
@@ -159,10 +159,10 @@
 
           read(lllinebuffer,*)controlfile
 
-          write(*,*)"Input arg #1 is NOT a number : ",controlfile
-          write(*,*)"Assume this is a control file."
+          write(G2S_global_info,*)"Input arg #1 is NOT a number : ",controlfile
+          write(G2S_global_info,*)"Assume this is a control file."
 
-          OPEN(UNIT=ct_unit,FILE=controlfile,STATUS='old')
+          open(unit=ct_unit,file=controlfile,status='old')
           read(ct_unit,*)inyear,inmonth,inday,inhour
           !READ PROJECTION PARAMETERS
           read(ct_unit,'(a80)') Comp_projection_line
@@ -176,7 +176,7 @@
            IsLatLon          = .true.
           endif
           !SET PROJECTION PARAMETERS
-          if (IsLatLon.eqv..false.)THEN
+          if (IsLatLon.eqv..false.)then
             call PJ_Set_Proj_Params(Comp_projection_line)
             ilatlonflag  = PJ_ilatlonflag
             iprojflag    = PJ_iprojflag
@@ -190,7 +190,7 @@
             phi2         = PJ_phi2
           endif
 
-          if (IsLatLon.eqv..true.)THEN
+          if (IsLatLon.eqv..true.)then
               ! We are reading a Lon/Lat file, use global Spherical Harmonics
               ! and assume lon goes from 0-360 with nxmax_g2s set by dx_g2s
               !            lat goes from -90-90 with nymax_g2s set by dx_g2s
@@ -210,7 +210,7 @@
           read(ct_unit,*)zmin_HWT, zmax_HWT, dz_HWT
           read(ct_unit,*)nwindfile_groups
           idf = 2
-          IF(nwindfile_groups.eq.1.or.nwindfile_groups.eq.2)THEN
+          if(nwindfile_groups.eq.1.or.nwindfile_groups.eq.2)then
             read(ct_unit,'(a71)')linebuffer
               ! Assume we can at least read the windfile format number
             read(linebuffer,*)iwf1
@@ -234,29 +234,29 @@
                 igrid = 0
               endif
             endif
-            IF(iwf1.eq.0)THEN
+            if(iwf1.eq.0)then
               ! If iwindformat = 0, then the input file is a not a known format
               ! Read an extra line given the name of a template file.
-              IF(idf.ne.2)THEN
-                write(*,*)" Currently only netcdf reader implemented, resetting idf to 2"
+              if(idf.ne.2)then
+                write(G2S_global_info,*)" Currently only netcdf reader implemented, resetting idf to 2"
                 idf = 2
-              ENDIF
+              endif
               read(10,'(a80)')linebuffer
               read(linebuffer,'(a80)') MR_iwf_template
               call MR_Read_Met_Template
-            ENDIF
+            endif
             read(ct_unit,*) zmin_Met1, zmax_Met1, dz_Met1
             allocate(windfile1(nwindfiles1))
-            DO iw = 1,nwindfiles1
+            do iw = 1,nwindfiles1
               read(ct_unit,'(a130)')windfile1(iw)
-            ENDDO
-          ELSE
-            write(*,*)"ERROR: number of windfile groups in neither 1 nor 2"
-            write(*,*)"       nwindfile_groups = ",nwindfile_groups
+            enddo
+          else
+            write(G2S_global_error,*)"ERROR: number of windfile groups in neither 1 nor 2"
+            write(G2S_global_error,*)"       nwindfile_groups = ",nwindfile_groups
             stop 1
-          ENDIF
+          endif
 
-          IF(nwindfile_groups.eq.2)THEN
+          if(nwindfile_groups.eq.2)then
             read(ct_unit,'(a71)')linebuffer
               ! Assume we can at least read the windfile format number
             read(linebuffer,*)iwf2
@@ -266,79 +266,79 @@
               ! number of windfiles not present, assume 1
               nwindfiles2 = 1
             endif
-            IF(iwf2.eq.0)THEN
+            if(iwf2.eq.0)then
               ! If iwindformat = 0, then the input file is a not a known format
               ! Read an extra line given the name of a template file.
-              IF(idf.ne.2)THEN
-                write(*,*)" Currently only netcdf reader implemented, resetting idf to 2"
+              if(idf.ne.2)then
+                write(G2S_global_info,*)" Currently only netcdf reader implemented, resetting idf to 2"
                 idf = 2
-              ENDIF
+              endif
               read(10,'(a80)')linebuffer
               read(linebuffer,'(a80)') MR_iwf_template
               call MR_Read_Met_Template
-            ENDIF
+            endif
             read(ct_unit,*) zmin_Met2, zmax_Met2, dz_Met2
             allocate(windfile2(nwindfiles2))
-            DO iw = 1,nwindfiles2
+            do iw = 1,nwindfiles2
               read(ct_unit,'(a130)')windfile2(iw)
-            ENDDO
-          ENDIF
+            enddo
+          endif
           read(ct_unit,'(a130)')apfile
           read(ct_unit,'(a130)')f107file
-          read(ct_unit,'(a130)')FILE_SH
-          write(*,*)"Year  = ",inyear
-          write(*,*)"Month = ",inmonth
-          write(*,*)"Day   = ",inday
-          write(*,*)"Hour  = ",inhour
-          write(*,*)"dx_g2s",dx_g2s
-          write(*,*)"Spec_MaxOrder",Spec_MaxOrder
-          write(*,*)"xmin_g2s",xmin_g2s
-          write(*,*)"nxmax_g2s",nxmax_g2s
-          write(*,*)"ymin_g2s",ymin_g2s
-          write(*,*)"nymax_g2s",nymax_g2s
-          write(*,*)"zmin_HWT  = ",zmin_HWT
-          write(*,*)"zmax_HWT  = ",zmax_HWT
-          write(*,*)"dz_HWT    = ",dz_HWT
-          write(*,*)"nwindgroups= ",nwindfile_groups
-          write(*,*)"windformat1= ",iwf1
-          write(*,*)"nwindfiles1= ",nwindfiles1
-          write(*,*)"zmin_Met1  = ", zmin_Met1
-          write(*,*)"zmax_Met1  = ", zmax_Met1
-          write(*,*)"dz_Met1    = ", dz_Met1
-          write(*,*)"Windfile   = ",trim(adjustl(windfile1(1)))
-          IF(nwindfile_groups.eq.2)THEN
-            write(*,*)"windformat2= ",iwf2
-            write(*,*)"nwindfiles2= ",nwindfiles2
-            write(*,*)"zmin_Met1  = ", zmin_Met2
-            write(*,*)"zmax_Met1  = ", zmax_Met2
-            write(*,*)"dz_Met1    = ", dz_Met2
-            write(*,*)'-',trim(adjustl(windfile2(1))),'-'
-          ENDIF
-          write(*,*)"Ap file   = ",trim(adjustl(apfile))
-          write(*,*)"F107 file = ",trim(adjustl(f107file))
-          write(*,*)"outfile   = ",trim(adjustl(FILE_SH))
-          !write(*,*)apfile.eq.f107file
+          read(ct_unit,'(a130)')file_SH
+          write(G2S_global_info,*)"Year  = ",inyear
+          write(G2S_global_info,*)"Month = ",inmonth
+          write(G2S_global_info,*)"Day   = ",inday
+          write(G2S_global_info,*)"Hour  = ",inhour
+          write(G2S_global_info,*)"dx_g2s",dx_g2s
+          write(G2S_global_info,*)"Spec_MaxOrder",Spec_MaxOrder
+          write(G2S_global_info,*)"xmin_g2s",xmin_g2s
+          write(G2S_global_info,*)"nxmax_g2s",nxmax_g2s
+          write(G2S_global_info,*)"ymin_g2s",ymin_g2s
+          write(G2S_global_info,*)"nymax_g2s",nymax_g2s
+          write(G2S_global_info,*)"zmin_HWT  = ",zmin_HWT
+          write(G2S_global_info,*)"zmax_HWT  = ",zmax_HWT
+          write(G2S_global_info,*)"dz_HWT    = ",dz_HWT
+          write(G2S_global_info,*)"nwindgroups= ",nwindfile_groups
+          write(G2S_global_info,*)"windformat1= ",iwf1
+          write(G2S_global_info,*)"nwindfiles1= ",nwindfiles1
+          write(G2S_global_info,*)"zmin_Met1  = ", zmin_Met1
+          write(G2S_global_info,*)"zmax_Met1  = ", zmax_Met1
+          write(G2S_global_info,*)"dz_Met1    = ", dz_Met1
+          write(G2S_global_info,*)"Windfile   = ",trim(adjustl(windfile1(1)))
+          if(nwindfile_groups.eq.2)then
+            write(G2S_global_info,*)"windformat2= ",iwf2
+            write(G2S_global_info,*)"nwindfiles2= ",nwindfiles2
+            write(G2S_global_info,*)"zmin_Met1  = ", zmin_Met2
+            write(G2S_global_info,*)"zmax_Met1  = ", zmax_Met2
+            write(G2S_global_info,*)"dz_Met1    = ", dz_Met2
+            write(G2S_global_info,*)'-',trim(adjustl(windfile2(1))),'-'
+          endif
+          write(G2S_global_info,*)"Ap file   = ",trim(adjustl(apfile))
+          write(G2S_global_info,*)"F107 file = ",trim(adjustl(f107file))
+          write(G2S_global_info,*)"outfile   = ",trim(adjustl(file_SH))
+          !write(G2S_global_info,*)apfile.eq.f107file
           close(ct_unit)
 
-          IF(apfile.ne.f107file)THEN
+          if(apfile.ne.f107file)then
             ! Open and read individual Ap and F107files
-            OPEN(UNIT=ap_unit,FILE=apfile,STATUS='old')
+            open(unit=ap_unit,file=apfile,status='old')
             read(ap_unit,*)ap
             close(ap_unit)
-            OPEN(UNIT=f107_unit,FILE=f107file,STATUS='old')
+            open(unit=f107_unit,file=f107file,status='old')
             read(f107_unit,*)f107
             close(f107_unit)
-          ELSE
-            write(*,*)"Ap and F107 are equivalant, assume it is a directory to archive."
+          else
+            write(G2S_global_info,*)"Ap and F107 are equivalant, assume it is a directory to archive."
             ! Open archive file and get find the line for the requested day
             write(apfile,115)trim(adjustl(apfile)),'/',inyear
  115        format(a4,a1,i4)
-            OPEN(UNIT=ap_unit,FILE=apfile,STATUS='old')
+            open(unit=ap_unit,file=apfile,status='old')
             read(ap_unit,'(a71)')linebuffer
             read(linebuffer,102)iy,im,id, &
                                 ap1,ap2,ap3,ap4,ap5,ap6,ap7,ap8, &
                                 f107
- 102        FORMAT(3i2,25x,8i3,10x,f5.1,1x)
+ 102        format(3i2,25x,8i3,10x,f5.1,1x)
 
             do while(im.ne.inmonth.or.id.ne.inday)
               read(ap_unit,'(a71)')linebuffer
@@ -346,57 +346,57 @@
                                   ap1,ap2,ap3,ap4,ap5,ap6,ap7,ap8, &
                                   f107
             enddo
-            IF(inhour.le.3.0)THEN
+            if(inhour.le.3.0)then
               ap=ap1
-            ELSEIF(inhour.le.6.0)THEN
+            elseif(inhour.le.6.0)then
               ap=ap2
-            ELSEIF(inhour.le.9.0)THEN
+            elseif(inhour.le.9.0)then
               ap=ap3
-            ELSEIF(inhour.le.12.0)THEN
+            elseif(inhour.le.12.0)then
               ap=ap4
-            ELSEIF(inhour.le.15.0)THEN
+            elseif(inhour.le.15.0)then
               ap=ap5
-            ELSEIF(inhour.le.18.0)THEN
+            elseif(inhour.le.18.0)then
               ap=ap6
-            ELSEIF(inhour.le.21.0)THEN
+            elseif(inhour.le.21.0)then
               ap=ap7
-            ELSEIF(inhour.lt.24.0)THEN
+            elseif(inhour.lt.24.0)then
               ap=ap8
-            ENDIF
+            endif
 
-! 101        FORMAT(3i2,i4,9i2,10i3,f3.1,i1,i3,f5.1,i1)
-          ENDIF
+! 101        format(3i2,i4,9i2,10i3,f3.1,i1,i3,f5.1,i1)
+          endif
           close(f107_unit)
-          write(*,*)"Using an ap value of  : ",ap
-          write(*,*)"Using a solar flux of : ",f107
+          write(G2S_global_info,*)"Using an ap value of  : ",ap
+          write(G2S_global_info,*)"Using a solar flux of : ",f107
 
-        ENDIF
+        endif
       else
         ! No command-line arguments given, print usage and exit
 
-        write(*,*)"No command-line arguments given"
-        write(*,*)"Either run g2s with a forecast hour or a control file."
-        write(*,*)" "
-        write(*,*)" The control file is of the following format:"
-        write(*,*)"----------------------------------------------------------------------"
-        write(*,*)"2016 10 5 4.6        ! year, month, day, hour"
-        write(*,*)"1 4 -107.0 50.0 50.0 50.0 6367.470    ! IsLatLon, iprojflag, ..."
-        write(*,*)"0.5 120              ! ddeg of G2S grid, maxdeg of SH decomp"
-        write(*,*)"20 200 2.5           ! zmin_HWT,zmax_HWT,dz_HWT"
-        write(*,*)"2                    ! number of windfile groups"
-        write(*,*)"20 1                 ! format ID of met data1 (20 for new GFS) ,num of windfiles1"
-        write(*,*)"0.0 25.0 1.0         ! zmin, zmax, dz of Met1"
-        write(*,*)"gfs.t00z.pgrb2f00.nc ! windfile name"
-        write(*,*)"41 1                 ! format ID of met data2  ,num of windfiles2"
-        write(*,*)"20.0 55.0 2.0        ! zmin, zmax, dz of Met2"
-        write(*,*)"GEOS.fp.fcst.inst3_3d_asm_Np.20161005_00+20161005_0000.V01.nc4 ! windfile name"
-        write(*,*)"Ap.dat               ! Filename with Ap value"
-        write(*,*)"F107.dat             ! Filename with F107 value"
-        write(*,*)"out_GS.nc            ! Output filename of SH coefficients"
-        write(*,*)"                              "
-        write(*,*)"  Note: If the G2S grid is projected, line 3 of the control file should be"
-        write(*,*)"5.950 120 -2172.922 512 -4214.803 340  ! dx,maxdeg,xstart,nx,ystart,ny"
-        write(*,*)"----------------------------------------------------------------------"
+        write(G2S_global_info,*)"No command-line arguments given"
+        write(G2S_global_info,*)"Either run g2s with a forecast hour or a control file."
+        write(G2S_global_info,*)" "
+        write(G2S_global_info,*)" The control file is of the following format:"
+        write(G2S_global_info,*)"----------------------------------------------------------------------"
+        write(G2S_global_info,*)"2016 10 5 4.6        ! year, month, day, hour"
+        write(G2S_global_info,*)"1 4 -107.0 50.0 50.0 50.0 6367.470    ! IsLatLon, iprojflag, ..."
+        write(G2S_global_info,*)"0.5 120              ! ddeg of G2S grid, maxdeg of SH decomp"
+        write(G2S_global_info,*)"20 200 2.5           ! zmin_HWT,zmax_HWT,dz_HWT"
+        write(G2S_global_info,*)"2                    ! number of windfile groups"
+        write(G2S_global_info,*)"20 1                 ! format ID of met data1 (20 for new GFS) ,num of windfiles1"
+        write(G2S_global_info,*)"0.0 25.0 1.0         ! zmin, zmax, dz of Met1"
+        write(G2S_global_info,*)"gfs.t00z.pgrb2f00.nc ! windfile name"
+        write(G2S_global_info,*)"41 1                 ! format ID of met data2  ,num of windfiles2"
+        write(G2S_global_info,*)"20.0 55.0 2.0        ! zmin, zmax, dz of Met2"
+        write(G2S_global_info,*)"GEOS.fp.fcst.inst3_3d_asm_Np.20161005_00+20161005_0000.V01.nc4 ! windfile name"
+        write(G2S_global_info,*)"Ap.dat               ! Filename with Ap value"
+        write(G2S_global_info,*)"F107.dat             ! Filename with F107 value"
+        write(G2S_global_info,*)"out_GS.nc            ! Output filename of SH coefficients"
+        write(G2S_global_info,*)"                              "
+        write(G2S_global_info,*)"  Note: If the G2S grid is projected, line 3 of the control file should be"
+        write(G2S_global_info,*)"5.950 120 -2172.922 512 -4214.803 340  ! dx,maxdeg,xstart,nx,ystart,ny"
+        write(G2S_global_info,*)"----------------------------------------------------------------------"
 
         stop 1
 
@@ -408,10 +408,10 @@
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       ! First working on Met1
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      write(*,*)"------------------------------"
-      write(*,*)"  Getting data from met file 1"
-      write(*,*)"------------------------------"
-      write(*,*)"   **First set up grid.**"
+      write(G2S_global_info,*)"------------------------------"
+      write(G2S_global_info,*)"  Getting data from met file 1"
+      write(G2S_global_info,*)"------------------------------"
+      write(G2S_global_info,*)"   **First set up grid.**"
 
       start_year = inyear
       start_month= inmonth
@@ -419,63 +419,63 @@
       day     = day_of_year(start_year,start_month,start_day)
 
       ! Use MetReader library
-      IF(iwf1.eq.20.or.iwf1.eq.21.or.iwf1.eq.26)THEN
+      if(iwf1.eq.20.or.iwf1.eq.21.or.iwf1.eq.26)then
         iw      = 4   ! read from multiple files
         igrid   = 4   ! 0.5 degree global
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.22)THEN
+      elseif(iwf1.eq.22)then
         iw      = 4   ! read from single file
         igrid   = 193 ! 0.25 degree global
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.24)THEN
+      elseif(iwf1.eq.24)then
         iw      = 3   ! read from single file
         igrid   = 1024 ! MERRA
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.25)THEN
+      elseif(iwf1.eq.25)then
         iw      = 5   ! read from multiple files
         igrid   = 2   ! 0.5 degree global
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.28)THEN
+      elseif(iwf1.eq.28)then
         iw      = 4   ! read from multiple files
         igrid   = 170   ! 0.5 degree global
         idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.40)THEN
+      elseif(iwf1.eq.40)then
         iw      = 4   ! read from single file
         igrid   = 1040 ! NASA GMAO Cp
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.41)THEN
+      elseif(iwf1.eq.41)then
         iw      = 4   ! read from single file
         igrid   = 1041 ! NASA GMAO Np
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.3.or.iwf1.eq.4)THEN
+      elseif(iwf1.eq.3.or.iwf1.eq.4)then
         iw      = 3   ! read from single file
         igrid   = 221 ! NARR 32-km
         idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.12)THEN
+      elseif(iwf1.eq.12)then
         iw      = 4   ! read from single file
         igrid   = 198 ! nam 5.9km AK
         !idf     = 2   ! netcdf
-      ELSEIf(iwf1.eq.13)THEN
+      elseif(iwf1.eq.13)then
         iw      = 4   ! read from single file
         igrid   = 91 ! nam 2.95km AK
         !idf     = 2   ! netcdf
-      ELSE
-        write(*,*)"ERROR: Only iwf2 = 3,4,12,13,20,21,22,24,25,26,28,40,41 implemented."
-        stop
-      ENDIF
+      else
+        write(G2S_global_error,*)"ERROR: Only iwf2 = 3,4,12,13,20,21,22,24,25,26,28,40,41 implemented."
+        stop 1
+      endif
       Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)
       Simtime_in_hours     = 0.0
       call MR_Allocate_FullMetFileList(iw,iwf1,igrid,idf,nwindfiles1)
-      DO iw = 1,nwindfiles1
+      do iw = 1,nwindfiles1
         MR_windfiles(iw) = trim(ADJUSTL(windfile1(iw)))
-      ENDDO
+      enddo
         ! Now check for existance and compatibility with simulation time requirements
       call MR_Read_Met_DimVars(inyear)
 
         ! Note: the Met files will always be on the g2s grid, possibly resampled
         ! from the native resolution within MetReader
 
-      if (IsLatLon.eqv..true.)THEN
+      if (IsLatLon.eqv..true.)then
         IsPeriodic = .true.
       else
         IsPeriodic = .false.
@@ -483,19 +483,19 @@
 
       allocate(x_g2s_sp(nxmax_g2s))
       allocate(y_g2s_sp(nymax_g2s))
-      DO i = 1,nxmax_g2s
+      do i = 1,nxmax_g2s
         x_g2s_sp(i) = real(xmin_g2s + (i-1)*dx_g2s,kind=4)
-      ENDDO
-      DO i = 1,nymax_g2s
+      enddo
+      do i = 1,nymax_g2s
         y_g2s_sp(i) = real(ymin_g2s + (i-1)*dy_g2s,kind=4)
-      ENDDO
+      enddo
 
       nzmax_Met1 = nint((zmax_Met1-zmin_Met1)/dz_Met1) + 1
       allocate(z_Met1_sp(nzmax_Met1))
         ! Fill z array
-      DO i = 1,nzmax_Met1
+      do i = 1,nzmax_Met1
         z_Met1_sp(i) = real(zmin_Met1 + (i-1)*dz_Met1,kind=4)
-      ENDDO
+      enddo
 
       call MR_Set_CompProjection(IsLatLon,iprojflag,lam0,phi0,phi1,phi2,k0_scale,radius_earth)
 
@@ -506,28 +506,28 @@
                                    IsPeriodic)
       call MR_Set_Met_Times(Met_needed_StartHour, Simtime_in_hours)
 
-      if (IsLatLon_CompGrid.eqv..false.)THEN
+      if (IsLatLon_CompGrid.eqv..false.)then
         ! For projected grids, we will need the proj to LL mapping in order to
         ! use the HWT routines.  Also, we'll need to rotate the returned wind
         ! vectors back to the projected grid
         allocate(Lon_of_proj_node_dp(nxmax_g2s,nymax_g2s))
         allocate(Lat_of_proj_node_dp(nxmax_g2s,nymax_g2s))
         allocate(Theta_of_proj_node_dp(nxmax_g2s,nymax_g2s))
-        DO i=1,nxmax_g2s
+        do i=1,nxmax_g2s
           x_in = x_g2s_sp(i)
-          DO j=1,nymax_g2s
+          do j=1,nymax_g2s
             y_in = y_g2s_sp(j)
             call PJ_proj_inv(x_in, y_in, iprojflag, &
                            lam0,phi0,phi1,phi2,k0_scale,radius_earth, &
                            x_out,y_out)
             Lon_of_proj_node_dp(i,j) = x_out
             Lat_of_proj_node_dp(i,j) = y_out
-          ENDDO
-        ENDDO
+          enddo
+        enddo
         ! Now find the rotation angle
-        DO i=1,nxmax_g2s
+        do i=1,nxmax_g2s
           x_in = x_g2s_sp(i)
-          DO j=1,nymax_g2s
+          do j=1,nymax_g2s
             y_in = y_g2s_sp(j)
               ! Get lon/lat of point in question
             ptlon = Lon_of_proj_node_dp(i,j)
@@ -540,8 +540,8 @@
             de_y = y_out-y_in
               ! Now recover the angle between de and x (of map grid)
             Theta_of_proj_node_dp(i,j) = atan(de_y/de_x)
-          ENDDO
-        ENDDO
+          enddo
+        enddo
       endif
 
       ! These variables hold the Met values interpolated onto the g2s grid
@@ -555,21 +555,21 @@
       isecond   = start_sec
 
       !Load the 3d arrays for uwind, vwind, temperature, geopotential
-      write(*,*)"   **Now read in the state variables from met file.**"
-      write(*,*)"     Find MR_iMetStep_Now for ",Met_needed_StartHour
+      write(G2S_global_info,*)"   **Now read in the state variables from met file.**"
+      write(G2S_global_info,*)"     Find MR_iMetStep_Now for ",Met_needed_StartHour
       MR_iMetStep_Now = 1
-      write(*,*)MR_MetSteps_Total
-      DO i = 1,MR_MetSteps_Total-1
-        write(*,*)Met_needed_StartHour,MR_MetStep_Hour_since_baseyear(i:i+1)
-        IF(Met_needed_StartHour.ge.MR_MetStep_Hour_since_baseyear(i).and.&
-           Met_needed_StartHour.lt.MR_MetStep_Hour_since_baseyear(i+1))THEN
+      write(G2S_global_info,*)MR_MetSteps_Total
+      do i = 1,MR_MetSteps_Total-1
+        write(G2S_global_info,*)Met_needed_StartHour,MR_MetStep_Hour_since_baseyear(i:i+1)
+        if(Met_needed_StartHour.ge.MR_MetStep_Hour_since_baseyear(i).and.&
+           Met_needed_StartHour.lt.MR_MetStep_Hour_since_baseyear(i+1))then
           MR_iMetStep_Now = i
-          write(*,*)i,MR_MetStep_Hour_since_baseyear(i)
-          !write(*,*)MR_iMetStep_Now,TimeNow_fromRefTime,&
+          write(G2S_global_info,*)i,MR_MetStep_Hour_since_baseyear(i)
+          !write(G2S_global_info,*)MR_iMetStep_Now,TimeNow_fromRefTime,&
           !    MR_MetStep_Hour_since_baseyear(MR_iMetStep_Now)
           cycle
-        ENDIF
-      ENDDO
+        endif
+      enddo
 
       HoursIntoInterval = Met_needed_StartHour - MR_MetStep_Hour_since_baseyear(MR_iMetStep_Now)
       MR_ForecastInterval = MR_MetStep_Interval(MR_iMetStep_Now)
@@ -582,7 +582,7 @@
       allocate(tmp3d_1_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
       allocate(tmp3d_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
 
-      IF(Map_case.eq.1.or.Map_case.eq.2)THEN
+      if(Map_case.eq.1.or.Map_case.eq.2)then
         ! Either both the comp and met1 grids are LL (Map_case = 1)
         ! or they are both the same projection (Map_case = 2) so
         ! we can read the velocity components individually and interpolate onto
@@ -608,7 +608,7 @@
                (tmp3d_2_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) - &
                  tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1)) * &
                                          real(Interval_Frac,kind=4)
-      ELSE
+      else
         allocate(tmp3d_1_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
         allocate(tmp3d_2_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
 
@@ -617,20 +617,20 @@
         ! projection, then the above branch also applied.  So either we have met
         ! data that is projected differently that comp data (Map_case=5) or we
         ! have LL Met data and projected comp grid.
-        IF(Map_Case.eq.5)THEN
+        if(Map_Case.eq.5)then
           ! In this case, we first need to rotate the projected Met data to
           ! Earth-relative on the MetP grid
           call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now)
-        ENDIF
+        endif
         call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now)
         ! U for comp grid is stored in MR_dum3d_compH
         tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
         ! V for comp grid is stored in MR_dum3d_compH_2
         tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
 
-        IF(Map_Case.eq.5)THEN
+        if(Map_Case.eq.5)then
           call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now+1)
-        ENDIF
+        endif
         call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now+1)
         ! U for comp grid is stored in MR_dum3d_compH
         tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
@@ -651,7 +651,7 @@
         deallocate(tmp3d_1_2_sp)
         deallocate(tmp3d_2_2_sp)
 
-      ENDIF
+      endif
       ivar = 5 ! Temperature
       call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
       tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
@@ -667,41 +667,41 @@
 
       if(write_test_output)then
         ! Dump out map at bottom of Met grid
-        OPEN(UNIT=30,FILE='plan_Met.dat',STATUS='replace')
-        DO i=1,nxmax_g2s
-          DO j=1,nymax_g2s
+        open(unit=30,file='plan_Met.dat',status='replace')
+        do i=1,nxmax_g2s
+          do j=1,nymax_g2s
             write(30,*)x_g2s_sp(i),y_g2s_sp(j),temperature_Met_loc_sp(i,j,1),&
                       vx_Met_loc_sp(i,j,1),vy_Met_loc_sp(i,j,1)
-          ENDDO
-        ENDDO
-        CLOSE(30)
+          enddo
+        enddo
+        close(30)
         ! Dump out equatorial cross-section of Met grid
-        OPEN(UNIT=40,FILE='xsec_Met.dat',STATUS='replace')
-        DO i=1,nxmax_g2s
-          DO k=1,nzmax_Met1
+        open(unit=40,file='xsec_Met.dat',status='replace')
+        do i=1,nxmax_g2s
+          do k=1,nzmax_Met1
             write(40,*)x_g2s_sp(i),y_g2s_sp(jout),z_Met1_sp(k),&
                        temperature_Met_loc_sp(i,jout,k),&
                        vx_Met_loc_sp(i,jout,k),vy_Met_loc_sp(i,jout,k)
-          ENDDO
-        ENDDO
-        CLOSE(40)
+          enddo
+        enddo
+        close(40)
         ! Dump out meridonal cross-section of Met grid
-        OPEN(UNIT=40,FILE='ysec_Met.dat',STATUS='replace')
-        DO j=1,nymax_g2s
-          DO k=1,nzmax_Met1
+        open(unit=40,file='ysec_Met.dat',status='replace')
+        do j=1,nymax_g2s
+          do k=1,nzmax_Met1
             write(40,*)x_g2s_sp(iout),y_g2s_sp(j),z_Met1_sp(k),& 
                        temperature_Met_loc_sp(iout,j,k),&
                        vx_Met_loc_sp(iout,j,k),vy_Met_loc_sp(iout,j,k)
-          ENDDO
-        ENDDO
-        CLOSE(40)
+          enddo
+        enddo
+        close(40)
       endif
 
-      if (IsLatLon_CompGrid.eqv..true.)THEN
-        write(*,*)"   **Calculating spherical harmonics of met data.**"
+      if (IsLatLon_CompGrid.eqv..true.)then
+        write(G2S_global_info,*)"   **Calculating spherical harmonics of met data.**"
         call Get_Met_SH(1)
       else
-        write(*,*)"   **Calculating Fourier decomposition of met data.**"
+        write(G2S_global_info,*)"   **Calculating Fourier decomposition of met data.**"
         call Get_Met_FS(1)
       endif
 
@@ -709,15 +709,15 @@
       deallocate(vy_Met_loc_sp)
       deallocate(temperature_Met_loc_sp)
 
-      IF(nwindfile_groups.eq.2)THEN
+      if(nwindfile_groups.eq.2)then
         call MR_Reset_Memory()
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         ! Now working on Met2
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        write(*,*)"------------------------------"
-        write(*,*)"  Getting data from met file 2"
-        write(*,*)"------------------------------"
-        write(*,*)"   **First set up grid.**"
+        write(G2S_global_info,*)"------------------------------"
+        write(G2S_global_info,*)"  Getting data from met file 2"
+        write(G2S_global_info,*)"------------------------------"
+        write(G2S_global_info,*)"   **First set up grid.**"
   
         start_year = inyear
         start_month= inmonth
@@ -725,56 +725,56 @@
         day     = day_of_year(start_year,start_month,start_day)
   
         ! Use MetReader library
-        IF(iwf2.eq.20.or.iwf2.eq.21.or.iwf2.eq.26)THEN
+        if(iwf2.eq.20.or.iwf2.eq.21.or.iwf2.eq.26)then
           iw      = 4   ! read from multiple files
           igrid   = 4   ! 0.5 degree global
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.22)THEN
+        elseif(iwf2.eq.22)then
           iw      = 4   ! read from single file
           igrid   = 193 ! 0.25 degree global
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.24)THEN
+        elseif(iwf2.eq.24)then
           iw      = 3   ! read from single file
           igrid   = 1024 ! MERRA
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.25)THEN
+        elseif(iwf2.eq.25)then
           iw      = 5   ! read from multiple files
           igrid   = 2   ! 0.5 degree global
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.28)THEN
+        elseif(iwf2.eq.28)then
           iw      = 4   ! read from multiple files
           igrid   = 170   ! 0.5 degree global
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.40)THEN
+        elseif(iwf2.eq.40)then
           iw      = 4   ! read from single file
           igrid   = 1040 ! MERRA
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.41)THEN
+        elseif(iwf2.eq.41)then
           iw      = 4   ! read from single file
           igrid   = 1041 ! MERRA
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.3)THEN
+        elseif(iwf2.eq.3)then
           iw      = 3   ! read from single file
           igrid   = 221 ! NARR 32-km
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.12)THEN
+        elseif(iwf2.eq.12)then
           iw      = 4   ! read from single file
           igrid   = 198 ! nam 5.9km AK
           idf     = 2   ! netcdf
-        ELSEIf(iwf2.eq.13)THEN
+        elseif(iwf2.eq.13)then
           iw      = 4   ! read from single file
           igrid   = 91 ! nam 5.9km AK
           idf     = 2   ! netcdf
-        ELSE
-          write(*,*)"ERROR: Only iwf2 = 3,12,13,20,21,22,24,25,26,28,40,41 implemented."
-          stop
-        ENDIF
+        else
+          write(G2S_global_error,*)"ERROR: Only iwf2 = 3,12,13,20,21,22,24,25,26,28,40,41 implemented."
+          stop 1
+        endif
         Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)
         Simtime_in_hours     = 0.0
         call MR_Allocate_FullMetFileList(iw,iwf2,igrid,idf,nwindfiles2)
-        DO iw = 1,nwindfiles2
+        do iw = 1,nwindfiles2
           MR_windfiles(iw) = trim(ADJUSTL(windfile2(iw)))
-        ENDDO
+        enddo
           ! Now check for existance and compatibility with simulation time requirements
         call MR_Read_Met_DimVars(inyear)
 
@@ -784,9 +784,9 @@
         allocate(z_Met2_sp(nzmax_Met2))
   
           ! Fill z array
-        DO i = 1,nzmax_Met2
+        do i = 1,nzmax_Met2
           z_Met2_sp(i) = real(zmin_Met2 + (i-1)*dz_Met2,kind=4)
-        ENDDO
+        enddo
   
         call MR_Set_CompProjection(IsLatLon,iprojflag,lam0,phi0,phi1,phi2,k0_scale,radius_earth)
 
@@ -807,16 +807,16 @@
         isecond   = start_sec
   
         !Load the 3d arrays for uwind, vwind, temperature, geopotential
-        write(*,*)"   **Now read in the state variables from met file.**"
+        write(G2S_global_info,*)"   **Now read in the state variables from met file.**"
         MR_iMetStep_Now = 1
-        DO i = 1,MR_MetSteps_Total-1
-          IF(Met_needed_StartHour.ge.MR_MetStep_Hour_since_baseyear(i).and.&
-             Met_needed_StartHour.lt.MR_MetStep_Hour_since_baseyear(i+1))THEN
+        do i = 1,MR_MetSteps_Total-1
+          if(Met_needed_StartHour.ge.MR_MetStep_Hour_since_baseyear(i).and.&
+             Met_needed_StartHour.lt.MR_MetStep_Hour_since_baseyear(i+1))then
             MR_iMetStep_Now = i
-            !write(*,*)MR_iMetStep_Now,TimeNow_fromRefTime,MetStep_Hour_since_1900(MR_iMetStep_Now)
+            !write(G2S_global_info,*)MR_iMetStep_Now,TimeNow_fromRefTime,MetStep_Hour_since_1900(MR_iMetStep_Now)
             cycle
-          ENDIF
-        ENDDO
+          endif
+        enddo
         HoursIntoInterval = Met_needed_StartHour - MR_MetStep_Hour_since_baseyear(MR_iMetStep_Now)
         MR_ForecastInterval = MR_MetStep_Interval(MR_iMetStep_Now)
         Interval_Frac = HoursIntoInterval / MR_ForecastInterval
@@ -828,7 +828,7 @@
         allocate(tmp3d_1_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
         allocate(tmp3d_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
  
-        IF(Map_case.eq.1.or.Map_case.eq.2)THEN
+        if(Map_case.eq.1.or.Map_case.eq.2)then
           ! Either both the comp and met2 grids are LL (Map_case = 1)
           ! or they are both the same projection (Map_case = 2) so
           ! we can read the velocity components individually and interpolate onto
@@ -854,15 +854,15 @@
                  (tmp3d_2_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) - &
                    tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2)) * &
                                          real(Interval_Frac,kind=4)
-        ELSE
+        else
           allocate(tmp3d_1_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
           allocate(tmp3d_2_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
   
-          IF(Map_Case.eq.5)THEN
+          if(Map_Case.eq.5)then
             ! In this case, we first need to rotate the projected Met data to
             ! Earth-relative on the MetP grid
             call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now)
-          ENDIF
+          endif
           ! In this case, the comp and met2 grids differ so we will need to rotate
           ! the velocity vectors
           call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now)
@@ -872,11 +872,11 @@
           tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
 
 
-          IF(Map_Case.eq.5)THEN
+          if(Map_Case.eq.5)then
             ! In this case, we first need to rotate the projected Met data to
             ! Earth-relative on the MetP grid
             call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now+1)
-          ENDIF
+          endif
           call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now+1)
           ! U for comp grid is stored in MR_dum3d_compH
           tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
@@ -897,7 +897,7 @@
           deallocate(tmp3d_1_2_sp)
           deallocate(tmp3d_2_2_sp)
   
-        ENDIF
+        endif
 
         ivar = 5 ! Temperature
         call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
@@ -913,56 +913,56 @@
 
         if(write_test_output)then
           ! Dump out map at bottom of Met grid
-          OPEN(UNIT=30,FILE='plan_Met2.dat',STATUS='replace')
-          DO i=1,nxmax_g2s
-            DO j=1,nymax_g2s
+          open(unit=30,file='plan_Met2.dat',status='replace')
+          do i=1,nxmax_g2s
+            do j=1,nymax_g2s
               write(30,*)x_g2s_sp(i),y_g2s_sp(j),temperature_Met_loc_sp(i,j,1),&
                         vx_Met_loc_sp(i,j,1),vy_Met_loc_sp(i,j,1)
-            ENDDO
-          ENDDO
-          CLOSE(30)
+            enddo
+          enddo
+          close(30)
           ! Dump out equatorial cross-section of Met grid
-          OPEN(UNIT=40,FILE='xsec_Met2.dat',STATUS='replace')
-          DO i=1,nxmax_g2s
-            DO k=1,nzmax_Met2
+          open(unit=40,file='xsec_Met2.dat',status='replace')
+          do i=1,nxmax_g2s
+            do k=1,nzmax_Met2
               write(40,*)x_g2s_sp(i),y_g2s_sp(j),z_Met2_sp(k),&
                          temperature_Met_loc_sp(i,jout,k),&
                          vx_Met_loc_sp(i,jout,k),vy_Met_loc_sp(i,jout,k)
-            ENDDO
-          ENDDO
-          CLOSE(40)
+            enddo
+          enddo
+          close(40)
           ! Dump out meridonal cross-section of Met grid
-          OPEN(UNIT=40,FILE='ysec_Met2.dat',STATUS='replace')
-          DO j=1,nymax_g2s
-            DO k=1,nzmax_Met2
+          open(unit=40,file='ysec_Met2.dat',status='replace')
+          do j=1,nymax_g2s
+            do k=1,nzmax_Met2
               write(40,*)x_g2s_sp(iout),y_g2s_sp(j),z_Met2_sp(k),&
                          temperature_Met_loc_sp(iout,j,k),&
                          vx_Met_loc_sp(iout,j,k),vy_Met_loc_sp(iout,j,k)
-            ENDDO
-          ENDDO
-          CLOSE(40)
+            enddo
+          enddo
+          close(40)
 
         endif
  
-        if (IsLatLon_CompGrid.eqv..true.)THEN
-          write(*,*)"   **Calculating spherical harmonics of met data.**"
+        if (IsLatLon_CompGrid.eqv..true.)then
+          write(G2S_global_info,*)"   **Calculating spherical harmonics of met data.**"
           call Get_Met_SH(2)
         else
-          write(*,*)"   **Calculating Fourier decomposition of met data.**"
+          write(G2S_global_info,*)"   **Calculating Fourier decomposition of met data.**"
           call Get_Met_FS(2)
         endif
         deallocate(vx_Met_loc_sp)
         deallocate(vy_Met_loc_sp)
         deallocate(temperature_Met_loc_sp)
-      ELSE
+      else
         nzmax_Met2 = 0
-      ENDIF ! nwindfiles.eq.2
+      endif ! nwindfiles.eq.2
 
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       ! Now working on HWT
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       nzmax_HWT = int((zmax_HWT-zmin_HWT)/dz_HWT) + 1
-      write(*,*)" Allocating HWT grids of size: ",nxmax_g2s,nymax_g2s,nzmax_HWT
+      write(G2S_global_info,*)" Allocating HWT grids of size: ",nxmax_g2s,nymax_g2s,nzmax_HWT
       allocate(z_HWT_g2s_sp(nzmax_HWT))
       allocate(vx_HWT_sp(nxmax_g2s,nymax_g2s,nzmax_HWT))
       allocate(vy_HWT_sp(nxmax_g2s,nymax_g2s,nzmax_HWT))
@@ -970,52 +970,52 @@
       full_data_len = nzmax_HWT+nzmax_Met1+nzmax_Met2
       allocate(data_alt(full_data_len))
 
-      DO k = 1,nzmax_HWT
+      do k = 1,nzmax_HWT
         z_HWT_g2s_sp(k) = zmin_HWT + (k-1) * dz_HWT
-      ENDDO
+      enddo
 
-      IF(LOAD_HWT)THEN
-        write(*,*)"Reading precomputed empirical vx,vy,temperature."
-        open (unit=20,file=FILE_U_HWT,access='direct', &
+      if(LOAD_HWT)then
+        write(G2S_global_info,*)"Reading precomputed empirical vx,vy,temperature."
+        open (unit=20,file=file_U_HWT,access='direct', &
                      recl=nxmax_g2s*nymax_g2s*nzmax_HWT,iostat=ios,status='old')
-        IF(ios.ne.0)THEN
-          write(*,*)"ERROR: Could not open ",FILE_U_HWT
-          stop
-        ENDIF
+        if(ios.ne.0)then
+          write(G2S_global_error,*)"ERROR: Could not open ",file_U_HWT
+          stop 1
+        endif
         read(20,rec=1) (((vx_HWT_sp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,nzmax_HWT)
         close (20)
 
-        open (unit=20,file=FILE_V_HWT,access='direct', &
+        open (unit=20,file=file_V_HWT,access='direct', &
                      recl=nxmax_g2s*nymax_g2s*nzmax_HWT,iostat=ios,status='old')
-        IF(ios.ne.0)THEN
-          write(*,*)"ERROR: Could not open ",FILE_U_HWT
-          stop
-        ENDIF
+        if(ios.ne.0)then
+          write(G2S_global_error,*)"ERROR: Could not open ",file_U_HWT
+          stop 1
+        endif
         read(20,rec=1)(((vy_HWT_sp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,nzmax_HWT)
         close (20)
 
-        open (unit=20,file=FILE_T_HWT,access='direct', &
+        open (unit=20,file=file_T_HWT,access='direct', &
                      recl=nxmax_g2s*nymax_g2s*nzmax_HWT,iostat=ios,status='old')
-        IF(ios.ne.0)THEN
-          write(*,*)"ERROR: Could not open ",FILE_T_HWT
-          stop
-        ENDIF
+        if(ios.ne.0)then
+          write(G2S_global_error,*)"ERROR: Could not open ",file_T_HWT
+          stop 1
+        endif
         read(20,rec=1)(((temperature_HWT_sp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,nzmax_HWT)
         close (20)
-      ELSE
+      else
 
 #ifdef useHWM07
-        write(*,*)"Computing vx,vy,temperature from HWM07 and MSIS"
+        write(G2S_global_info,*)"Computing vx,vy,temperature from HWM07 and MSIS"
 #endif
 #ifdef useHWM14
-        write(*,*)"Computing vx,vy,temperature from HWM14 and MSIS"
+        write(G2S_global_info,*)"Computing vx,vy,temperature from HWM14 and MSIS"
 #endif
 
 
-        DO i = 1,nxmax_g2s
-          write(*,*)"Calculating x=",i," of ",nxmax_g2s
-          DO j = 1,nymax_g2s
-            if (IsLatLon_CompGrid.eqv..true.)THEN
+        do i = 1,nxmax_g2s
+          write(G2S_global_info,*)"Calculating x=",i," of ",nxmax_g2s
+          do j = 1,nymax_g2s
+            if (IsLatLon_CompGrid.eqv..true.)then
               lon = x_g2s_sp(i)
               lat = y_g2s_sp(j)
             else
@@ -1026,13 +1026,13 @@
               rotang = Theta_of_proj_node_dp(i,j)
             endif
 
-            DO k = 1,nzmax_HWT
+            do k = 1,nzmax_HWT
               alt = z_HWT_g2s_sp(k)
               call Get_WindTemp_Empir(lon,lat,alt,              &
                           start_year,day,ihour,iminute,isecond, &
                           ap,f107,                              &
                           u_g2s,v_g2s,temperature)
-              if (IsLatLon_CompGrid.eqv..true.)THEN
+              if (IsLatLon_CompGrid.eqv..true.)then
                 vx_HWT_sp(i,j,k)          = u_g2s
                 vy_HWT_sp(i,j,k)          = v_g2s
               else
@@ -1042,77 +1042,77 @@
                 vy_HWT_sp(i,j,k) = u_g2s * sin(rotang) + v_g2s * cos(rotang)
               endif
               temperature_HWT_sp(i,j,k) = temperature
-            ENDDO
-          ENDDO
-        ENDDO
-      ENDIF
+            enddo
+          enddo
+        enddo
+      endif
 
       if(write_test_output)then
         ! Dump out map at bottom of HWT grid (~20km)
-        OPEN(UNIT=31,FILE='plan_HWT.dat',STATUS='replace')
-        DO i=1,nxmax_g2s
-          DO j=1,nymax_g2s
+        open(unit=31,file='plan_HWT.dat',status='replace')
+        do i=1,nxmax_g2s
+          do j=1,nymax_g2s
             write(31,*)x_g2s_sp(i),y_g2s_sp(j),temperature_HWT_sp(i,j,1),&
                       vx_HWT_sp(i,j,1),vy_HWT_sp(i,j,1)
-          ENDDO
-        ENDDO
-        CLOSE(31)
+          enddo
+        enddo
+        close(31)
         ! Dump out equatorial cross-section of HWT grid
-        OPEN(UNIT=41,FILE='xsec_HWT.dat',STATUS='replace')
-        DO i=1,nxmax_g2s
-          DO k=1,nzmax_HWT
+        open(unit=41,file='xsec_HWT.dat',status='replace')
+        do i=1,nxmax_g2s
+          do k=1,nzmax_HWT
             write(41,*)x_g2s_sp(i),y_g2s_sp(jout),z_HWT_g2s_sp(k),&
                        temperature_HWT_sp(i,jout,k),&
                        vx_HWT_sp(i,jout,k),vy_HWT_sp(i,jout,k)
-          ENDDO
-        ENDDO
-        CLOSE(41)
+          enddo
+        enddo
+        close(41)
         ! Dump out meridonal cross-section of HWT grid
-        OPEN(UNIT=41,FILE='ysec_HWT.dat',STATUS='replace')
-        DO j=1,nymax_g2s
-          DO k=1,nzmax_HWT
+        open(unit=41,file='ysec_HWT.dat',status='replace')
+        do j=1,nymax_g2s
+          do k=1,nzmax_HWT
             write(41,*)x_g2s_sp(iout),y_g2s_sp(j),z_HWT_g2s_sp(k),&
                        temperature_HWT_sp(iout,j,k),&
                        vx_HWT_sp(iout,j,k),vy_HWT_sp(iout,j,k)
-          ENDDO
-        ENDDO
-        CLOSE(41)
+          enddo
+        enddo
+        close(41)
 
       endif
 
       if(write_test_output)then
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         !  Write HWT data to raw files for later 
-        write(*,*)"Writing output for HWT files"
-        open (unit=20,file=FILE_U_HWT,access='direct', &
+        write(G2S_global_info,*)"Writing output for HWT files"
+        open (unit=20,file=file_U_HWT,access='direct', &
                      recl=nxmax_g2s*nymax_g2s*nzmax_HWT*4)
         write(20,rec=1)(((vx_HWT_sp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,nzmax_HWT)
         close (20)
-        open (unit=20,file=FILE_V_HWT,access='direct', &
+        open (unit=20,file=file_V_HWT,access='direct', &
                      recl=nxmax_g2s*nymax_g2s*nzmax_HWT*4)
         write(20,rec=1)(((vy_HWT_sp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,nzmax_HWT)
         close (20)
-        open (unit=20,file=FILE_T_HWT,access='direct', &
+        open (unit=20,file=file_T_HWT,access='direct', &
                      recl=nxmax_g2s*nymax_g2s*nzmax_HWT*4)
         write(20,rec=1)(((temperature_HWT_sp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,nzmax_HWT)
         close (20)
         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       endif
 
-      if (IsLatLon_CompGrid.eqv..true.)THEN
-        write(*,*)"   Calculating spherical harmonics of HWT data."
+      if (IsLatLon_CompGrid.eqv..true.)then
+        write(G2S_global_info,*)"   Calculating spherical harmonics of HWT data."
         call Get_HWT_SH
       else
-        write(*,*)"   Calculating Fourier decomposition of HWT data."
+        write(G2S_global_info,*)"   Calculating Fourier decomposition of HWT data."
         call Get_HWT_FS
       endif
-      write(*,*)"Fit B-Spline along vertical coordinate"
+      write(G2S_global_info,*)"Fit B-Spline along vertical coordinate"
       call Merge_HWT_Met
-      write(*,*)"Writing spectra to netcdf file."
+      write(G2S_global_info,*)"Writing spectra to netcdf file."
       call Write_Spec_nc
 
-      write(*,*)"Exited normally."
-      END PROGRAM G2S_genSC
+      write(G2S_global_info,*)"Exited normally."
+      end program G2S_genSC
 
 
 !##############################################################################
@@ -1154,9 +1154,9 @@
       integer :: n, lmax2, j, k
       integer :: nzmax_Met
 
-      write(*,*)"Inside Get_Met_SH",imet
+      write(G2S_global_info,*)"Inside Get_Met_SH",imet
 
-      IF(imet.eq.1)THEN
+      if(imet.eq.1)then
         nzmax_Met = nzmax_Met1
         allocate(         vx1_SH_dp(2, Spec_MaxOrder+1, Spec_MaxOrder+1,nzmax_Met))
         allocate(         vy1_SH_dp(2, Spec_MaxOrder+1, Spec_MaxOrder+1,nzmax_Met))
@@ -1164,7 +1164,7 @@
         vx1_SH_dp          = 0.0_8
         vy1_SH_dp          = 0.0_8
         temperature1_SH_dp = 0.0_8
-      ELSE
+      else
         nzmax_Met = nzmax_Met2
         allocate(         vx1_2_SH_dp(2, Spec_MaxOrder+1, Spec_MaxOrder+1,nzmax_Met))
         allocate(         vy1_2_SH_dp(2, Spec_MaxOrder+1, Spec_MaxOrder+1,nzmax_Met))
@@ -1172,7 +1172,7 @@
         vx1_2_SH_dp          = 0.0_8
         vy1_2_SH_dp          = 0.0_8
         temperature1_2_SH_dp = 0.0_8
-      ENDIF
+      endif
 
       n = int(nxmax_g2s*0.5)
       
@@ -1186,12 +1186,12 @@
       grid   = 0.0_8
       griddh = 0.0_8
 
-      DO k = 1,nzmax_Met
-        write(*,*)"Decomposing Spherical Harmonics for vx: ",k
+      do k = 1,nzmax_Met
+        write(G2S_global_info,*)"Decomposing Spherical Harmonics for vx: ",k
         griddh = 0.0
-        DO j = 1,n
+        do j = 1,n
           griddh(j,1:nxmax_g2s) = vx_Met_loc_sp(1:nxmax_g2s,j,k)
-        ENDDO
+        enddo
         ! Calculate spherical harmonic coefficients out to degree maxdeg
         call SHExpandDH(griddh, &  ! i contains the gridded data (n,2*n)
                         n,      &  ! i number of samples in lat of gridded data
@@ -1200,21 +1200,21 @@
                         sampling=2, &        ! i 2=equal spacing
                         LMAX_CALC=Spec_MaxOrder-1 & ! i max SH degree
                         )
-        IF(imet.eq.1)THEN
+        if(imet.eq.1)then
           vx1_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-        ELSE
+        else
           vx1_2_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                  cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-        ENDIF
-      ENDDO
+        endif
+      enddo
 
-      DO k = 1,nzmax_Met
-        write(*,*)"Decomposing Spherical Harmonics for vy: ",k
+      do k = 1,nzmax_Met
+        write(G2S_global_info,*)"Decomposing Spherical Harmonics for vy: ",k
         griddh = 0.0
-        DO j = 1,n
+        do j = 1,n
           griddh(j,1:nxmax_g2s) = vy_Met_loc_sp(1:nxmax_g2s,j,k)
-        ENDDO
+        enddo
         ! Calculate spherical harmonic coefficients out to degree maxdeg
         call SHExpandDH(griddh, &  ! i contains the gridded data (n,2*n)
                         n,      &  ! i number of samples in lat of gridded data
@@ -1223,21 +1223,21 @@
                         sampling=2, &        ! i 2=equal spacing
                         LMAX_CALC=Spec_MaxOrder-1 & ! i max SH degree
                         )
-        IF(imet.eq.1)THEN
+        if(imet.eq.1)then
           vy1_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-        ELSE
+        else
           vy1_2_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                  cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-        ENDIF
-      ENDDO
+        endif
+      enddo
 
-      DO k = 1,nzmax_Met
-        write(*,*)"Decomposing Spherical Harmonics for temperature: ",k
+      do k = 1,nzmax_Met
+        write(G2S_global_info,*)"Decomposing Spherical Harmonics for temperature: ",k
         griddh = 0.0
-        DO j = 1,n
+        do j = 1,n
           griddh(j,1:nxmax_g2s) = temperature_Met_loc_sp(1:nxmax_g2s,j,k)
-        ENDDO
+        enddo
         ! Calculate spherical harmonic coefficients out to degree maxdeg
         call SHExpandDH(griddh, &  ! i contains the gridded data (n,2*n)
                         n,      &  ! i number of samples in lat of gridded data
@@ -1246,20 +1246,20 @@
                         sampling=2, &        ! i 2=equal spacing
                         LMAX_CALC=Spec_MaxOrder-1 & ! i max SH degree
                         )
-        IF(imet.eq.1)THEN
+        if(imet.eq.1)then
           temperature1_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                         cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-        ELSE
+        else
           temperature1_2_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                           cilm(1:2,1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-        ENDIF
-      ENDDO
+        endif
+      enddo
 
       deallocate(cilm)
       deallocate(grid)
       deallocate(griddh)
 
-      write(*,*)"    Leaving Get_Met_SH"
+      write(G2S_global_info,*)"    Leaving Get_Met_SH"
 
       end subroutine Get_Met_SH
 
@@ -1307,12 +1307,12 @@
 
       n = int(nxmax_g2s*0.5)
 
-      DO k = 1,nzmax_HWT
-        !write(*,*)"Decomposing Spherical Harmonics for vx: ",k
+      do k = 1,nzmax_HWT
+        !write(G2S_global_info,*)"Decomposing Spherical Harmonics for vx: ",k
         griddh = 0.0
-        DO j = 1,n
+        do j = 1,n
           griddh(j,1:nxmax_g2s) = vx_HWT_sp(1:nxmax_g2s,j,k)
-        ENDDO
+        enddo
         ! Calculate spherical harmonic coefficients out to degree maxdeg
         call SHExpandDH(griddh, &  ! i contains the gridded data (n,2*n)
                         n,      &  ! i number of samples in lat of gridded data
@@ -1323,14 +1323,14 @@
                         )
         vx2_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
              cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-      ENDDO
+      enddo
 
-      DO k = 1,nzmax_HWT
-        !write(*,*)"Decomposing Spherical Harmonics for vy: ",k
+      do k = 1,nzmax_HWT
+        !write(G2S_global_info,*)"Decomposing Spherical Harmonics for vy: ",k
         griddh = 0.0
-        DO j = 1,n
+        do j = 1,n
           griddh(j,1:nxmax_g2s) = vy_HWT_sp(1:nxmax_g2s,j,k)
-        ENDDO
+        enddo
         ! Calculate spherical harmonic coefficients out to degree maxdeg
         call SHExpandDH(griddh, &  ! i contains the gridded data (n,2*n)
                         n,      &  ! i number of samples in lat of gridded data
@@ -1341,14 +1341,14 @@
                         )
         vy2_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
              cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-      ENDDO
+      enddo
 
-      DO k = 1,nzmax_HWT
-        !write(*,*)"Decomposing Spherical Harmonics for vx: ",k
+      do k = 1,nzmax_HWT
+        !write(G2S_global_info,*)"Decomposing Spherical Harmonics for vx: ",k
         griddh = 0.0
-        DO j = 1,n
+        do j = 1,n
           griddh(j,1:nxmax_g2s) = temperature_HWT_sp(1:nxmax_g2s,j,k)
-        ENDDO
+        enddo
         ! Calculate spherical harmonic coefficients out to degree maxdeg
         call SHExpandDH(griddh, &  ! i contains the gridded data (n,2*n)
                         n,      &  ! i number of samples in lat of gridded data
@@ -1359,7 +1359,7 @@
                         )
         temperature2_SH_dp(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1, k) = &
                       cilm(1:2, 1:Spec_MaxOrder+1, 1:Spec_MaxOrder+1)
-      ENDDO
+      enddo
 
       deallocate(cilm)
       deallocate(grid)
@@ -1402,7 +1402,7 @@
       integer(kind=8)                            :: plan_for2Dfft_T
 
 
-      !write(*,*)"Inside Get_Met_FS",imet
+      !write(G2S_global_info,*)"Inside Get_Met_FS",imet
 
       allocate(gridU_in( nxmax_g2s      , nymax_g2s))
       allocate(gridV_in( nxmax_g2s      , nymax_g2s))
@@ -1419,16 +1419,16 @@
       call dfftw_plan_dft_r2c_2d(plan_for2Dfft_T, nxmax_g2s, nymax_g2s, &
                                  gridT_in , gridT_out,                  &
                                  FFTW_MEASURE)
-      IF(imet.eq.1)THEN
+      if(imet.eq.1)then
         nzmax_Met = nzmax_Met1
-        write(*,*)"Allocating arrays of size ",nxmax_g2s/2+1, nymax_g2s,nzmax_Met
+        write(G2S_global_info,*)"Allocating arrays of size ",nxmax_g2s/2+1, nymax_g2s,nzmax_Met
         allocate(         vx1_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_Met))
         allocate(         vy1_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_Met))
         allocate(temperature1_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_Met))
         vx1_FS_C          = 0.0_8
         vy1_FS_C          = 0.0_8
         temperature1_FS_C = 0.0_8
-      ELSE
+      else
         nzmax_Met = nzmax_Met2
         allocate(         vx1_2_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_Met))
         allocate(         vy1_2_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_Met))
@@ -1436,10 +1436,10 @@
         vx1_2_FS_C          = 0.0_8
         vy1_2_FS_C          = 0.0_8
         temperature1_2_FS_C = 0.0_8
-      ENDIF
+      endif
 
-      DO k = 1,nzmax_Met
-        write(*,*)"Decomposing Fourier coefficients for U,V,T: ",k
+      do k = 1,nzmax_Met
+        write(G2S_global_info,*)"Decomposing Fourier coefficients for U,V,T: ",k
         gridU_in = 0.0
         gridV_in = 0.0
         gridT_in = 0.0
@@ -1452,16 +1452,16 @@
         call dfftw_execute_dft_r2c(plan_for2Dfft_V,gridV_in,gridV_out)
         call dfftw_execute_dft_r2c(plan_for2Dfft_T,gridT_in,gridT_out)
 
-        IF(imet.eq.1)THEN
+        if(imet.eq.1)then
           vx1_FS_C(:,:,k)          = gridU_out(:,:)
           vy1_FS_C(:,:,k)          = gridV_out(:,:)
           temperature1_FS_C(:,:,k) = gridT_out(:,:)
-        ELSE
+        else
           vx1_2_FS_C(:,:,k)          = gridU_out(:,:)
           vy1_2_FS_C(:,:,k)          = gridV_out(:,:)
           temperature1_2_FS_C(:,:,k) = gridT_out(:,:)
-        ENDIF
-      ENDDO
+        endif
+      enddo
 
       deallocate(gridU_in)
       deallocate(gridV_in)
@@ -1507,7 +1507,7 @@
       integer(kind=8)                            :: plan_for2Dfft_V
       integer(kind=8)                            :: plan_for2Dfft_T
 
-      !write(*,*)"Inside Get_HWT_FS"
+      !write(G2S_global_info,*)"Inside Get_HWT_FS"
 
       allocate(gridU_in( nxmax_g2s      , nymax_g2s))
       allocate(gridV_in( nxmax_g2s      , nymax_g2s))
@@ -1524,7 +1524,7 @@
       call dfftw_plan_dft_r2c_2d(plan_for2Dfft_T, nxmax_g2s, nymax_g2s, &
                                  gridT_in , gridT_out,                  &
                                  FFTW_MEASURE)
-      write(*,*)"Allocating arrays of size ",nxmax_g2s/2+1, nymax_g2s,nzmax_HWT
+      write(G2S_global_info,*)"Allocating arrays of size ",nxmax_g2s/2+1, nymax_g2s,nzmax_HWT
       allocate(         vx2_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_HWT))
       allocate(         vy2_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_HWT))
       allocate(temperature2_FS_C(nxmax_g2s/2+1, nymax_g2s,nzmax_HWT))
@@ -1532,8 +1532,8 @@
       vy2_FS_C          = 0.0_8
       temperature2_FS_C = 0.0_8
 
-      DO k = 1,nzmax_HWT
-        write(*,*)"Decomposing Fourier coefficients for U,V,T: ",k
+      do k = 1,nzmax_HWT
+        write(G2S_global_info,*)"Decomposing Fourier coefficients for U,V,T: ",k
         gridU_in = 0.0
         gridV_in = 0.0
         gridT_in = 0.0
@@ -1549,7 +1549,7 @@
         vx2_FS_C(:,:,k)          = gridU_out(:,:)
         vy2_FS_C(:,:,k)          = gridV_out(:,:)
         temperature2_FS_C(:,:,k) = gridT_out(:,:)
-      ENDDO
+      enddo
 
       deallocate(gridU_in)
       deallocate(gridV_in)
@@ -1604,19 +1604,19 @@
       integer :: model_len
       real(kind=8) :: alt
 
-      LOGICAL :: First_time
+      logical :: First_time
 
-      INTEGER          M, N, NRHS
-      INTEGER          LDA,LDB
-      INTEGER          LWMAX
-      INTEGER          INFO, LWORK, RANK
-      REAL             RCOND
-      INTEGER,dimension(:) ,allocatable :: IWORK    ! ( 3*M*0+11*M )
-      REAL(kind=8),dimension(:,:),allocatable :: A        ! ( LDA, N )
-      REAL(kind=8),dimension(:,:),allocatable :: B        ! ( LDB, NRHS )
-      REAL(kind=8),dimension(:)  ,allocatable :: S        ! ( M )
-      REAL(kind=8),dimension(:)  ,allocatable :: JPVT     ! ( N )
-      REAL(kind=8),dimension(:)  ,allocatable :: WORK     ! ( LWMAX )
+      integer          M, N, NRHS
+      integer          LDA,LDB
+      integer          LWMAX
+      integer          INFO, LWORK, RANK
+      real             RCOND
+      integer,dimension(:) ,allocatable :: IWORK    ! ( 3*M*0+11*M )
+      real(kind=8),dimension(:,:),allocatable :: A        ! ( LDA, N )
+      real(kind=8),dimension(:,:),allocatable :: B        ! ( LDB, NRHS )
+      real(kind=8),dimension(:)  ,allocatable :: S        ! ( M )
+      real(kind=8),dimension(:)  ,allocatable :: JPVT     ! ( N )
+      real(kind=8),dimension(:)  ,allocatable :: WORK     ! ( LWMAX )
 
       real(kind=8),dimension(nzmax_Met1) :: z_Met1_dp
       real(kind=8),dimension(nzmax_Met2) :: z_Met2_dp
@@ -1627,9 +1627,9 @@
       complex(kind=8) :: dum_C
 
       z_Met1_dp = z_Met1_sp
-      IF(nwindfile_groups.eq.2)THEN
+      if(nwindfile_groups.eq.2)then
         z_Met2_dp = z_Met2_sp
-      ENDIF
+      endif
 
       data_len  = full_data_len
       Mfull     = Nknots+P_ord+P_ord
@@ -1637,7 +1637,7 @@
 
       First_time = .true.
 
-      if (IsLatLon_CompGrid.eqv..true.)THEN
+      if (IsLatLon_CompGrid.eqv..true.)then
         x_order = Spec_MaxOrder+1
         y_order = Spec_MaxOrder+1
         allocate(         vx3_SH_dp(2, x_order,y_order,model_len))
@@ -1673,188 +1673,188 @@
 
       allocate(mmm(Mfull,P_ord+1,63))
       allocate(new_data_alt(63))
-      DO k = 1,15
+      do k = 1,15
         new_data_alt(k) = (k-1)*1.0_4
-      ENDDO
-      DO k = 1,18
+      enddo
+      do k = 1,18
         new_data_alt(k+15) = 14.0_4+(k)*2.0_4
-      ENDDO
-      DO k = 1,30
+      enddo
+      do k = 1,30
         new_data_alt(k+15+18) = 50.0_4+(k)*5.0_4
-      ENDDO
+      enddo
 
       ! Define knot vector
-      DO i = 1,Mfull
-        If(i.le.P_ord)THEN
+      do i = 1,Mfull
+        if(i.le.P_ord)then
           knots(i) = iknots(1)
-        ELSEIF(i.ge.Nknots+P_ord)THEN
+        elseif(i.ge.Nknots+P_ord)then
           knots(i) = iknots(Nknots)
-        ELSE
+        else
           knots(i) = iknots(i-P_ord)
-        ENDIF
-      ENDDO
+        endif
+      enddo
 
       ! Set the altitudes for the HWT data
       !   Start at around 15km or 20 km
       data_alt(1:nzmax_HWT) = z_HWT_g2s_sp(1:nzmax_HWT)
       data_alt(nzmax_HWT+1:nzmax_HWT+nzmax_Met1)   = real(z_Met1_dp(1:nzmax_Met1),kind=4)
-      IF(nwindfile_groups.eq.2)THEN
+      if(nwindfile_groups.eq.2)then
         data_alt(nzmax_HWT+nzmax_Met1+1:nzmax_HWT+nzmax_Met1+nzmax_Met2) = &
                   real(z_Met2_dp(1:nzmax_Met2),kind=4)
-      ENDIF
+      endif
       ! Now get B-Spline basis for the HWT data
       !% Generate coefficient matrix of B-Splines
       ioff = 1
       mm = 0.0
-      DO k = 1,data_len
+      do k = 1,data_len
         alt = data_alt(k)
-        DO j=1,Mfull-1
-          IF (alt.eq.knots(j+1).and.alt.gt.knots(j)) THEN
+        do j=1,Mfull-1
+          if (alt.eq.knots(j+1).and.alt.gt.knots(j)) then
             mm (j+1,1,k) = 1.0
-          ELSEIf (alt.lt.knots(j+1).and.alt.ge.knots(j)) THEN
+          elseif (alt.lt.knots(j+1).and.alt.ge.knots(j)) then
             mm(j,1,k) = 1.0
-          ENDIF
-        ENDDO
-      ENDDO
+          endif
+        enddo
+      enddo
       !% higher order basis functions
-      DO ii = 2,P_ord+1
+      do ii = 2,P_ord+1
         iii = ii-1
-        DO k=1,data_len
+        do k=1,data_len
           alt = data_alt(k)
-          DO j=1,Mfull-iii
-            IF (knots(j+iii).gt.knots(j)) THEN
+          do j=1,Mfull-iii
+            if (knots(j+iii).gt.knots(j)) then
               mm(j,ii,k) = (alt - knots(j) ) / ( knots(j+iii)-knots(j)) * mm(j,ii-1,k)
-            ENDIF
-            IF (j+iii+1.le.Mfull) THEN
-              IF (knots(j+iii+1)>knots(j+1))THEN
+            endif
+            if (j+iii+1.le.Mfull) then
+              if (knots(j+iii+1)>knots(j+1))then
                 mm(j,ii,k) = mm(j,ii,k) + ( knots(j+iii+1) - alt) /       &
                                           ( knots(j+iii+1) - knots(j+1)) * &
                                              mm(j+1,ii-1,k)
-              ENDIF
-            ENDIF
-          ENDDO
-        ENDDO
-      ENDDO
+              endif
+            endif
+          enddo
+        enddo
+      enddo
 
       allocate(coeff(data_len,model_len))
-      DO k = 1,data_len
-        DO j = 1,Mfull-1
-          IF (j.ge.model_len) THEN
+      do k = 1,data_len
+        do j = 1,Mfull-1
+          if (j.ge.model_len) then
             coeff(k,model_len) = 0.0;
-          ELSE
+          else
             coeff(k,j)         = real(mm(j,P_ord+1,k),kind=4)
-          ENDIF
-        ENDDO
-      ENDDO
+          endif
+        enddo
+      enddo
 
       ! Start preparing for the least-squares best fit
       ! Fill the data vectors
-      DO i=1,x_order
-        DO j=1,y_order
-          DO ll=1,3
+      do i=1,x_order
+        do j=1,y_order
+          do ll=1,3
             select case (ll)
             case(1) 
-              DO k = 1,nzmax_HWT
-                IF(IsLatLon_CompGrid.eqv..true.)THEN
+              do k = 1,nzmax_HWT
+                if(IsLatLon_CompGrid.eqv..true.)then
                   data_r(k) = vx2_SH_dp(1,i,j,k) ! real HWT
                   data_i(k) = vx2_SH_dp(2,i,j,k) ! imag HWT
-                ELSE
+                else
                   data_r(k) =  real(vx2_FS_C(i,j,k)) ! real HWT
                   data_i(k) = aimag(vx2_FS_C(i,j,k)) ! imag HWT
-                ENDIF
-              ENDDO
-              DO k = 1,nzmax_Met1
-                IF(IsLatLon_CompGrid.eqv..true.)THEN
+                endif
+              enddo
+              do k = 1,nzmax_Met1
+                if(IsLatLon_CompGrid.eqv..true.)then
                   data_r(nzmax_HWT+k) = vx1_SH_dp(1,i,j,k) ! real Met
                   data_i(nzmax_HWT+k) = vx1_SH_dp(2,i,j,k) ! imag Met
-                ELSE
+                else
                   data_r(nzmax_HWT+k) =  real(vx1_FS_C(i,j,k)) ! real Met
                   data_i(nzmax_HWT+k) = aimag(vx1_FS_C(i,j,k)) ! imag Met
-                ENDIF
-              ENDDO
-              IF(nwindfile_groups.eq.2)THEN
-                DO k = 1,nzmax_Met2
-                  IF(IsLatLon_CompGrid.eqv..true.)THEN
+                endif
+              enddo
+              if(nwindfile_groups.eq.2)then
+                do k = 1,nzmax_Met2
+                  if(IsLatLon_CompGrid.eqv..true.)then
                     data_r(nzmax_HWT+nzmax_Met1+k) = vx1_2_SH_dp(1,i,j,k) ! real Met
                     data_i(nzmax_HWT+nzmax_Met1+k) = vx1_2_SH_dp(2,i,j,k) ! imag Met
-                  ELSE
+                  else
                     data_r(nzmax_HWT+nzmax_Met1+k) =  real(vx1_2_FS_C(i,j,k)) ! real Met
                     data_i(nzmax_HWT+nzmax_Met1+k) = aimag(vx1_2_FS_C(i,j,k)) ! imag Met
-                  ENDIF
-                ENDDO
-              ENDIF
+                  endif
+                enddo
+              endif
             case(2)
-              DO k = 1,nzmax_HWT
-                IF(IsLatLon_CompGrid.eqv..true.)THEN
+              do k = 1,nzmax_HWT
+                if(IsLatLon_CompGrid.eqv..true.)then
                   data_r(k) = vy2_SH_dp(1,i,j,k) ! real HWT
                   data_i(k) = vy2_SH_dp(2,i,j,k) ! imag HWT
-                ELSE
+                else
                   data_r(k) =  real(vy2_FS_C(i,j,k)) ! real HWT
                   data_i(k) = aimag(vy2_FS_C(i,j,k)) ! imag HWT
-                ENDIF
-              ENDDO
-              DO k = 1,nzmax_Met1
-                IF(IsLatLon_CompGrid.eqv..true.)THEN
+                endif
+              enddo
+              do k = 1,nzmax_Met1
+                if(IsLatLon_CompGrid.eqv..true.)then
                   data_r(nzmax_HWT+k) = vy1_SH_dp(1,i,j,k) ! real Met
                   data_i(nzmax_HWT+k) = vy1_SH_dp(2,i,j,k) ! imag Met
-                ELSE
+                else
                   data_r(nzmax_HWT+k) =  real(vy1_FS_C(i,j,k)) ! real Met
                   data_i(nzmax_HWT+k) = aimag(vy1_FS_C(i,j,k)) ! imag Met
-                ENDIF
-              ENDDO
-              IF(nwindfile_groups.eq.2)THEN
-                DO k = 1,nzmax_Met2
-                  IF(IsLatLon_CompGrid.eqv..true.)THEN
+                endif
+              enddo
+              if(nwindfile_groups.eq.2)then
+                do k = 1,nzmax_Met2
+                  if(IsLatLon_CompGrid.eqv..true.)then
                     data_r(nzmax_HWT+nzmax_Met1+k) = vy1_2_SH_dp(1,i,j,k) ! real Met
                     data_i(nzmax_HWT+nzmax_Met1+k) = vy1_2_SH_dp(2,i,j,k) ! imag Met
-                  ELSE
+                  else
                     data_r(nzmax_HWT+nzmax_Met1+k) =  real(vy1_2_FS_C(i,j,k)) ! real Met
                     data_i(nzmax_HWT+nzmax_Met1+k) = aimag(vy1_2_FS_C(i,j,k)) ! imag Met
-                  ENDIF
-                ENDDO
-              ENDIF
+                  endif
+                enddo
+              endif
             case(3)
-              DO k = 1,nzmax_HWT
-                IF(IsLatLon_CompGrid.eqv..true.)THEN
+              do k = 1,nzmax_HWT
+                if(IsLatLon_CompGrid.eqv..true.)then
                   data_r(k) = temperature2_SH_dp(1,i,j,k) ! real HWT
                   data_i(k) = temperature2_SH_dp(2,i,j,k) ! imag HWT
-                ELSE
+                else
                   data_r(k) =  real(temperature2_FS_C(i,j,k)) ! real HWT
                   data_i(k) = aimag(temperature2_FS_C(i,j,k)) ! imag HWT
-                ENDIF
-              ENDDO
-              DO k = 1,nzmax_Met1
-                IF(IsLatLon_CompGrid.eqv..true.)THEN
+                endif
+              enddo
+              do k = 1,nzmax_Met1
+                if(IsLatLon_CompGrid.eqv..true.)then
                   data_r(nzmax_HWT+k) = temperature1_SH_dp(1,i,j,k) ! real Met
                   data_i(nzmax_HWT+k) = temperature1_SH_dp(2,i,j,k) ! imag Met
-                ELSE
+                else
                   data_r(nzmax_HWT+k) =  real(temperature1_FS_C(i,j,k)) ! real Met
                   data_i(nzmax_HWT+k) = aimag(temperature1_FS_C(i,j,k)) ! imag Met
-                ENDIF
-              ENDDO
-              IF(nwindfile_groups.eq.2)THEN
-                DO k = 1,nzmax_Met2
-                  IF(IsLatLon_CompGrid.eqv..true.)THEN
+                endif
+              enddo
+              if(nwindfile_groups.eq.2)then
+                do k = 1,nzmax_Met2
+                  if(IsLatLon_CompGrid.eqv..true.)then
                     data_r(nzmax_HWT+nzmax_Met1+k) = temperature1_2_SH_dp(1,i,j,k) ! real Met
                     data_i(nzmax_HWT+nzmax_Met1+k) = temperature1_2_SH_dp(2,i,j,k) ! imag Met
-                  ELSE
+                  else
                     data_r(nzmax_HWT+nzmax_Met1+k) =  real(temperature1_2_FS_C(i,j,k)) ! real Met
                     data_i(nzmax_HWT+nzmax_Met1+k) = aimag(temperature1_2_FS_C(i,j,k)) ! imag Met
-                  ENDIF
-                ENDDO
-              ENDIF
+                  endif
+                enddo
+              endif
             end select
 
-            DO k = 1,data_len
+            do k = 1,data_len
               ! set up to operate on both real and imag vectors
               B(k,1) = data_r(k)
               B(k,2) = data_i(k)
-              DO jj = 1,model_len
+              do jj = 1,model_len
                 A(k,jj) = coeff(k,jj)
-              ENDDO
-            ENDDO
+              enddo
+            enddo
 
-            IF(First_time)THEN
+            if(First_time)then
               LWORK = -1
               CALL DGELSD( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK, WORK, &
                            LWORK, IWORK, INFO )
@@ -1862,16 +1862,16 @@
               First_time = .false.
 
               ! Reset A and B
-              DO k = 1,data_len
+              do k = 1,data_len
                 ! set up to operate on both real and imag vectors
                 B(k,1) = data_r(k)
                 B(k,2) = data_i(k)
-                DO jj = 1,model_len
+                do jj = 1,model_len
                   A(k,jj) = coeff(k,jj)
-                ENDDO
-              ENDDO
+                enddo
+              enddo
 
-            ENDIF
+            endif
 
             ! Now solve the least squared problem
             !  dGELSY computes the minimum-norm solution to a real linear least
@@ -1888,48 +1888,48 @@
             !    Here's using the SVD via divide and conquere
             call dgelsd(m, n, nrhs, a, lda, b, ldb, s, rcond, rank, work, lwork, iwork, info)
 
-            IF( INFO.GT.0 ) THEN
-              WRITE(*,*)'The algorithm computing SVD failed to converge;'
-              WRITE(*,*)'the least squares solution could not be computed.'
-              STOP
-            END IF
+            if( INFO.GT.0 ) then
+              write(G2S_global_info,*)'The algorithm computing SVD failed to converge;'
+              write(G2S_global_info,*)'the least squares solution could not be computed.'
+              stop 1
+            endif
 
             select case (ll)
             case(1)
-              IF(IsLatLon_CompGrid.eqv..true.)THEN
+              if(IsLatLon_CompGrid.eqv..true.)then
                 vx3_SH_dp(1,i,j,1:model_len) = B(1:model_len,1)
                 vx3_SH_dp(2,i,j,1:model_len) = B(1:model_len,2)
-              ELSE
-                DO k = 1,model_len
+              else
+                do k = 1,model_len
                   dum_C = complex(B(k,1),B(k,2))
                   vx3_FS_C(i,j,k) = dum_C
-                ENDDO
-              ENDIF
+                enddo
+              endif
             case(2)
-              IF(IsLatLon_CompGrid.eqv..true.)THEN
+              if(IsLatLon_CompGrid.eqv..true.)then
                 vy3_SH_dp(1,i,j,1:model_len) = B(1:model_len,1)
                 vy3_SH_dp(2,i,j,1:model_len) = B(1:model_len,2)
-              ELSE
-                DO k = 1,model_len
+              else
+                do k = 1,model_len
                   dum_C = complex(B(k,1),B(k,2))
                   vy3_FS_C(i,j,k) = dum_C
-                ENDDO
-              ENDIF
+                enddo
+              endif
             case(3)
-              IF(IsLatLon_CompGrid.eqv..true.)THEN
+              if(IsLatLon_CompGrid.eqv..true.)then
                 temperature3_SH_dp(1,i,j,1:model_len) = B(1:model_len,1)
                 temperature3_SH_dp(2,i,j,1:model_len) = B(1:model_len,2)
-              ELSE
-                DO k = 1,model_len
+              else
+                do k = 1,model_len
                   dum_C = complex(B(k,1),B(k,2))
                   temperature3_FS_C(i,j,k) = dum_C
-                ENDDO
-              ENDIF
+                enddo
+              endif
             end select
 
-          ENDDO
-        ENDDO
-      ENDDO
+          enddo
+        enddo
+      enddo
 
       deallocate(IWORK,A,B,S,JPVT,WORK)
       deallocate(mm)
@@ -1971,205 +1971,205 @@
 
       ! Create and open netcdf file
       cdf_title = "G2S atmosphere model"
-      nSTAT = nf90_create(FILE_SH,nf90_clobber, ncid)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: create FILE_SH: ', &
+      nSTAT = nf90_create(file_SH,nf90_clobber, ncid)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: create file_SH: ', &
                               nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"Title",cdf_title)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att title: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att title: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Forecast_Hour",fc_hour)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att fc_hour: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att fc_hour: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"year",inyear)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att year: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att year: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"month",inmonth)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att month: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att month: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"day",inday)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att day: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att day: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"hour",inhour)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att hour: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att hour: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Num_windfile_groups",nwindfile_groups)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nwindfiles: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nwindfiles: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"iwf1",iwf1)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att iwf1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att iwf1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"Num_windfiles1",nwindfiles1)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nwindfiles1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nwindfiles1: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"windfile1",windfile1(1))
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att windfile1: ',nf90_strerror(nSTAT)
-      IF(nwindfile_groups.eq.2)THEN
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att windfile1: ',nf90_strerror(nSTAT)
+      if(nwindfile_groups.eq.2)then
         nSTAT = nf90_put_att(ncid,nf90_global,"iwf2",iwf2)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att iwf2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att iwf2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"Num_windfiles2",nwindfiles2)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att nwindfiles2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att nwindfiles2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"windfile2",windfile2(1))
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att windfile2: ',nf90_strerror(nSTAT)
-      ENDIF
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att windfile2: ',nf90_strerror(nSTAT)
+      endif
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Ap",ap)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att Ap: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att Ap: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"F107",f107)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att F107: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att F107: ',nf90_strerror(nSTAT)
 
         ! Add projection line from control file
       nSTAT = nf90_put_att(ncid,nf90_global,"proj",Comp_projection_line)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att Comment: ',nf90_strerror(nSTAT)
-      IF(IsLatLon_CompGrid.eqv..false.)THEN
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att Comment: ',nf90_strerror(nSTAT)
+      if(IsLatLon_CompGrid.eqv..false.)then
         nSTAT = nf90_put_att(ncid,nf90_global,"xmin_g2s",xmin_g2s)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att xmin_g2s: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att xmin_g2s: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"ymin_g2s",ymin_g2s)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att ymin_g2s: ',nf90_strerror(nSTAT)
-      ENDIF
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att ymin_g2s: ',nf90_strerror(nSTAT)
+      endif
 
       nSTAT = nf90_put_att(ncid,nf90_global,"dx_g2s",dx_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att dx_g2s: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att dx_g2s: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"dy_g2s",dy_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att dy_g2s: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att dy_g2s: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"Spec_MaxOrder",Spec_MaxOrder)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att Spec_MaxOrder: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att Spec_MaxOrder: ',nf90_strerror(nSTAT)
 
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Spline_Order",P_ord)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att P_ord: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att P_ord: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"NKnots",Nknots)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att NKnots: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att NKnots: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"nx_g2s",nxmax_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nx_g2s: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nx_g2s: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"ny_g2s",nymax_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att ny_g2s: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att ny_g2s: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"nx_Met1",nxmax_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nx_Met1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nx_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"ny_Met1",nymax_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att ny_Met1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att ny_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"nz_Met1",nzmax_Met1)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nz_Met1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nz_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmin_Met1",zmin_Met1)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att zmin_Met1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att zmin_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmax_Met1",zmax_Met1)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att zmax_Met1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att zmax_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"dz_Met1",dz_Met1)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att dz_Met1: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att dz_Met1: ',nf90_strerror(nSTAT)
 
-      IF(nwindfile_groups.eq.2)THEN
+      if(nwindfile_groups.eq.2)then
         nSTAT = nf90_put_att(ncid,nf90_global,"nx_Met2",nxmax_g2s)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att nx_Met2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att nx_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"ny_Met2",nymax_g2s)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att ny_Met2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att ny_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"nz_Met2",nzmax_Met2)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att nz_Met2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att nz_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"zmin_Met2",zmin_Met2)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att zmin_Met2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att zmin_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"zmax_Met2",zmax_Met2)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att zmax_Met2: ',nf90_strerror(nSTAT)
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att zmax_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"dz_Met2",dz_Met2)
-        IF(nSTAT.ne.0) &
-            write(9,*)'ERROR: put_att dz_Met2: ',nf90_strerror(nSTAT)
-      ENDIF
+        if(nSTAT.ne.0) &
+            write(G2S_global_log,*)'ERROR: put_att dz_Met2: ',nf90_strerror(nSTAT)
+      endif
 
       nSTAT = nf90_put_att(ncid,nf90_global,"nx_HWT",nxmax_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nx_HWT: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nx_HWT: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"ny_HWT",nymax_g2s)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att ny_HWT: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att ny_HWT: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"nz_HWT",nzmax_HWT)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att nz_HWT: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att nz_HWT: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmin_HWT",zmin_HWT)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att zmin: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att zmin: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmax_HWT",zmax_HWT)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att zmax: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att zmax: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"dz_HWT",dz_HWT)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: put_att dz_HWT: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: put_att dz_HWT: ',nf90_strerror(nSTAT)
 
 
       nSTAT = nf90_def_dim(ncid,odim_names(1),2,r_dim_id)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       nSTAT = nf90_def_dim(ncid,odim_names(2),Nknots+P_ord,z_dim_id)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       !nSTAT = nf90_def_dim(ncid,odim_names(3),Spec_MaxOrder+1,y_dim_id)
       nSTAT = nf90_def_dim(ncid,odim_names(3),y_order,y_dim_id)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       !nSTAT = nf90_def_dim(ncid,odim_names(4),Spec_MaxOrder+1,x_dim_id)
       nSTAT = nf90_def_dim(ncid,odim_names(4),x_order,x_dim_id)
-      IF(nSTAT.ne.0) &
-          write(9,*)'ERROR: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+          write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       
       nSTAT = nf90_def_var(ncid,"knot",nf90_double,  &
             (/z_dim_id/), &
               kn_var_id)
       nSTAT = nf90_put_att(ncid,kn_var_id,"long_name",&
                            "Height of B-spline knot point")
-      IF(nSTAT.ne.0)write(9,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,kn_var_id,"units","km")
-      IF(nSTAT.ne.0)write(9,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_def_var(ncid,"vx_sh",nf90_double,  &
             (/x_dim_id,y_dim_id,z_dim_id,r_dim_id/), &
               vx_var_id)
       nSTAT = nf90_put_att(ncid,vx_var_id,"long_name",&
                            "SH Coefficient for zonal velocity (Vx)")
-      IF(nSTAT.ne.0)write(9,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_def_var(ncid,"vy_sh",nf90_double,  &
             (/x_dim_id,y_dim_id,z_dim_id,r_dim_id/), &
               vy_var_id)
       nSTAT = nf90_put_att(ncid,vy_var_id,"long_name",&
                            "SH Coefficient for meridional velocity (Vy)")
-      IF(nSTAT.ne.0)write(9,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_def_var(ncid,"tp_sh",nf90_double,  &
             (/x_dim_id,y_dim_id,z_dim_id,r_dim_id/), &
               temp_var_id)
       nSTAT = nf90_put_att(ncid,temp_var_id,"long_name",&
                            "SH Coefficient for temperature")
-      IF(nSTAT.ne.0)write(9,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
         ! Leaving define mode.
       nSTAT = nf90_enddef(ncid)
@@ -2180,11 +2180,11 @@
 
       dum1d_out(1:Nknots+P_ord) = real(knots(1:Nknots+P_ord),kind=8)
       nSTAT=nf90_put_var(ncid,kn_var_id,dum1d_out,(/1/))
-      IF(nSTAT.ne.0) &
-        write(9,*)'ERROR: put_var knot: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+        write(G2S_global_log,*)'ERROR: put_var knot: ',nf90_strerror(nSTAT)
 
         ! Vx
-      if (IsLatLon_CompGrid.eqv..true.)THEN
+      if (IsLatLon_CompGrid.eqv..true.)then
         dum4d_out(:,:,:,1) = vx3_SH_dp(1,1:x_order,1:y_order,1:Nknots+P_ord)
         dum4d_out(:,:,:,2) = vx3_SH_dp(2,1:x_order,1:y_order,1:Nknots+P_ord)
       else
@@ -2192,11 +2192,11 @@
         dum4d_out(:,:,:,2) = aimag(vx3_FS_C(1:x_order,1:y_order,1:Nknots+P_ord))
       endif
       nSTAT=nf90_put_var(ncid,vx_var_id,dum4d_out,(/1,1,1,1/))
-      IF(nSTAT.ne.0) &
-        write(9,*)'ERROR: put_var Vx: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+        write(G2S_global_log,*)'ERROR: put_var Vx: ',nf90_strerror(nSTAT)
 
         ! Vy
-      if (IsLatLon_CompGrid.eqv..true.)THEN
+      if (IsLatLon_CompGrid.eqv..true.)then
         dum4d_out(:,:,:,1) = vy3_SH_dp(1,1:x_order,1:y_order,1:Nknots+P_ord)
         dum4d_out(:,:,:,2) = vy3_SH_dp(2,1:x_order,1:y_order,1:Nknots+P_ord)
       else
@@ -2206,11 +2206,11 @@
       !dum4d_out(:,:,:,1) = vy3_SH_dp(1,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       !dum4d_out(:,:,:,2) = vy3_SH_dp(2,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       nSTAT=nf90_put_var(ncid,vy_var_id,dum4d_out,(/1,1,1,1/))
-      IF(nSTAT.ne.0) &
-        write(9,*)'ERROR: put_var Vy: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+        write(G2S_global_log,*)'ERROR: put_var Vy: ',nf90_strerror(nSTAT)
 
         ! Temp
-      if (IsLatLon_CompGrid.eqv..true.)THEN
+      if (IsLatLon_CompGrid.eqv..true.)then
         dum4d_out(:,:,:,1) = temperature3_SH_dp(1,1:x_order,1:y_order,1:Nknots+P_ord)
         dum4d_out(:,:,:,2) = temperature3_SH_dp(2,1:x_order,1:y_order,1:Nknots+P_ord)
       else
@@ -2220,8 +2220,8 @@
       !dum4d_out(:,:,:,1) = temperature3_SH_dp(1,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       !dum4d_out(:,:,:,2) = temperature3_SH_dp(2,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       nSTAT=nf90_put_var(ncid,temp_var_id,dum4d_out,(/1,1,1,1/))
-      IF(nSTAT.ne.0) &
-        write(9,*)'ERROR: put_var Temp: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.0) &
+        write(G2S_global_log,*)'ERROR: put_var Temp: ',nf90_strerror(nSTAT)
 
       ! Close file
       nSTAT = nf90_close(ncid)
@@ -2383,11 +2383,11 @@
         monthdays = (/31,28,31,30,31,30,31,31,30,31,30,31/)
       endif
 
-      IF(imonth.eq.1)THEN
+      if(imonth.eq.1)then
         day_of_year = iday
-      ELSE
+      else
         day_of_year = sum(monthdays(1:imonth-1)) + iday
-      ENDIF
+      endif
 
       end function day_of_year
 

@@ -18,7 +18,7 @@ print usage information to stdout before exiting.
 
 The work-flow is as follows.
  (1) Run g2s_genSC_HWM14 to create a spectral coefficient file
- (2) Rebuilt a grid of atmospheric values from the coefficient file
+ (2) Rebuild a grid of atmospheric values from the coefficient file
  (3) Extract the needed 1, 2, or 3-d values from the rebuilt grid
  (4) Use the extracted output in an infrasound propagation model such as Art2d or GeoAc.
 
@@ -26,7 +26,7 @@ Step 1: Create the spectral coefficient file
 --------------------------------------------
 
 After the default installation, the executable g2s_genSC_HWM14 (also copied to g2s_genSC)
-will be copied to /opt/USGS/AVOG2S/bin/.  If you used HWM07 instead of or in addition to
+will be copied to /opt/USGS/AVOG2S/bin/.  If you used HWM07 instead of, or in addition to
 HWM14, then g2s_genSC_HWM07 would be created with the last version built copied to g2s_genSC.
 
 This executable requires a command-line argument.  If none is given, then an informational
@@ -126,7 +126,7 @@ Finally, the output file name for the coefficient file is given on the last line
 Here is an example of a control file using a projected grid for a regional Ground-
 2-Space model over the Aleutians.  Two forecast products are used, the NAM high-
 resolution forecasts over Alaska (0-25km) and the NASA GEOS (20-58km).  Planetary
-space weather indicies are from the NOAA Space Weather Prediction Center.
+space weather indices are from the NOAA Space Weather Prediction Center.
 
 2016 12 23 12.0
 0 1 -150.0 90.0 0.933 6371.229
@@ -194,7 +194,7 @@ the gridded volume.
 Step 3: Extract profiles, cross-sections for volumes from the resamples data
 ----------------------------------------------------------------------------
 
-The three programs for extracting values (in 1,2 and 3-d) from the gridded binary
+The three programs for extracting values (in 1, 2 and 3-d) from the gridded binary
 files are all variants of the source file g2s_Extract.f90, compiled with different
 preprocessor directives.  For each of these tools, the program needs to know
 the geometry of the raw data, in addition to the information on where to
@@ -220,8 +220,8 @@ in km, the vertical increment in km, and the root name of the output file
 
   g2s_Extract_Sonde 190.055 52.8222 180.0 0.2 Clev
 
-Will return a verticle profile above Cleveland Volcano from 0-180 km with a z-spacing
-of 0.2 km.  Data will be written to the file Clev0.met with columns for
+Will return a vertical profile above Cleveland Volcano from 0-180 km with a z-spacing
+of 0.2 km.  Data will be written to the file Clev0.met with columns
 z [km] : T(z) [K] : u(z) [m/s] : v(z) [m/s] : rho(z) [g/cm3] : p(z) [mbar]
 
 Using a control file provides greater flexibility and is needed to override the
@@ -290,11 +290,11 @@ For 3-d values, 9 command-line arguments are required.
    out_root  : root of output filename
 
 This program essentially calls the 1-d profile subroutine over a 2-d grid of lon,lat
-coordinates and creates a series of files designed for the the infrasound propagation
+coordinates and creates a series of files designed for the infrasound propagation
 model GeoAc.
 
 For example, to extract a grid of values to encompass the region between Cleveland
-Volcanao and the Dillingham infrasound array:
+Volcano and the Dillingham infrasound array:
      ./g2s_Extract_Grid  50.0 60.0 3 185.0 205.0 5 180.0 0.2 Clev
 This produces 15 vertical profile files: Clev[0-14].met;
 and two files giving the coordinates of the grid points: Clev.loclat, Clev.loclon
@@ -321,13 +321,13 @@ Step 4: Use output of g2s_Extract_* in infrasound codes
 -------------------------------------------------------
 
 The output files can be used by GeoAc by running
-GeoAc3D.RngDep -prop Clev Clev.loclon Clev.loclat theta_step=2.0 bounces=2 azimuth=41.0
+GeoAcGlobal.RngDep -prop Clev Clev.loclon Clev.loclat theta_step=2.0 bounces=2 azimuth=41.0
 
 
 
 Examples
 --------
-(1) Creating a reanalysis G2S model using NCEP 2.5-degree NWP data and archived planetary indicies
+(1) Creating a reanalysis G2S model using NCEP 2.5-degree NWP data and archived planetary indices
 
 The files for this example are located in examples/ex01
 
@@ -337,8 +337,8 @@ installed with MetReader and will download the files to the default location at
     /data/Windfiles/NCEP/YYYY
 If you ran the example while installing MetReader, you should already have these files.
 Note: This will download 6 files, a year of data for each of temperature (air.2016.nc),
-      geopotential height (hgt.2016.nc), zonal winds (uwnd.2016.nc), meridonial winds (vwnd.2016.nc),
-      vertical velocities (omega.2016.nc) and specific humidity (shum.2016.nc), totalling 2.4 Gb.
+      geopotential height (hgt.2016.nc), zonal winds (uwnd.2016.nc), meridional winds (vwnd.2016.nc),
+      vertical velocities (omega.2016.nc) and specific humidity (shum.2016.nc), totaling 2.4 Gb.
 
   /opt/USGS/bin/autorun_scripts/get_NCEP_50YearReanalysis.sh 2016
 

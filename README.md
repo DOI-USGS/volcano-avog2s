@@ -2,13 +2,13 @@ AVOG2S
 ==========
 
 AVOG2S is a collection of programs that can be used to build a Ground-2-Space
-model of the atmosphere in a similar style to that outlined by Drob, et al,
+model of the atmosphere in a similar style to that outlined by Drob et al.,
 (JGR, v108, p4680, 2003, doi:10.1029/2002JD003307) by smoothly merging 1 or 2 
-numerical weather prediction (NWP) models (either forecast or reannalysis) with
-empircal models of the upper atmosphere.  This Ground-2-Space model can be used
-for forward modeling of infrasound propagation.  This model is described in Schwaiger, 
-et al, (submitted) and can be used a both global as well a regional G2S model.  This
-model is used by the Alaska Volcano Observatory for infrasound propagation
+numerical weather prediction (NWP) models (either forecast or reanalysis) with
+empirical models of the upper atmosphere.  This Ground-2-Space model can be used
+for forward modeling of infrasound propagation.  This model is described in Schwaiger
+et al., (submitted) and can be used as both global as well as a regional G2S model.
+This model is used by the Alaska Volcano Observatory for infrasound propagation
 modeling.
 
 This model relies heavily on externally provided software.  The following 
@@ -18,12 +18,12 @@ suite can be built.
    HoursSince https://github.com/hschwaiger-usgs/HoursSince
    projection https://github.com/hschwaiger-usgs/projection
    MetReader  https://github.com/hschwaiger-usgs/MetReader
-(2) Upper-atmospheric emipirical models are available separately for horizontal winds
+(2) Upper-atmospheric empirical models are available separately for horizontal winds
     and temperature
    HWM14      http://onlinelibrary.wiley.com/store/10.1002/2014EA000089/asset/supinfo/ess224-sup-0002-supinfo.tgz?v=1&s=2a957ba70b7cf9dd0612d9430076297c3634ea75
    NRLMSIS-00 https://github.com/graziano-giuliani/Meteostuff/tree/master/NRLMSIS_F90
 (3) Spectral decomposition of the data utilize two libraries, one for spherical
-    harmonic decompositions, and one for Fourier decomposision
+    harmonic decompositions, and one for Fourier decomposition
    SHTOOLS    https://github.com/SHTOOLS/SHTOOLS/releases
    fftw
 (4) Additional libraries needed:
@@ -33,12 +33,12 @@ suite can be built.
 
 Data
 (1) Ap and F107 values
-    Current values availible from NOAA Space Weather Predision Center
+    Current values available from NOAA Space Weather Prediction Center
       http://services.swpc.noaa.gov/text/wwv.txt
-    Archived values availible from NOAA National Geophysical Data Center
+    Archived values available from NOAA National Geophysical Data Center
       ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/
 (2) Numerical Weather Prediction data
-    Forecast and reannalysis data availible from many sources.  See documentation
+    Forecast and reanalysis data available from many sources.  See documentation
     in MetReader.
 
 
@@ -52,9 +52,9 @@ Installation instructions are given in the repositories for each of these librar
 (2) Empirical models
   (a) HWM14 is available as supplemental material for Drob et al, 2015
 (http://onlinelibrary.wiley.com/doi/10.1002/2014EA000089/abstract).  The build
-of AVOG2S is expects that this be compiled
+of AVOG2S expects that this be compiled
 as a library with the data files installed in a specified location.  The makefile
-src/ExternalDataSoftware/makefile_HWM14.gfortran is provided with can be used to
+src/ExternalDataSoftware/makefile_HWM14.gfortran is provided which can be used to
 build the HWM14 library.  The install location can be changed by editing the top
 of this file.
 
@@ -110,7 +110,7 @@ be compiled into a library using the makefile provided at:
 src/ExternalDataSoftware/makefile_NRLMSIS.gfortran
 
 Note: NRLMSIS from the link above can return erroneous values if a requested altitude
-      equals an internal braketing value.  To correct this, change line 2067 of 
+      equals an internal bracketing value.  To correct this, change line 2067 of 
       physics_msis.f90 from 
       if ( dabs(v1-d_1) < nearzero .or. alt > zn2(1) .or. &
         to
@@ -124,10 +124,10 @@ make -f ../../makefile_NRLMSIS.gfortran install
 
 (3)
  (a) SHTOOLS
-  SHTOOLS is availible from https://github.com/SHTOOLS/SHTOOLS/releases.  Instructions
+  SHTOOLS is available from https://github.com/SHTOOLS/SHTOOLS/releases.  Instructions
 for installation are in the source code download
  wget https://github.com/SHTOOLS/SHTOOLS/archive/v4.0.tar.gz
-This can be build and installed in the default location.  Take note of where ther objects
+This can be built and installed in the default location.  Take note of where the objects
 are installed.  Earlier versions of SHTOOLS installing in /usr/local/SHTOOLS$(version_number).
 The latest version simple installs to /usr/local/.
 
@@ -139,7 +139,7 @@ The latest version simple installs to /usr/local/.
 AVOG2S Installation
 ---------------------------------
 
-To compile, edit the makefile to be consistant with the install directory and options
+To compile, edit the makefile to be consistent with the install directory and options
 used in the installation of the preliminary software.  Double-check the HWM version
 number, the SHTOOL version number if you are using an older version, and whether or not
 grib2 support should be built.  Then simply type:
