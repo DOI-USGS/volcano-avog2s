@@ -64,11 +64,15 @@ USEGRIB2 = T
 HWMv=14
 
 # Location and version of SHTOOLs installation
-SHTv=2.6
-SHTOOLROOT=/usr/local/SHTOOLS$(SHTv)
+#SHTv=2.6
+#SHTOOLROOT=/usr/local/SHTOOLS$(SHTv)
+#SHTlib=SHTOOLS$(SHTv)
+#SHTOOLINC=${SHTOOLROOT}/modules
 #  Current version is 4.0 and installs by default to /usr/local
 #SHTv=4.0
-#SHTOOLROOT=/usr/local/
+SHTlib=SHTOOLS
+SHTOOLROOT=/usr/local
+SHTOOLINC=${SHTOOLROOT}/include
 
 # This is the location of the USGS libraries and include files
 # This might be different from the INSTALLDIR path if you want to link to special MetReader
@@ -97,7 +101,7 @@ USGSLIBDIR = -L$(USGSROOT)/lib
 USGSLIB = -lMetReader -lhourssince -lprojection
 USGSINC = -I$(USGSROOT)/include
 
-EXTRALIBS = -L$(SHTOOLROOT)/lib -I$(SHTOOLROOT)/modules $(DATALIBS) -lSHTOOLS$(SHTv) -lfftw3 -lfftw3f -lm -llapack
+EXTRALIBS = -L$(SHTOOLROOT)/lib -I$(SHTOOLINC) $(DATALIBS) -l$(SHTlib) -lfftw3 -lfftw3f -lm -llapack
 
 ###############################################################################
 ###########  GNU Fortran Compiler  #############################################
@@ -127,28 +131,34 @@ all: g2s_genSC g2s_ResampleAtmos g2s_Extract_Sonde g2s_Extract_Xsec g2s_Extract_
 g2s_genSC: g2s_genSC.f90 g2s_globvar.o makefile
 	$(FC) $(FPPFLAGS) $(FFLAGS) -c g2s_genSC.f90 $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) $(USGSINC) $(USGSLIBDIR) $(USGSLIB)
 	$(FC) $(FFLAGS) g2s_genSC.o g2s_globvar.o -o g2s_genSC $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) $(USGSINC) $(USGSLIBDIR) $(USGSLIB)
+	mkdir -p ../bin
 	mv g2s_genSC ../bin/
 	cp ../bin/g2s_genSC ../bin/g2s_genSC_HWM${HWMv}
 probe_HWT: probe_HWT.f90 g2s_globvar.o makefile
 	$(FC) $(FPPFLAGS) -DSONDE $(FFLAGS) $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) -c probe_HWT.f90
 	$(FC) $(FFLAGS) probe_HWT.o g2s_globvar.o $(HWTLIB) $(COMPLIBS) $(EXTRALIBS)  -o probe_HWT${HWMv}
+	mkdir -p ../bin
 	mv probe_HWT${HWMv} ../bin/
 g2s_ResampleAtmos: g2s_ResampleAtmos.f90 g2s_globvar.o makefile
 	$(FC) $(FFLAGS) g2s_ResampleAtmos.f90 g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_ResampleAtmos
+	mkdir -p ../bin
 	mv g2s_ResampleAtmos ../bin/
 g2s_Extract_Sonde: g2s_Extract.f90 g2s_globvar.o makefile
 	$(FC) -x f95-cpp-input -DSONDE $(FFLAGS) $(COMPLIBS) $(EXTRALIBS) -c g2s_Extract.f90
 	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_Extract_Sonde
+	mkdir -p ../bin
 	cp g2s_Extract_Sonde $(HOME)/gcc/bin
 	mv g2s_Extract_Sonde ../bin/
 g2s_Extract_Xsec: g2s_Extract.f90 g2s_globvar.o makefile
 	$(FC) -x f95-cpp-input -DXSEC $(FFLAGS) $(COMPLIBS) $(EXTRALIBS) -c g2s_Extract.f90
 	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_Extract_Xsec
+	mkdir -p ../bin
 	cp g2s_Extract_Xsec $(HOME)/gcc/bin
 	mv g2s_Extract_Xsec ../bin/
 g2s_Extract_Grid: g2s_Extract.f90 g2s_globvar.o makefile
 	$(FC) -x f95-cpp-input -DGRID $(FFLAGS) $(COMPLIBS) $(EXTRALIBS) -c g2s_Extract.f90
 	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_Extract_Grid
+	mkdir -p ../bin
 	cp g2s_Extract_Grid $(HOME)/gcc/bin
 	mv g2s_Extract_Grid ../bin/
 g2s_globvar.o: g2s_globvar.f90 makefile
