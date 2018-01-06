@@ -325,12 +325,12 @@ The output files can be used by GeoAc by running
 
 Examples
 --------
-###Example 1
+### Example 1
 Creating a reanalysis G2S model using NCEP 2.5-degree NWP data and archived planetary indices
 
 The files for this example are located in `examples/ex01`
 
-#####Step 1:
+##### Step 1:
 First, we need to gather the data that we will need.  For NWP date, this example
 will use the NCEP Reanalysis 2.5-degree.  The following script should have been
 installed with MetReader and will download the files to the default location at  
@@ -353,7 +353,7 @@ Geophysical Data Center.
   `popd`  
   `ln -s /opt/USGS/AVOG2S/ExternalData/Ap_Forecast/NGDC_NOAA_Archive NGDC`
 
-#####Step 2: 
+##### Step 2: 
 Generate a coefficient file.  This example directory has a control file 
 `example1_genSC.ctr`:  
 `2016 12 23 12.0                  ! Specifies date and time`  
@@ -372,15 +372,15 @@ To generate the coefficient file, run
 
   `/opt/USGS/AVOG2S/bin/g2s_genSC example1_genSC.ctr` 
 
-#####Step 3: Create gridded binary files from the coefficient file.
+##### Step 3: Create gridded binary files from the coefficient file.
 
   `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 15 1.0 18 2.0 30 5.0`
 
-#####Step 4: Extract a 3-d grid from the gridded binary files.
+##### Step 4: Extract a 3-d grid from the gridded binary files.
 
   `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example1_ext3d.ctr`
 
-#####Step 5: Run GeoAc
+##### Step 5: Run GeoAc
 For a 1-d analysis, run  
   `./GeoAc2D -prop Clev0.met theta_min=0.0 theta_max=45.0 theta_step=0.5 azimuth=41 bounces=10 z_src=1.73 CalcAmp=False`  
 This uses the atmospheric profile at the start coordinate of the grid and uses an azimuth of 41, 

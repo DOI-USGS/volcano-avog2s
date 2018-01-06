@@ -12,7 +12,7 @@ et al., (submitted) and can be used as both global as well as a regional G2S mod
 This model is used by the Alaska Volcano Observatory for infrasound propagation
 modeling.
 
-###Prerequisite Software
+### Prerequisite Software
 This model relies heavily on externally provided software.  The following 
 software packages must be built and installed before the AVOG2S software
 suite can be built.
@@ -37,7 +37,7 @@ harmonic decompositions, and one for Fourier decomposition
    netcdf  
    grib2
 
-###Required Data
+### Required Data
 1. Solar-terrestrial indices (Ap and F107)  
     Current values available from NOAA Space Weather Prediction Center:
       <http://services.swpc.noaa.gov/text/wwv.txt>  
@@ -51,16 +51,16 @@ harmonic decompositions, and one for Fourier decomposition
 Preliminary Software Installation
 ---------------------------------
 
-###USGS libraries  
+### USGS libraries  
   Three libraries from the Ash3d package are needed: [HoursSince](https://github.com/hschwaiger-usgs/HoursSince), 
    [projection](https://github.com/hschwaiger-usgs/projection), 
    [MetReader](https://github.com/hschwaiger-usgs/MetReader).
 These libraries are currently available at the locations given above.
 Installation instructions are given in the repositories for each of these libraries.
 
-###Empirical models  
-#####HWM14
- HWM14 is available as supplemental material for [Drob et al., 2015](https:doi.org/10.1002/2014EA000089).  The build
+### Empirical models  
+##### HWM14
+ HWM14 is available as supplemental material for [Drob et al., 2015](https://doi.org/10.1002/2014EA000089).  The build
 of AVOG2S expects that this be compiled as a library with the data files installed in a specified location.  The makefile
 `src/ExternalDataSoftware/makefile_HWM14.gfortran` is provided which can be used to
 build the HWM14 library.  The install location can be changed by editing the top
@@ -111,7 +111,7 @@ and change the data file names to include the full path, such as
 This version of HWM does not require an environment variable to be set, but expects
 that the data files are at the hardwired location.
 
-#####NRLMSIS-00
+##### NRLMSIS-00
 The NRLMSIS-00 code has been ported to fortran 90 and is available from
 <https://github.com/graziano-giuliani/Meteostuff>
 
@@ -132,8 +132,8 @@ to
 `make -f ../../makefile_NRLMSIS.gfortran all`  
 `make -f ../../makefile_NRLMSIS.gfortran install`
 
-###Spectral libraries
-#####SHTOOLS  
+### Spectral libraries
+##### SHTOOLS  
   SHTOOLS is available from <https://github.com/SHTOOLS/SHTOOLS/releases>.  Instructions
 for installation are in the source code download  
  `wget https://github.com/SHTOOLS/SHTOOLS/archive/v4.0.tar.gz`  
@@ -141,10 +141,10 @@ This can be built and installed in the default location.  Take note of where the
 are installed.  Earlier versions of SHTOOLS installing in `/usr/local/SHTOOLS$(version_number)`.
 The latest version simple installs to `/usr/local/`.
 
-#####FFTW
+##### FFTW
 fftw is available as a distribution package
 
-###Other required packages
+### Other required packages
  netcdf4, lapack and grib-api are available as distribution libraries.
 
 
@@ -172,8 +172,8 @@ This will install the following in `${INSTALLDIR}/bin/`:
  `g2s_Extract_Xsec`  : program to resample the gridded atmosphere onto a 2-d cross-section  
  `g2s_Extract_Grid`  : program to resample the gridded atmosphere onto a 3-d grid  
 and the following scripts in `${INSTALLDIR}/ExternalData/Ap_Forecast/`  
- `get_ApFC` : script that downloads the current space weather indicies from NOAA  
- `get_NGDC` : script that downloads an archive year of the space weather indicies
+ `get_ApFC` : script that downloads the current space weather indices from NOAA  
+ `get_NGDC` : script that downloads an archive year of the space weather indices
 
 Output from the extraction tools is designed to be used with the
 [GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc) forward
