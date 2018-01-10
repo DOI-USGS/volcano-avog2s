@@ -97,6 +97,7 @@ else
  grb2FPPFLAG=
 endif
 
+# location of MetReader, HoursSince and projection
 USGSLIBDIR = -L$(USGSROOT)/lib
 USGSLIB = -lMetReader -lhourssince -lprojection
 USGSINC = -I$(USGSROOT)/include
@@ -108,7 +109,13 @@ EXTRALIBS = -L$(SHTOOLROOT)/lib -I$(SHTOOLINC) $(DATALIBS) -l$(SHTlib) -lfftw3 -
 #ifeq ($(SYSTEM), gfortran)
     FCHOME=/usr
     FC = /usr/bin/gfortran
-    COMPLIBS = -I/usr/lib64/gfortran/modules -I/usr/include -L/usr/lib/x86_64-linux-gnu
+
+    COMPINC = -I$(FCHOME)/include -I$(FCHOME)/lib64/gfortran/modules
+    COMPLIBS = -L$(FCHOME)/lib -L$(FCHOME)/lib64
+
+    #COMPLIBS = -I/usr/lib64/gfortran/modules -I/usr/include -L/usr/lib/x86_64-linux-gnu
+
+    LIBS = $(COMPLIBS) $(USGSLIBDIR) $(USGSINC) $(COMPINC) $(USGSLIB) $(EXTRALIBS)
 
 ## Debugging flags
 ifeq ($(RUN), DEBUG)
@@ -126,11 +133,15 @@ FPPFLAGS = -x f95-cpp-input -DuseHWM$(HWMv) $(grb2FPPFLAG)
 
 ###############################################################################
 
+#$(FC) $(FPPFLAGS) $(FFLAGS) $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) $(USGSINC) $(USGSLIBDIR) $(USGSLIB) -c g2s_genSC.f90
+#$(FC) $(FFLAGS) g2s_genSC.o g2s_globvar.o -o g2s_genSC $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) $(USGSINC) $(USGSLIBDIR) $(USGSLIB)
+
+
 all: g2s_genSC g2s_ResampleAtmos g2s_Extract_Sonde g2s_Extract_Xsec g2s_Extract_Grid probe_HWT
 
 g2s_genSC: g2s_genSC.f90 g2s_globvar.o makefile
-	$(FC) $(FPPFLAGS) $(FFLAGS) -c g2s_genSC.f90 $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) $(USGSINC) $(USGSLIBDIR) $(USGSLIB)
-	$(FC) $(FFLAGS) g2s_genSC.o g2s_globvar.o -o g2s_genSC $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) $(USGSINC) $(USGSLIBDIR) $(USGSLIB)
+	$(FC) $(FPPFLAGS) $(FFLAGS) $(HWTLIB) $(LIBS) -c g2s_genSC.f90
+	$(FC) $(FFLAGS) g2s_genSC.o g2s_globvar.o -o g2s_genSC $(HWTLIB) $(LIBS)
 	mkdir -p ../bin
 	mv g2s_genSC ../bin/
 	cp ../bin/g2s_genSC ../bin/g2s_genSC_HWM${HWMv}

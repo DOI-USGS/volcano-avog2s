@@ -172,37 +172,48 @@
 
       ! Open existing netcdf file
       nSTAT = nf90_open(file_SH,NF90_NOWRITE,ncid)
-      if(nSTAT.ne.0)write(G2S_global_error,*)'ERROR: nf90_open to read header:', &
-                           nf90_strerror(nSTAT)
-      if(nSTAT.ne.0)then
-        write(G2S_global_error,*)'Could not open ',file_SH
-        write(G2S_global_error,*)'Exiting'
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_open:',nf90_strerror(nSTAT)
+        write(G2S_global_info,*)'Could not open ',file_SH
+        write(G2S_global_info,*)'Exiting'
         stop 1
       endif
 
       nSTAT = nf90_get_att(ncid,nf90_global,"nx_g2s",nxmax_g2s)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
+        stop 1 
+      endif
       nSTAT = nf90_get_att(ncid,nf90_global,"ny_g2s",nymax_g2s)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
+        stop 1 
+      endif
       nSTAT = nf90_get_att(ncid,nf90_global,"dx_g2s",dx_g2s)
-      if(nSTAT.ne.0)then
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
         write(G2S_global_info,*)"WARNING: Attribute dx_g2s not found in Spectral Coefficient file."
         write(G2S_global_info,*)"         Assuming 0.5"
         dx_g2s = 0.5
       endif
       nSTAT = nf90_get_att(ncid,nf90_global,"dy_g2s",dy_g2s)
-      if(nSTAT.ne.0)then
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
         write(G2S_global_info,*)"WARNING: Attribute dy_g2s not found in Spectral Coefficient file."
         write(G2S_global_info,*)"         Assuming 0.5"
         dy_g2s = 0.5
       endif
       nSTAT = nf90_get_att(ncid,nf90_global,"Spec_MaxOrder",Spec_MaxOrder)
-      if(nSTAT.ne.0)then
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
         write(G2S_global_info,*)&
           "WARNING: Attribute Spec_MaxOrder not found in Spectral Coefficient file."
         write(G2S_global_info,*)"         Assuming 120"
         Spec_MaxOrder = 120
       endif
       nSTAT = nf90_get_att(ncid,nf90_global,"proj",Comp_projection_line)
-      if(nSTAT.ne.0)then
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
         write(G2S_global_info,*)&
           "WARNING: Attribute proj not found in Spectral Coefficient file."
         write(G2S_global_info,*)"         Assuming Lat/Lon grid"
@@ -216,12 +227,14 @@
         x_order = nxmax_g2s/2+1
         y_order = nymax_g2s
         nSTAT = nf90_get_att(ncid,nf90_global,"xmin_g2s",xmin_g2s)
-        if(nSTAT.ne.0)then
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
           write(G2S_global_error,*)"ERROR: grid is projected, but no xmin_g2s in SH file"
           stop 1
         endif
         nSTAT = nf90_get_att(ncid,nf90_global,"ymin_g2s",ymin_g2s)
-        if(nSTAT.ne.0)then
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_error,*)'ERROR: nf90_get_att:',nf90_strerror(nSTAT)
           write(G2S_global_error,*)"ERROR: grid is projected, but no ymin_g2s in SH file"
           stop 1
         endif
@@ -254,14 +267,30 @@
       !P_ord = 3
       
       nSTAT = nf90_inq_dimid(ncid,odim_names(1),r_dim_id)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_inq_dimid:',nf90_strerror(nSTAT)
+        stop 1
+      endif
        ! r_dim length = 2
       nSTAT = nf90_inq_dimid(ncid,odim_names(2),z_dim_id)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_inq_dimid:',nf90_strerror(nSTAT)
+        stop 1
+      endif
 !      nSTAT = nf90_Inquire_Dimension(ncid,z_dim_id,len=Nknots)
 !      Nknots = Nknots - P_ord
       nSTAT = nf90_inq_dimid(ncid,odim_names(3),y_dim_id)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_inq_dimid:',nf90_strerror(nSTAT)
+        stop 1
+      endif
       !nSTAT = nf90_Inquire_Dimension(ncid,y_dim_id,len=Spec_MaxOrder)
       !Spec_MaxOrder = Spec_MaxOrder - 1
       nSTAT = nf90_inq_dimid(ncid,odim_names(4),x_dim_id)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_inq_dimid:',nf90_strerror(nSTAT)
+        stop 1
+      endif
         ! Assume x length is the same as y length
 
       !nSTAT = nf90_def_var(ncid,"knot",nf90_double,  &
@@ -282,21 +311,29 @@
       endif
 
       nSTAT = nf90_inq_varid(ncid,"knot",kn_var_id)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_inq_varid:',nf90_strerror(nSTAT)
+        stop 1
+      endif
       nSTAT = nf90_get_var(ncid,kn_var_id,dum1d_out, &
              start = (/1/),       &
              count = (/model_len/))
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_get_var:',nf90_strerror(nSTAT)
+        stop 1
+      endif
       knots(1:model_len) = real(dum1d_out(1:model_len),kind=4)
       knots(model_len:Nknots+2*P_ord) = knots(model_len)
       iknots(1:Nknots) = real(dum1d_out(P_ord+1:model_len),kind=4)
 
       nSTAT = nf90_inq_varid(ncid,"vx_sh",vx_var_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
          write(G2S_global_error,*)'ERROR: inq_varid:Vx ',nf90_strerror(nSTAT)
       dum4d_out = 0.0
       nSTAT = nf90_get_var(ncid,vx_var_id,dum4d_out, &
              start = (/1,1,1,1/),       &
              count = (/x_order, y_order,Nknots+P_ord,2/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
          write(G2S_global_error,*)'ERROR: get_var:Vx ',nf90_strerror(nSTAT)
       if(IsLatLon)then
         vx3_SH_dp(1,:,:,:) = dum4d_out(:,:,:,1)
@@ -312,13 +349,13 @@
       endif
 
       nSTAT = nf90_inq_varid(ncid,"vy_sh",vy_var_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
          write(G2S_global_error,*)'ERROR: inq_varid:Vy ',nf90_strerror(nSTAT)
       dum4d_out = 0.0
       nSTAT = nf90_get_var(ncid,vy_var_id,dum4d_out, &
              start = (/1,1,1,1/),       &
              count = (/x_order, y_order,Nknots+P_ord,2/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
          write(G2S_global_error,*)'ERROR: get_var:Vy ',nf90_strerror(nSTAT)
       if(IsLatLon)then
         vy3_SH_dp(1,:,:,:) = dum4d_out(:,:,:,1)
@@ -334,13 +371,13 @@
       endif
 
       nSTAT = nf90_inq_varid(ncid,"tp_sh",temp_var_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
          write(G2S_global_error,*)'ERROR: inq_varid:Temperature ',nf90_strerror(nSTAT)
       dum4d_out = 0.0
       nSTAT = nf90_get_var(ncid,temp_var_id,dum4d_out, &
              start = (/1,1,1,1/),       &
              count = (/x_order, y_order,Nknots+P_ord,2/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
          write(G2S_global_error,*)'ERROR: get_var:Temperature ',nf90_strerror(nSTAT)
       if(IsLatLon)then
         temperature3_SH_dp(1,:,:,:) = dum4d_out(:,:,:,1)
@@ -356,6 +393,10 @@
       endif
       ! Close file
       nSTAT = nf90_close(ncid)
+      if(nSTAT.ne.NF90_NOERR)then
+        write(G2S_global_error,*)'ERROR: nf90_close:',nf90_strerror(nSTAT)
+        stop 1
+      endif
 
       end subroutine Read_SH_nc
 

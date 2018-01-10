@@ -355,7 +355,7 @@ Geophysical Data Center.
 
 ##### Step 2: 
 Generate a coefficient file.  This example directory has a control file 
-`example1_genSC.ctr`:  
+`example1_genSC_NCEP.ctr`:  
 `2016 12 23 12.0                  ! Specifies date and time`  
 `1 1 -150.0 90.0 0.933 6371.229   ! Lon/Lat coordinates will be used`  
 `0.5 120                          ! 0.5 degree resolution with SphereHarm order of 120`  
@@ -370,7 +370,7 @@ Generate a coefficient file.  This example directory has a control file
 
 To generate the coefficient file, run
 
-  `/opt/USGS/AVOG2S/bin/g2s_genSC example1_genSC.ctr` 
+  `/opt/USGS/AVOG2S/bin/g2s_genSC example1_genSC_NCEP.ctr` 
 
 ##### Step 3: Create gridded binary files from the coefficient file.
 

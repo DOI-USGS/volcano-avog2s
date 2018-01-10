@@ -558,7 +558,6 @@
       write(G2S_global_info,*)"   **Now read in the state variables from met file.**"
       write(G2S_global_info,*)"     Find MR_iMetStep_Now for ",Met_needed_StartHour
       MR_iMetStep_Now = 1
-      write(G2S_global_info,*)MR_MetSteps_Total
       do i = 1,MR_MetSteps_Total-1
         write(G2S_global_info,*)Met_needed_StartHour,MR_MetStep_Hour_since_baseyear(i:i+1)
         if(Met_needed_StartHour.ge.MR_MetStep_Hour_since_baseyear(i).and.&
@@ -1972,173 +1971,173 @@
       ! Create and open netcdf file
       cdf_title = "G2S atmosphere model"
       nSTAT = nf90_create(file_SH,nf90_clobber, ncid)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: create file_SH: ', &
                               nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"Title",cdf_title)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att title: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Forecast_Hour",fc_hour)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att fc_hour: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"year",inyear)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att year: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"month",inmonth)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att month: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"day",inday)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att day: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"hour",inhour)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att hour: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Num_windfile_groups",nwindfile_groups)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nwindfiles: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"iwf1",iwf1)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att iwf1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"Num_windfiles1",nwindfiles1)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nwindfiles1: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"windfile1",windfile1(1))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att windfile1: ',nf90_strerror(nSTAT)
       if(nwindfile_groups.eq.2)then
         nSTAT = nf90_put_att(ncid,nf90_global,"iwf2",iwf2)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att iwf2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"Num_windfiles2",nwindfiles2)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att nwindfiles2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"windfile2",windfile2(1))
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att windfile2: ',nf90_strerror(nSTAT)
       endif
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Ap",ap)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att Ap: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"F107",f107)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att F107: ',nf90_strerror(nSTAT)
 
         ! Add projection line from control file
       nSTAT = nf90_put_att(ncid,nf90_global,"proj",Comp_projection_line)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att Comment: ',nf90_strerror(nSTAT)
       if(IsLatLon_CompGrid.eqv..false.)then
         nSTAT = nf90_put_att(ncid,nf90_global,"xmin_g2s",xmin_g2s)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att xmin_g2s: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"ymin_g2s",ymin_g2s)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att ymin_g2s: ',nf90_strerror(nSTAT)
       endif
 
       nSTAT = nf90_put_att(ncid,nf90_global,"dx_g2s",dx_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att dx_g2s: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"dy_g2s",dy_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att dy_g2s: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"Spec_MaxOrder",Spec_MaxOrder)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att Spec_MaxOrder: ',nf90_strerror(nSTAT)
 
 
       nSTAT = nf90_put_att(ncid,nf90_global,"Spline_Order",P_ord)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att P_ord: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"NKnots",Nknots)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att NKnots: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"nx_g2s",nxmax_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nx_g2s: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"ny_g2s",nymax_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att ny_g2s: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_put_att(ncid,nf90_global,"nx_Met1",nxmax_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nx_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"ny_Met1",nymax_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att ny_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"nz_Met1",nzmax_Met1)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nz_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmin_Met1",zmin_Met1)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att zmin_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmax_Met1",zmax_Met1)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att zmax_Met1: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"dz_Met1",dz_Met1)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att dz_Met1: ',nf90_strerror(nSTAT)
 
       if(nwindfile_groups.eq.2)then
         nSTAT = nf90_put_att(ncid,nf90_global,"nx_Met2",nxmax_g2s)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att nx_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"ny_Met2",nymax_g2s)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att ny_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"nz_Met2",nzmax_Met2)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att nz_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"zmin_Met2",zmin_Met2)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att zmin_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"zmax_Met2",zmax_Met2)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att zmax_Met2: ',nf90_strerror(nSTAT)
         nSTAT = nf90_put_att(ncid,nf90_global,"dz_Met2",dz_Met2)
-        if(nSTAT.ne.0) &
+        if(nSTAT.ne.NF90_NOERR) &
             write(G2S_global_log,*)'ERROR: put_att dz_Met2: ',nf90_strerror(nSTAT)
       endif
 
       nSTAT = nf90_put_att(ncid,nf90_global,"nx_HWT",nxmax_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nx_HWT: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"ny_HWT",nymax_g2s)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att ny_HWT: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"nz_HWT",nzmax_HWT)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att nz_HWT: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmin_HWT",zmin_HWT)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att zmin: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"zmax_HWT",zmax_HWT)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att zmax: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,nf90_global,"dz_HWT",dz_HWT)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: put_att dz_HWT: ',nf90_strerror(nSTAT)
 
 
       nSTAT = nf90_def_dim(ncid,odim_names(1),2,r_dim_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       nSTAT = nf90_def_dim(ncid,odim_names(2),Nknots+P_ord,z_dim_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       !nSTAT = nf90_def_dim(ncid,odim_names(3),Spec_MaxOrder+1,y_dim_id)
       nSTAT = nf90_def_dim(ncid,odim_names(3),y_order,y_dim_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       !nSTAT = nf90_def_dim(ncid,odim_names(4),Spec_MaxOrder+1,x_dim_id)
       nSTAT = nf90_def_dim(ncid,odim_names(4),x_order,x_dim_id)
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
           write(G2S_global_log,*)'ERROR: ',nf90_strerror(nSTAT)
       
       nSTAT = nf90_def_var(ncid,"knot",nf90_double,  &
@@ -2146,30 +2145,30 @@
               kn_var_id)
       nSTAT = nf90_put_att(ncid,kn_var_id,"long_name",&
                            "Height of B-spline knot point")
-      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.NF90_NOERR)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
       nSTAT = nf90_put_att(ncid,kn_var_id,"units","km")
-      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.NF90_NOERR)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_def_var(ncid,"vx_sh",nf90_double,  &
             (/x_dim_id,y_dim_id,z_dim_id,r_dim_id/), &
               vx_var_id)
       nSTAT = nf90_put_att(ncid,vx_var_id,"long_name",&
                            "SH Coefficient for zonal velocity (Vx)")
-      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.NF90_NOERR)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_def_var(ncid,"vy_sh",nf90_double,  &
             (/x_dim_id,y_dim_id,z_dim_id,r_dim_id/), &
               vy_var_id)
       nSTAT = nf90_put_att(ncid,vy_var_id,"long_name",&
                            "SH Coefficient for meridional velocity (Vy)")
-      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.NF90_NOERR)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
       nSTAT = nf90_def_var(ncid,"tp_sh",nf90_double,  &
             (/x_dim_id,y_dim_id,z_dim_id,r_dim_id/), &
               temp_var_id)
       nSTAT = nf90_put_att(ncid,temp_var_id,"long_name",&
                            "SH Coefficient for temperature")
-      if(nSTAT.ne.0)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
+      if(nSTAT.ne.NF90_NOERR)write(G2S_global_log,*)'ERROR: put_att: ',nf90_strerror(nSTAT)
 
         ! Leaving define mode.
       nSTAT = nf90_enddef(ncid)
@@ -2180,7 +2179,7 @@
 
       dum1d_out(1:Nknots+P_ord) = real(knots(1:Nknots+P_ord),kind=8)
       nSTAT=nf90_put_var(ncid,kn_var_id,dum1d_out,(/1/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
         write(G2S_global_log,*)'ERROR: put_var knot: ',nf90_strerror(nSTAT)
 
         ! Vx
@@ -2192,7 +2191,7 @@
         dum4d_out(:,:,:,2) = aimag(vx3_FS_C(1:x_order,1:y_order,1:Nknots+P_ord))
       endif
       nSTAT=nf90_put_var(ncid,vx_var_id,dum4d_out,(/1,1,1,1/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
         write(G2S_global_log,*)'ERROR: put_var Vx: ',nf90_strerror(nSTAT)
 
         ! Vy
@@ -2206,7 +2205,7 @@
       !dum4d_out(:,:,:,1) = vy3_SH_dp(1,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       !dum4d_out(:,:,:,2) = vy3_SH_dp(2,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       nSTAT=nf90_put_var(ncid,vy_var_id,dum4d_out,(/1,1,1,1/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
         write(G2S_global_log,*)'ERROR: put_var Vy: ',nf90_strerror(nSTAT)
 
         ! Temp
@@ -2220,7 +2219,7 @@
       !dum4d_out(:,:,:,1) = temperature3_SH_dp(1,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       !dum4d_out(:,:,:,2) = temperature3_SH_dp(2,1:Spec_MaxOrder+1,1:Spec_MaxOrder+1,1:Nknots+P_ord)
       nSTAT=nf90_put_var(ncid,temp_var_id,dum4d_out,(/1,1,1,1/))
-      if(nSTAT.ne.0) &
+      if(nSTAT.ne.NF90_NOERR) &
         write(G2S_global_log,*)'ERROR: put_var Temp: ',nf90_strerror(nSTAT)
 
       ! Close file

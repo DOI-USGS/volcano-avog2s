@@ -917,18 +917,42 @@
         dlat_topo = 1.0/60.0
 
         nSTAT = nf90_open(FILE_TOPO,NF90_NOWRITE,ncid)
-        if(nSTAT.ne.0)write(G2S_global_error,*)'ERROR: nf90_open to read header:', &
-                             nf90_strerror(nSTAT)
-        if(nSTAT.ne.0)then
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_error,*)'ERROR: nf90_open:',nf90_strerror(nSTAT)
           write(G2S_global_info,*)'Could not open ',FILE_TOPO
           write(G2S_global_info,*)'Exiting'
           stop 1
         endif
         ! Get dimensions
         nSTAT = nf90_inq_dimid(ncid,'lon',lon_dim_id)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_inq_dimid:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not find dimension lon'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         nSTAT = nf90_Inquire_Dimension(ncid,lon_dim_id,len=nlon)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_Inquire_Dimension:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not inquire dimension lon'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         nSTAT = nf90_inq_dimid(ncid,'lat',lat_dim_id)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_inq_dimid:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not find dimension lat'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         nSTAT = nf90_Inquire_Dimension(ncid,lat_dim_id,len=nlat)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_Inquire_Dimension:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not inquire dimension lat'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
+
         allocate(lon_dp(nlon))
         allocate(lat_sp(nlat))
         allocate(dum2d_short(nlon,nlat))
@@ -937,13 +961,49 @@
         allocate(topo_raw(nlon,nlat))
 
         nSTAT = nf90_inq_varid(ncid,'lon',lon_var_id)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_inq_varid:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not find variable lon'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         nSTAT = nf90_get_var(ncid,lon_var_id,lon_dp)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_get_var:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not get variable lon'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
 
         nSTAT = nf90_inq_varid(ncid,'lat',lat_var_id)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_inq_varid:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not find variable lat'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         nSTAT = nf90_get_var(ncid,lat_var_id,lat_sp)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_get_varid:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not get variable lat'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         lat_raw = lat_sp
         nSTAT = nf90_inq_varid(ncid,'z',topo_var_id)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_inq_varid:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not find variable z'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         nSTAT = nf90_get_var(ncid,topo_var_id,dum2d_short)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_get_var:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not get variable z'
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
 
         ! Start topo_raw at prime meridian
         do i=1,10800
@@ -957,6 +1017,12 @@
         enddo
 
         nSTAT = nf90_close(ncid)
+        if(nSTAT.ne.NF90_NOERR)then
+          write(G2S_global_info,*)'ERROR: nf90_close:',nf90_strerror(nSTAT)
+          write(G2S_global_info,*)'Could not close file:',ncid
+          write(G2S_global_info,*)'Exiting'
+          stop 1
+        endif
         deallocate(lon_dp,lat_sp,dum2d_short)
 
       end subroutine Read_Topo
