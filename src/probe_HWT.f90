@@ -252,7 +252,7 @@
       enddo
       close(55)
 
-      write(G2S_global_info,*)"Exited normally."
+      write(G2S_global_info,*)"probe_HWT exited normally."
 
       end program probe_HWT
 

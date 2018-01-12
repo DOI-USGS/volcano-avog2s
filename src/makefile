@@ -146,29 +146,30 @@ g2s_genSC: g2s_genSC.f90 g2s_globvar.o makefile
 	mv g2s_genSC ../bin/
 	cp ../bin/g2s_genSC ../bin/g2s_genSC_HWM${HWMv}
 probe_HWT: probe_HWT.f90 g2s_globvar.o makefile
-	$(FC) $(FPPFLAGS) -DSONDE $(FFLAGS) $(HWTLIB) $(COMPLIBS) $(EXTRALIBS) -c probe_HWT.f90
-	$(FC) $(FFLAGS) probe_HWT.o g2s_globvar.o $(HWTLIB) $(COMPLIBS) $(EXTRALIBS)  -o probe_HWT${HWMv}
+	$(FC) $(FPPFLAGS) -DSONDE $(FFLAGS) $(HWTLIB) $(LIBS) -c probe_HWT.f90
+	$(FC) $(FFLAGS) probe_HWT.o g2s_globvar.o $(HWTLIB) $(LIBS) -o probe_HWT${HWMv}
 	mkdir -p ../bin
 	mv probe_HWT${HWMv} ../bin/
 g2s_ResampleAtmos: g2s_ResampleAtmos.f90 g2s_globvar.o makefile
-	$(FC) $(FFLAGS) g2s_ResampleAtmos.f90 g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_ResampleAtmos
+	$(FC) $(FFLAGS) $(LIBS) -c g2s_ResampleAtmos.f90
+	$(FC) $(FFLAGS) g2s_ResampleAtmos.o g2s_globvar.o $(LIBS) -o g2s_ResampleAtmos
 	mkdir -p ../bin
 	mv g2s_ResampleAtmos ../bin/
 g2s_Extract_Sonde: g2s_Extract.f90 g2s_globvar.o makefile
-	$(FC) -x f95-cpp-input -DSONDE $(FFLAGS) $(COMPLIBS) $(EXTRALIBS) -c g2s_Extract.f90
-	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_Extract_Sonde
+	$(FC) -x f95-cpp-input -DSONDE $(FFLAGS) $(LIBS) -c g2s_Extract.f90
+	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(LIBS) -o g2s_Extract_Sonde
 	mkdir -p ../bin
 	cp g2s_Extract_Sonde $(HOME)/gcc/bin
 	mv g2s_Extract_Sonde ../bin/
 g2s_Extract_Xsec: g2s_Extract.f90 g2s_globvar.o makefile
-	$(FC) -x f95-cpp-input -DXSEC $(FFLAGS) $(COMPLIBS) $(EXTRALIBS) -c g2s_Extract.f90
-	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_Extract_Xsec
+	$(FC) -x f95-cpp-input -DXSEC $(FFLAGS) $(LIBS) -c g2s_Extract.f90
+	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(LIBS) -o g2s_Extract_Xsec
 	mkdir -p ../bin
 	cp g2s_Extract_Xsec $(HOME)/gcc/bin
 	mv g2s_Extract_Xsec ../bin/
 g2s_Extract_Grid: g2s_Extract.f90 g2s_globvar.o makefile
-	$(FC) -x f95-cpp-input -DGRID $(FFLAGS) $(COMPLIBS) $(EXTRALIBS) -c g2s_Extract.f90
-	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(COMPLIBS) $(EXTRALIBS) -o g2s_Extract_Grid
+	$(FC) -x f95-cpp-input -DGRID $(FFLAGS) $(LIBS) -c g2s_Extract.f90
+	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(LIBS) -o g2s_Extract_Grid
 	mkdir -p ../bin
 	cp g2s_Extract_Grid $(HOME)/gcc/bin
 	mv g2s_Extract_Grid ../bin/

@@ -47,12 +47,19 @@
        !  Set the default values here
         ! Vertical node spacing
           ! This one is a bit coarse
-        nz1 = 15
-        nz2 = 18
-        nz3 = 30
+        !nz1 = 15
+        !nz2 = 18
+        !nz3 = 30
+        !dz1 = 1.0
+        !dz2 = 2.0
+        !dz3 = 5.0
+          ! This one is good for operations
+        nz1 = 26
+        nz2 = 50
+        nz3 = 50
         dz1 = 1.0
-        dz2 = 2.0
-        dz3 = 5.0
+        dz2 = 1.5
+        dz3 = 2.0
           ! Here the three segments all have dz=1.0
         !nz1 = 50
         !nz2 = 50
@@ -121,6 +128,8 @@
         "Recreating Atmos based on spectra at native lat/lon grid."
       write(G2S_global_info,*)"Number of levels = ",nz1+nz2+nz3
       call Resample_Atmos
+
+      write(G2S_global_info,*)"G2S_ResampleAtmos exited normally."
 
       end program G2S_ResampleAtmos
 

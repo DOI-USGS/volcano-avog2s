@@ -1110,7 +1110,7 @@
       write(G2S_global_info,*)"Writing spectra to netcdf file."
       call Write_Spec_nc
 
-      write(G2S_global_info,*)"Exited normally."
+      write(G2S_global_info,*)"G2S_genSC exited normally."
       end program G2S_genSC
 
 

@@ -70,12 +70,19 @@
       !  Set the default values here
         ! Vertical node spacing
         ! This one is a bit coarse
-      nz1 = 15
-      nz2 = 18
-      nz3 = 30
+      !nz1 = 15
+      !nz2 = 18
+      !nz3 = 30
+      !dz1 = 1.0
+      !dz2 = 2.0
+      !dz3 = 5.0
+        ! This one is good for operations
+      nz1 = 26
+      nz2 = 50
+      nz3 = 50
       dz1 = 1.0
-      dz2 = 2.0
-      dz3 = 5.0
+      dz2 = 1.5
+      dz3 = 2.0
         ! Here the three segments all have dz=1.0
       !nz1 = 50
       !nz2 = 50
@@ -748,7 +755,7 @@
           write(G2S_global_info,*)"        nz3 = ",nz3
           write(G2S_global_info,*)"        dz3 = ",dz3
           write(G2S_global_info,*)" "
-          write(G2S_global_info,*)" For example for Cleveland grid extending NE to includ Dillingham:"
+          write(G2S_global_info,*)" For example for Cleveland grid extending NE to include Dillingham:"
           write(G2S_global_info,*)"    ./g2s_Extract_Grid  50.0 60.0 3 185.0 205.0 5 180.0 0.2 Clev"
           write(G2S_global_info,*)" "
           write(G2S_global_info,*)" This will produce the files InfraAtmos[].met and InfraAtmos.lo[]"
@@ -879,7 +886,7 @@
  102    format(F9.3)
       endif
 
-      write(G2S_global_info,*)"Exited normally."
+      write(G2S_global_info,*)"G2S_Extract exited normally."
 
       end program G2S_Extract
 
