@@ -209,6 +209,8 @@
       real(kind=4),dimension(:)      ,allocatable :: z_Met1_sp ! Met1 is resampled onto this
       real(kind=4),dimension(:)      ,allocatable :: z_Met2_sp ! Met2 ''
       real(kind=4),dimension(:)      ,allocatable :: z_HWT_g2s_sp  ! z of HWT grid
+      real(kind=8),dimension(:)      ,allocatable :: x_g2s_dp    ! G2S grid
+      real(kind=8),dimension(:)      ,allocatable :: y_g2s_dp    ! G2S grid
 
       integer FFTW_MEASURE
       parameter (FFTW_MEASURE=0)

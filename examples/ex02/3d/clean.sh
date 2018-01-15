@@ -1,0 +1,11 @@
+rm -f atmo.dat
+rm -f Bogo*.met
+rm -f Bogo.loclat
+rm -f Bogo.loclon
+rm -f Bogo0_raypaths.dat
+rm -f Bogo0_results.dat
+rm -f g2s_Extract_Grid
+rm -f G2S_SC_20161223_12Z_wf12_T_res.raw
+rm -f G2S_SC_20161223_12Z_wf12_U_res.raw
+rm -f G2S_SC_20161223_12Z_wf12_V_res.raw
+rm -f GeoAc3D.RngDep

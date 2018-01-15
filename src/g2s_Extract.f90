@@ -772,14 +772,14 @@
         stop 1
       endif
 
-      allocate(x_g2s_sp(nxmax_g2s))
-      allocate(y_g2s_sp(nymax_g2s))
+      allocate(x_g2s_dp(nxmax_g2s))
+      allocate(y_g2s_dp(nymax_g2s))
 
       do i=1,nxmax_g2s
-        x_g2s_sp(i) = xmin_g2s + (i-1)*real(dx_g2s,kind=4)
+        x_g2s_dp(i) = xmin_g2s + (i-1)*dx_g2s
       enddo
       do j=1,nymax_g2s
-        y_g2s_sp(j) = ymin_g2s + (j-1)*real(dx_g2s,kind=4)
+        y_g2s_dp(j) = ymin_g2s + (j-1)*dx_g2s
       enddo
 
 !     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -867,7 +867,11 @@
         enddo
 
         ! writing coordinate files needed for GeoAc
-        FILE_OUT = adjustl(trim(FILE_OUT_ROOT)) // ".loclat"
+        if (IsLatLon) then
+          FILE_OUT = adjustl(trim(FILE_OUT_ROOT)) // ".loclat"
+        else
+          FILE_OUT = adjustl(trim(FILE_OUT_ROOT)) // ".yloc"
+        endif
         open(unit=20,file=FILE_OUT,status='replace')
         do iy = 1,LatCnt
           write(20,101)LatStart  + dlat * (iy-1)
@@ -875,7 +879,11 @@
  101    format(F9.3)
         close(20)
 
-        FILE_OUT = adjustl(trim(FILE_OUT_ROOT)) // ".loclon"
+        if (IsLatLon) then
+          FILE_OUT = adjustl(trim(FILE_OUT_ROOT)) // ".loclon"
+        else
+          FILE_OUT = adjustl(trim(FILE_OUT_ROOT)) // ".xloc"
+        endif
         open(unit=20,file=FILE_OUT,status='replace')
         do ix = 1,LongCnt
           tmp1 = LongStart  + dlon * (ix-1)
@@ -1065,6 +1073,7 @@
 
       real(kind=8) :: dz_interval
       integer :: k,kk
+      integer :: i
       real(kind=8) :: vn,ve
       real(kind=8) :: P_Pa, dens_MKS
       character(len=15) :: FILE_EXT
@@ -1083,6 +1092,12 @@
       elseif(ia.le.100)then
         write(FILE_EXT,'(i2,a4)') ia-1,'.met'
         FILE_OUT_Sonde = adjustl(trim(FILE_OUT_ROOT)) // adjustl(trim(FILE_EXT))
+      elseif(ia.le.1000)then
+        write(FILE_EXT,'(i3,a4)') ia-1,'.met'
+        FILE_OUT_Sonde = adjustl(trim(FILE_OUT_ROOT)) // adjustl(trim(FILE_EXT))
+      elseif(ia.le.10000)then
+        write(FILE_EXT,'(i4,a4)') ia-1,'.met'
+        FILE_OUT_Sonde = adjustl(trim(FILE_OUT_ROOT)) // adjustl(trim(FILE_EXT))
       endif
 
       ! Set up the output z-profile and find which interval of the reconstituted profile
@@ -1096,19 +1111,44 @@
         enddo
       enddo
 
-      ix = floor((x_in-xmin_g2s)/dx_g2s)+1
-      iy = floor((y_in-ymin_g2s)/dy_g2s)+1
-      if(ix.gt.nxmax_g2s-1)then
-        write(G2S_global_info,*)"ix too large",ix,iy
-      endif
-      if(iy.gt.nymax_g2s-1)then
-        write(G2S_global_info,*)"iy too large",ix,iy
+      !ix = floor((x_in-xmin_g2s)/dx_g2s)+1
+      !iy = floor((y_in-ymin_g2s)/dy_g2s)+1
+      !if(ix.gt.nxmax_g2s-1)then
+      !  write(G2S_global_info,*)"ix too large",ix,iy
+      !endif
+      !if(iy.gt.nymax_g2s-1)then
+      !  write(G2S_global_info,*)"iy too large",ix,iy
+      !endif
+
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!
+      ix = -1
+      do i = 2,nxmax_g2s
+        if(x_g2s_dp(i).ge.x_in.and.x_g2s_dp(i-1).lt.x_in)then
+          ix=i-1
+          xfrac=(x_in-x_g2s_dp(ix))/(x_g2s_dp(ix+1)-x_g2s_dp(ix))
+          xc = 1.0-xfrac
+          exit
+        endif
+      enddo
+      if (ix.lt.0)then
+        write(G2S_global_info,*)"ERROR: x_in not in grid",x_in
+        stop 1
       endif
 
-      xfrac=(x_in-x_g2s_sp(ix))/dx_g2s
-      yfrac=(y_in-y_g2s_sp(iy))/dy_g2s
-      xc = 1.0-xfrac
-      yc = 1.0-yfrac
+      iy = -1
+      do i = 2,nymax_g2s
+        if(y_g2s_dp(i).ge.y_in.and.y_g2s_dp(i-1).lt.y_in)then
+          iy=i-1
+          yfrac=(y_in-y_g2s_dp(iy))/(y_g2s_dp(iy+1)-y_g2s_dp(iy))
+          yc = 1.0-yfrac
+          exit
+        endif
+      enddo
+      if (iy.lt.0)then
+        write(G2S_global_info,*)"ERROR: y_in not in grid",y_in
+        stop 1
+      endif
+
       a1=xc    * yc
       a2=xfrac * yc
       a3=xfrac * yfrac
@@ -1122,7 +1162,7 @@
          write(G2S_global_error,*)"Point is not mapping to expected grid cell."
          write(G2S_global_error,*)"x,y = ",x_in,y_in
          write(G2S_global_error,*)ix,iy
-         write(G2S_global_error,*)x_g2s_sp(ix),y_g2s_sp(iy)
+         write(G2S_global_error,*)x_g2s_dp(ix),y_g2s_dp(iy)
          write(G2S_global_error,*)a1
          write(G2S_global_error,*)a2
          write(G2S_global_error,*)a3
@@ -1341,10 +1381,10 @@
         !az = atan(x2-x_in,y2-y_in)
         ! User requested ns_xsec values with a spacing of ds_xsec
         ! Check to see if this fits in the domain
-        if(x_in+sin(az)*ns_xsec*ds_xsec.gt.x_g2s_sp(nxmax_g2s).or.&
-           x_in+sin(az)*ns_xsec*ds_xsec.lt.x_g2s_sp(        1).or.&
-           y_in+cos(az)*ns_xsec*ds_xsec.gt.y_g2s_sp(nymax_g2s).or.&
-           y_in+cos(az)*ns_xsec*ds_xsec.gt.y_g2s_sp(        1))then
+        if(x_in+sin(az)*ns_xsec*ds_xsec.gt.x_g2s_dp(nxmax_g2s).or.&
+           x_in+sin(az)*ns_xsec*ds_xsec.lt.x_g2s_dp(        1).or.&
+           y_in+cos(az)*ns_xsec*ds_xsec.gt.y_g2s_dp(nymax_g2s).or.&
+           y_in+cos(az)*ns_xsec*ds_xsec.gt.y_g2s_dp(        1))then
           write(G2S_global_info,*)"Profile length extends outside the domain."
           write(G2S_global_info,*)" Calculating a truncated profile."
         endif
@@ -1352,10 +1392,10 @@
         do is = 1,ns_xsec
           xs = x_in+sin(az)*(is-1)*ds_xsec
           ys = y_in+cos(az)*(is-1)*ds_xsec
-          if(xs.gt.x_g2s_sp(nxmax_g2s).or.&
-             xs.lt.x_g2s_sp(        1).or.&
-             ys.gt.y_g2s_sp(nymax_g2s).or.&
-             ys.gt.y_g2s_sp(        1))then
+          if(xs.gt.x_g2s_dp(nxmax_g2s).or.&
+             xs.lt.x_g2s_dp(        1).or.&
+             ys.gt.y_g2s_dp(nymax_g2s).or.&
+             ys.gt.y_g2s_dp(        1))then
             x_prof(is) = xs
             y_prof(is) = ys
             ns_xsec_tmp = is
@@ -1393,8 +1433,8 @@
       do i = 1,ns_xsec
         x  = x_prof(i)
         y  = y_prof(i)
-        ix = floor((x-x_g2s_sp(1))/dx_g2s)+1
-        iy = floor((y-y_g2s_sp(1))/dy_g2s)+1
+        ix = floor((x-x_g2s_dp(1))/dx_g2s)+1
+        iy = floor((y-y_g2s_dp(1))/dy_g2s)+1
         if(ix.gt.nxmax_g2s-1)then
           write(G2S_global_info,*)"ix too large",ix,x
         endif
@@ -1402,8 +1442,8 @@
           write(G2S_global_info,*)"iy too large",iy,y
         endif
 
-        xfrac=(x-x_g2s_sp(ix))/dx_g2s
-        yfrac=(y-y_g2s_sp(iy))/dx_g2s
+        xfrac=(x-x_g2s_dp(ix))/dx_g2s
+        yfrac=(y-y_g2s_dp(iy))/dx_g2s
         xc = 1.0-xfrac
         yc = 1.0-yfrac
         a1=xc    * yc
@@ -1420,7 +1460,7 @@
            write(G2S_global_error,*)"i = ",i,ns_xsec
            write(G2S_global_error,*)"x,y = ",x,y
            write(G2S_global_error,*)ix,iy
-           write(G2S_global_error,*)x_g2s_sp(ix),y_g2s_sp(iy)
+           write(G2S_global_error,*)x_g2s_dp(ix),y_g2s_dp(iy)
            write(G2S_global_error,*)a1
            write(G2S_global_error,*)a2
            write(G2S_global_error,*)a3

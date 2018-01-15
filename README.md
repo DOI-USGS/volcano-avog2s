@@ -67,14 +67,14 @@ build the HWM14 library.  The install location can be changed by editing the top
 of this file.
 
 To build the library, type:  
-  `cd src/ExternalDataSoftware/`
+  `cd src/ExternalDataSoftware/`  
   `wget http://onlinelibrary.wiley.com/store/10.1002/2014EA000089/asset/supinfo/ess224-sup-0002-supinfo.tgz?v=1&s=2a957ba70b7cf9dd0612d9430076297c3634ea75`  
 Or open the [article page](http://onlinelibrary.wiley.com/doi/10.1002/2014EA000089/abstract)
 and download `ess224-sup-0002-supinfo.tgz` from Supporting Information.
 
   `gunzip ess224-sup-0002-supinfo.tgz`  
   `tar -xvf ess224-sup-0002-supinfo.tar`  
-  `cd HWM14`
+  `cd HWM14`  
 The package makefile builds an example program.  To build as a library, use the makefile
 provided by AVOG2S  
   `make -f ../makefile_HWM14.gfortran libra`  
@@ -158,7 +158,7 @@ grib2 support should be built.  Then simply type:
 
   `make all`
 
-To install the library, edit the `INSTALLDI`R variable of the makefile (the
+To install the library, edit the `INSTALLDIR` variable of the makefile (the
 default is `/opt/USGS`) and type:
 
   `make install`

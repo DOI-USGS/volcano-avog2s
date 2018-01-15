@@ -48,7 +48,7 @@ identifying the projection to be used: 1 for polar stereographic, 2 for Albers E
 Area, 3 for UTM, 4 for Lambert conformal conic and 5 for Mercator.  Depending on which
 projection is used, additional values are needed to define the full projection.  
 Examples:  
-`1 4 -107.0 50.0 50.0 50.0 6367.470  # Lon/Lat since first value is 1, all other values ignored`
+`1 4 -107.0 50.0 50.0 50.0 6367.470  # Lon/Lat since first value is 1, all other values ignored`  
 `0 1 -150.0 90.0 0.933 6371.229      # Polar Ster. grid (NAM grid 198 over Alaska)`
 
 Line 3: Resolution of G2S grid.  If the G2S grid is Lon/Lat, then the spectral decomposition
@@ -342,6 +342,9 @@ vertical velocities (`omega.2016.nc`) and specific humidity (`shum.2016.nc`), to
 
   `/opt/USGS/bin/autorun_scripts/get_NCEP_50YearReanalysis.sh 2016`
 
+Note, the last two files (`omega.2016.nc` and `shum.2016.nc`) are not needed for AVOG2S.  To
+disable the download of these files, edit the download script.
+
 Link the data to the current working directory  
   `ln -s /data/WindFiles/NCEP`.
 
@@ -374,7 +377,7 @@ To generate the coefficient file, run
 
 ##### Step 3: Create gridded binary files from the coefficient file.
 
-  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 15 1.0 18 2.0 30 5.0`
+  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 26 1.0 50 1.5 50 2.0`
 
 ##### Step 4: Extract a 3-d grid from the gridded binary files.
 
@@ -387,5 +390,5 @@ This uses the atmospheric profile at the start coordinate of the grid and uses a
 corresponding to the azimuth from Cleveland Volcano to the Dillingham infrasound array.
 
 For a 3-d, range-dependent analysis, run  
-`./GeoAcGlobal.RngDep -prop Clev Clev.loclat Clev.loclon theta_min=0.0 theta_max=45.0 theta_step=0.5 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False`
+`./GeoAcGlobal.RngDep -prop Clev Clev.loclat Clev.loclon theta_min=0.0 theta_max=45.0 theta_step=0.5 phi_min=30.0 phi_max=60.0 phi_step=10.0 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False`
 
