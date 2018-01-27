@@ -1,11 +1,13 @@
 clear all;
 
 theta_min  =   0.0;
-theta_max  =  10.0;
+%theta_max  =  10.0;
+theta_max  =   0.5;
 theta_step =   0.5;
 phi_min    =  75.0;
 phi_max    = 230.0;
-phi_step   =   5.0;
+%phi_step   =   5.0;
+phi_step   =   1.0;
 
 xvec=load('Bogo.xloc');
 xmin=min(xvec);
@@ -77,6 +79,12 @@ while 1
 end
 fclose(fid);
 
+% Get Topography
+topox=ncread('3d_tephra.nc','x');
+topoy=ncread('3d_tephra.nc','y');
+topodata=ncread('3d_tephra.nc','Topography');
+%topodata(topodata<0)=0;
+
  %Bogoslof : -168.0381 53.9280
 Bogox = -1198.70; Bogoy = -3680.87;
 
@@ -86,37 +94,25 @@ Okx = -1223.97; Oky = -3728.21;
  %Makusin : -166.9311 53.8864
 Makx = -1128.75; Maky = -3707.91;
 
-
 figure;
 hold on;
-for ip = 1:nphi
-  for it = 1:ntheta
+nplotphi   = nphi;
+nplottheta = 1;
+for ip = 1:nplotphi
+  for it = 1:nplottheta
     %scatter3(x(:,it,1),y(:,it,1),z(:,it,1),1,'k');
     plot3(x(:,it,ip),y(:,it,ip),z(:,it,ip),'k-')
   end
 end
-plot3(Bogox,Bogoy,0,'m^');
-plot3(Okx,Oky,0,'m^');
-plot3(Makx,Maky,0,'m^');
+
+surface(topox,topoy,topodata')
+shading interp
+demcmap(topodata)
+plot3(Bogox,Bogoy,3,'m^');
+plot3(Okx,Oky,3,'m^');
+plot3(Makx,Maky,3,'m^');
 hold off;
 axis([xmin xmax ymin ymax zmin zmax])
 grid on
 axis equal;
-
-
-
-%raypath_data = load('Bogo_raypaths.dat');
-
-%# x [km]       y [km]  z [km]  Geo. Atten. [dB]        Atmo. Atten. [dB]       Travel Time [s]
-%-1198.67        -3680.87        1.36764e-05     0       -8.98466e-10    0.0749126
-%-1198.65        -3680.87        5.48002e-05     0       -1.7985e-09     0.149957
-%x   = raypath_data(:,1); 
-%y   = raypath_data(:,2);
-%z   = raypath_data(:,3);         % z, altitude [km]
-%dB  = raypath_data(:,4);         % Geo. Atten. [dB]
-%Aa  = raypath_data(:,5);         % Atmo. Atten. [dB]
-%Tt  = raypath_data(:,6);         % Travel Time [s]
-
-%figure;
-%scatter3(x,y,z,1,'k')
 
