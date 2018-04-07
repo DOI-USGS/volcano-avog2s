@@ -1,0 +1,8 @@
+# GMT common arguments shelf
+-B5g5:.Cleveland :
+-JM195.5/55.0/6i
+-R183.0/202.0/51.0/59.5
+-jM195.5/55.0/6i
+EOF
+0/6i
+EOF

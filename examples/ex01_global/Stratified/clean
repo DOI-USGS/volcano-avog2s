@@ -1,0 +1,12 @@
+rm -f atmo.dat
+rm -f Clev0.met
+rm -f Clev0_raypaths.dat
+rm -f Clev0_results.dat
+rm -f Clev_DLL_GeoAc.png
+rm -f G2S_SH_20161223_12Z_wf25_T_res.raw
+rm -f G2S_SH_20161223_12Z_wf25_U_res.raw
+rm -f G2S_SH_20161223_12Z_wf25_V_res.raw
+rm -f load_GeoAc_atmo.m
+rm -f load_GeoAc_raypaths.m
+rm -f load_StationInfo.m
+rm -f plot_GeoAc_profile.m

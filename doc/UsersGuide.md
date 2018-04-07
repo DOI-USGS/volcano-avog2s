@@ -328,9 +328,9 @@ Examples
 ### Example 1
 Creating a reanalysis G2S model using NCEP 2.5-degree NWP data and archived planetary indices
 
-The files for this example are located in `examples/ex01`
+The files for this example are located in `examples/ex01_global`
 
-##### Step 1:
+##### Step 0:
 First, we need to gather the data that we will need.  For NWP date, this example
 will use the NCEP Reanalysis 2.5-degree.  The following script should have been
 installed with MetReader and will download the files to the default location at  
@@ -356,9 +356,9 @@ Geophysical Data Center.
   `popd`  
   `ln -s /opt/USGS/AVOG2S/ExternalData/Ap_Forecast/NGDC_NOAA_Archive NGDC`
 
-##### Step 2: 
+##### Step 1: 
 Generate a coefficient file.  This example directory has a control file 
-`example1_genSC_NCEP.ctr`:  
+`example1_step1_genSC_NCEP.ctr`:  
 `2016 12 23 12.0                  ! Specifies date and time`  
 `1 1 -150.0 90.0 0.933 6371.229   ! Lon/Lat coordinates will be used`  
 `0.5 120                          ! 0.5 degree resolution with SphereHarm order of 120`  
@@ -373,22 +373,70 @@ Generate a coefficient file.  This example directory has a control file
 
 To generate the coefficient file, run
 
-  `/opt/USGS/AVOG2S/bin/g2s_genSC example1_genSC_NCEP.ctr` 
+  `/opt/USGS/AVOG2S/bin/g2s_genSC example1_step1_genSC_NCEP.ctr` 
 
-##### Step 3: Create gridded binary files from the coefficient file.
-
+##### Step 2: Create gridded binary files from the coefficient file.
   `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 26 1.0 50 1.5 50 2.0`
 
-##### Step 4: Extract a 3-d grid from the gridded binary files.
+##### Step 3: Extract atmospheric profile(s) from the gridded binary files.
 
-  `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example1_ext3d.ctr`
+For the stratified atmosphere case:
 
-##### Step 5: Run GeoAc
-For a 1-d analysis, run  
-  `./GeoAc2D -prop Clev0.met theta_min=0.0 theta_max=45.0 theta_step=0.5 azimuth=41 bounces=10 z_src=1.73 CalcAmp=False`  
+  `cd Stratified`
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Sonde example1_step3_ext1d.ctr`
+
+or for the range-dependent case:
+
+  `cd RangeDependent`
+
+To create a binary 'env' file that can be read by Art2d or the NCPA codes:
+
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Xsec example1_step3_ext2d.ctr`
+
+To create a grid of ASCII profiles that can be read by GeoAc:
+
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example1_step3_ext3d.ctr`
+
+
+##### Step 4: Run GeoAc
+For a stratified atmosphere analysis, run (from the examples/ex01_global/Stratified folder)
+  `GeoAcGlobal -prop Clev0.met theta_min=0.0 theta_max=45.0 theta_step=0.5 azimuth=41 bounces=10 z_src=1.73 CalcAmp=False`  
 This uses the atmospheric profile at the start coordinate of the grid and uses an azimuth of 41, 
 corresponding to the azimuth from Cleveland Volcano to the Dillingham infrasound array.
 
-For a 3-d, range-dependent analysis, run  
-`./GeoAcGlobal.RngDep -prop Clev Clev.loclat Clev.loclon theta_min=0.0 theta_max=45.0 theta_step=0.5 phi_min=30.0 phi_max=60.0 phi_step=10.0 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False`
+For a 3-d, range-dependent analysis, run (from the examples/ex01_global/RangeDependent folder)
+`GeoAcGlobal.RngDep -prop Clev Clev.loclat Clev.loclon theta_min=0.0 theta_max=45.0 theta_step=0.5 phi_min=30.0 phi_max=60.0 phi_step=10.0 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False`
+
+### Example 2
+Creating a forecast G2S model using NAM 5.95-km NWP data and current planetary indices
+
+The files for this example are located in `examples/ex02_regional`
+
+##### Step 0:
+First, we need to gather the data that we will need.
+
+Generate a coefficient file.  This example directory has a control file
+`example2_genSC_FC_NAM.ctr`:
+`2016 12 23 12.0                  ! Specifies date and time`
+`0 1 -150.0 90.0 0.933 6371.229   ! Porjected coordinates will be used`
+`5.950 120 -2172.922 512 -4214.803 340 !`
+`20 200 2.5                       ! Empirical model from 20-200 km`
+`1                                ! One NWP group`
+`12 1                             ! NAM ID with one filename`
+`0.0 25.0 1.0                     ! NWP data from 0-25km`
+`nam.t00z.alaskanest.hiresf12.tm00.grib2.nc ! Name of windfile`
+`Ap.dat                           ! Ap name, in this case, the name of directory with NGDC data`
+`F107.dat                         ! F107 name, in this case, the name of directory with NGDC data`
+`G2S_SC_20161223_12Z_wf12.nc      ! output spectral coefficient file name`
+
+To generate the coefficient file, run
+
+  `/opt/USGS/AVOG2S/bin/g2s_genSC example2_step1_genSC_NAM.ctr`
+
+##### Step 2: Create gridded binary files from the coefficient file.
+  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 26 1.0 50 1.5 50 2.0`
+
+##### Step 3: Extract atmospheric profile(s) from the gridded binary files.
+
+##### Step 4: Run GeoAc
 

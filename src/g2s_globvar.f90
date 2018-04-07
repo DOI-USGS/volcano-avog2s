@@ -214,6 +214,7 @@
 
       integer FFTW_MEASURE
       parameter (FFTW_MEASURE=0)
+      real(kind=8) :: ForecastInterval
 
       end module G2S_globvar
 

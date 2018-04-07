@@ -180,6 +180,12 @@
       endif
 
       ! Open existing netcdf file
+      inquire(file=file_SH, exist=IsThere )
+      if(.not.IsThere)then
+        ! Coefficient file does not exits, issue error message and exit
+        write(G2S_global_error,*)"ERROR: The coefficient file does not exist"
+        stop 1
+      endif
       nSTAT = nf90_open(file_SH,NF90_NOWRITE,ncid)
       if(nSTAT.ne.NF90_NOERR)then
         write(G2S_global_error,*)'ERROR: nf90_open:',nf90_strerror(nSTAT)
