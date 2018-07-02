@@ -5,7 +5,7 @@ clear all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  Edit only the fields below
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-nmethid= 1;
+nmethid= 5;
 srcnam ='Clev.';
 srclon =-169.945;
 srclat = 52.822;

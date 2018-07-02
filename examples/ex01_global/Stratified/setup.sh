@@ -3,6 +3,7 @@ ln -s ../../PostProc_scripts/load_GeoAc_atmo.m .
 ln -s ../../PostProc_scripts/plot_GeoAc_profile.m .
 ln -s ../../PostProc_scripts/load_StationInfo.m .
 ln -s ../../PostProc_scripts/load_GeoAc_raypaths.m .
+ln -s ../../PostProc_scripts/plot_tloss2d.m .
 
 
 echo "Now you can generate the profile you need (e.g. for Cleveland Volcano) by running:"

@@ -4,6 +4,7 @@ ln -s ../../PostProc_scripts/plot_GeoAc_profile.m .
 ln -s ../../PostProc_scripts/load_StationInfo.m .
 ln -s ../../PostProc_scripts/load_GeoAc_raypaths.m .
 ln -s ../../PostProc_scripts/plot_art2d.m .
+ln -s ../../PostProc_scripts/plot_tloss2d.m .
 
 echo "For 3d raytracing with GeoAc, you can generate the grid of profiles you need by running:"
 echo "  ../g2s_Extract_Grid example1_step3_ext3d.ctr"

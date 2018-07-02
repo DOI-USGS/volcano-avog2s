@@ -3,8 +3,9 @@
 % cat plot_GeoAc_profile.m | matlab -nodesktop -nosplash
 
 
-%Pref='Bering';
-Pref='Clev0';
+%Pref='Clev0';
+Pref='Bering';
+
 
 % Source location
 %  Note: the source lon/lat is needed for calculating ranges and azimuths to stations
@@ -100,6 +101,6 @@ set(gca,'YTick',[])
 xlabel('Range');
 hold off
 %print "-S750,350" -dpng Clev_DLL_GeoAc.png
-print('Clev_DLL_GeoAc.png','-dpng')
+%print('Clev_DLL_GeoAc.png','-dpng')
 
 
