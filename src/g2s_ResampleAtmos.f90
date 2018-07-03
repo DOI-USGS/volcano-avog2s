@@ -174,7 +174,7 @@
 
       INQUIRE( file=adjustl(trim(file_SH)), EXIST=IsThere )
       if(.not.IsThere)then
-        write(G2S_global_error,*)"ERROR: Could not file input file."
+        write(G2S_global_error,*)"ERROR: Could not find input file."
         write(G2S_global_error,*)adjustl(trim(file_SH))
         stop 1
       endif

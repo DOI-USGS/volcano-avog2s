@@ -474,27 +474,30 @@ For example `get_gmao.sh 2018 04 10 12` will download the file
 ##### Step 1:
 Generate a coefficient file.  This example directory has a control file
 
-`example2_genSC_FC_NAM.ctr`:
-`2016 12 23 12.0                  ! Specifies date and time`
+`example2_step1_genSC_FC_NAM.ctr`:
+`2018 4 10 12.0                  ! Specifies date and time`
 `0 1 -150.0 90.0 0.933 6371.229   ! Projected coordinates will be used`
 `5.950 120 -2172.922 512 -4214.803 340 !`
 `20 200 2.5                       ! Empirical model from 20-200 km`
 `1                                ! One NWP group`
-`12 1                             ! NAM ID with one filename`
+`13 1                             ! NAM ID with one filename`
 `0.0 25.0 1.0                     ! NWP data from 0-25km`
-`nam.t00z.alaskanest.hiresf12.tm00.grib2.nc ! Name of windfile`
+`nam.t12z.alaskanest.hiresf00.tm00.avo.grib2.nc ! Name of windfile`
 `Ap.dat                           ! Ap name, in this case, the name of directory with NGDC data`
 `F107.dat                         ! F107 name, in this case, the name of directory with NGDC data`
-`G2S_SC_20161223_12Z_wf12.nc      ! output spectral coefficient file name`
+`G2S_SC_20180410_12Z_wf13.nc      ! output spectral coefficient file name`
 
 To generate the coefficient file, run
 
   `/opt/USGS/AVOG2S/bin/g2s_genSC example2_step1_genSC_NAM.ctr`
 
 ##### Step 2: Create gridded binary files from the coefficient file.
-  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 26 1.0 50 1.5 50 2.0`
+  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20180410_12Z_wf13.nc 26 1.0 50 1.5 50 2.0`
 
 ##### Step 3: Extract atmospheric profile(s) from the gridded binary files.
 
+../g2s_Extract_Sonde example2_step3_ext1d_FC.ctr
+
 ##### Step 4: Run GeoAc
 
+GeoAc2D -prop Clev0.met theta_min=-30.0 theta_max=55.0 theta_step=1.0 azimuth=41 bounces=10 z_src=1.73 CalcAmp=False
