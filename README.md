@@ -140,6 +140,8 @@ for installation are in the source code download
 This can be built and installed in the default location.  Take note of where the objects
 are installed.  Earlier versions of SHTOOLS installing in `/usr/local/SHTOOLS$(version_number)`.
 The latest version simple installs to `/usr/local/`.
+You can change the default location by editing `SHTOOLS-x.x/Makefile` and changing the 
+variable `PREFIX = /usr/local` to your preferred install location.
 
 ##### FFTW
 fftw is available as a distribution package

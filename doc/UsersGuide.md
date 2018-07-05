@@ -21,8 +21,9 @@ The work-flow is as follows.
 1. Run `g2s_genSC_HWM14` to create a spectral coefficient file
 2. Rebuild a grid of atmospheric values from the coefficient file
 3. Extract the needed 1, 2, or 3-d values from the rebuilt grid
-4. Use the extracted output in an infrasound propagation model such as Art2d or
-[GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc).
+4. Use the extracted output in an infrasound propagation model such as Art2d,
+[GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc), or
+[NCPA codes](https://github.com/chetzer-ncpa/ncpaprop).
 
 Step 1: Create the spectral coefficient file
 --------------------------------------------
@@ -84,7 +85,7 @@ users manual for the full documentation.  The following products are currently e
     `Format_ID = 13 : 2.95 km forecast over AK (NAM grid 91)`  
     `Format_ID = 20 : 0.5  degree GFS`  
     `Format_ID = 22 : 0.25 degree GFS`  
-    `Format_ID = 24 : 1.25 degree NASA Merra Reanalysis`  
+    `Format_ID = 24 : 0.625x0.5 degree NASA MERRA-2 Reanalysis`  
     `Format_ID = 25 : 2.5 degree NCEP Reanalysis`  
     `Format_ID = 28 : 0.7 degree ECMWF Interim Reanalysis (ERA)`  
     `Format_ID = 40 : 0.6250 x 0.50 degree NASA GEOS Cp`  
@@ -296,7 +297,8 @@ model GeoAc.
 
 For example, to extract a grid of values to encompass the region between Cleveland
 Volcano and the Dillingham infrasound array:  
-     ./g2s_Extract_Grid  50.0 60.0 3 185.0 205.0 5 180.0 0.2 Clev  
+     `./g2s_Extract_Grid  50.0 60.0 3 185.0 205.0 5 180.0 0.2 Clev`
+
 This produces 15 vertical profile files: `Clev[0-14].met`;
 and two files giving the coordinates of the grid points: `Clev.loclat`, `Clev.loclon`.
 
@@ -328,9 +330,9 @@ Examples
 ### Example 1
 Creating a reanalysis G2S model using NCEP 2.5-degree NWP data and archived planetary indices
 
-The files for this example are located in `examples/ex01`
+The files for this example are located in `examples/ex01_global`
 
-##### Step 1:
+##### Step 0:
 First, we need to gather the data that we will need.  For NWP date, this example
 will use the NCEP Reanalysis 2.5-degree.  The following script should have been
 installed with MetReader and will download the files to the default location at  
@@ -356,9 +358,9 @@ Geophysical Data Center.
   `popd`  
   `ln -s /opt/USGS/AVOG2S/ExternalData/Ap_Forecast/NGDC_NOAA_Archive NGDC`
 
-##### Step 2: 
+##### Step 1: 
 Generate a coefficient file.  This example directory has a control file 
-`example1_genSC_NCEP.ctr`:  
+`example1_step1_genSC_SH_NCEP.ctr`:  
 `2016 12 23 12.0                  ! Specifies date and time`  
 `1 1 -150.0 90.0 0.933 6371.229   ! Lon/Lat coordinates will be used`  
 `0.5 120                          ! 0.5 degree resolution with SphereHarm order of 120`  
@@ -373,22 +375,178 @@ Generate a coefficient file.  This example directory has a control file
 
 To generate the coefficient file, run
 
-  `/opt/USGS/AVOG2S/bin/g2s_genSC example1_genSC_NCEP.ctr` 
+  `/opt/USGS/AVOG2S/bin/g2s_genSC example1_step1_genSC_SH_NCEP.ctr` 
 
-##### Step 3: Create gridded binary files from the coefficient file.
+##### Step 2: Create gridded binary files from the coefficient file.
+  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SH_20161223_12Z_wf25.nc 26 1.0 50 1.5 50 2.0`
 
-  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20161223_12Z_wf25.nc 26 1.0 50 1.5 50 2.0`
+##### Step 3: Extract atmospheric profile(s) from the gridded binary files.
 
-##### Step 4: Extract a 3-d grid from the gridded binary files.
+For the stratified atmosphere case:
 
-  `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example1_ext3d.ctr`
+  `cd volcano-avog2s/examples/ex01_global/Stratified`
+  `./setup.sh`
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Sonde example1_step3_ext1d.ctr`
 
-##### Step 5: Run GeoAc
-For a 1-d analysis, run  
-  `./GeoAc2D -prop Clev0.met theta_min=0.0 theta_max=45.0 theta_step=0.5 azimuth=41 bounces=10 z_src=1.73 CalcAmp=False`  
+This will create the 1-D profile `Clev0.met`.
+
+Alternatively, for the range-dependent case:
+
+  `cd volcano-avog2s/examples/ex01_global/RangeDependent`
+  `./setup.sh`
+
+To create a binary 'env' file that can be read by Art2d or the NCPA codes:
+
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Xsec example1_step3_ext2d.ctr`
+
+This creates `InfraAtmos01.env`, `ProfLonLat01.dat`, `Clev0.[u,v,t]`.
+
+To create a grid of ASCII profiles and the loclon/loclat files that can be read by GeoAc:
+
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example1_step3_ext3d.ctr`
+
+##### Step 4: Run a forward modeling code
+
+For ray-tracing in a stratified atmosphere analysis, run (from the examples/ex01_global/Stratified folder)
+  `GeoAcGlobal -prop Clev0.met theta_min=-30.0 theta_max=55.0 theta_step=1.0 azimuth=41 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False WriteAtmo=True`
 This uses the atmospheric profile at the start coordinate of the grid and uses an azimuth of 41, 
 corresponding to the azimuth from Cleveland Volcano to the Dillingham infrasound array.
 
-For a 3-d, range-dependent analysis, run  
-`./GeoAcGlobal.RngDep -prop Clev Clev.loclat Clev.loclon theta_min=0.0 theta_max=45.0 theta_step=0.5 phi_min=30.0 phi_max=60.0 phi_step=10.0 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False`
+The results can be plotted with MatLab or octave with the script `plot_GeoAc_profile.m`.
+For the stratified case, edit the prefix variable in this script to `Pref='Clev0'`.
+  `octave:1> plot_GeoAc_profile`
+
+Alternatively, the codes from the NCPA software suite can be used, such as:
+
+  `Modess --atmosfile Clev0.met --skiplines 0 --atmosfileorder ztuvdp --azimuth 41 --freq 0.1 --write_2D_TLoss --sourceheight_km 1.73`
+
+The results can be plotted with MatLab or octave script `plot_tloss2d.m`.
+For `Modess`, the edit the variable `nmethid= 1`
+  `octave:1> plot_tloss2d`
+
+For 3-d ray-tracing, range-dependent analysis, run (from the examples/ex01_global/RangeDependent folder)
+`GeoAcGlobal.RngDep -prop Bering Bering.loclat Bering.loclon theta_min=-30.0 theta_max=55.0 theta_step=1.0 azimuth=41.0 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False WriteAtmo=True`
+
+The script `plot_GeoAc_profile.m` can also be used to plot these results with the prefix variable
+edited to `Pref='Bering'`.
+
+The codes from NCPA can also be used, such as:
+
+pape --g2senvfile InfraAtmos01.env --atmosfileorder zuvwtdp --skiplines 0 --azimuth 41 --freq 0.1 \
+   --sourceheight_km 1.73 --receiverheight_km 0 --maxheight_km 180 --starter_type gaussian --n_pade 6 \
+   --maxrange_km 1000 --write_2D_TLoss --do_lossless
+
+These results can also be plotted with MatLab or octave script `plot_tloss2d.m`.
+For `pape`, the edit the variable `nmethid= 5`
+  `octave:1> plot_tloss2d`
+
+### Example 2
+Creating a forecast G2S model using NAM 2.95-km NWP data and current planetary indices
+
+The files for this example are located in `examples/ex02_regional`
+
+##### Step 0:
+First, we need to gather the data that we will need.
+
+The current planetary indices can be obtained by running 
+ `/opt/USGS/AVOG2S/ExternalData/Ap_Forecast/get_ApFC`
+This copies the current values to Ap and F107 to 
+  `/opt/USGS/AVOG2S/ExternalData/Ap_Forecast/SWPC`
+and updates the links in
+  `/opt/USGS/AVOG2S/ExternalData/Ap_Forecast/F107.dat`
+  `/opt/USGS/AVOG2S/ExternalData/Ap_Forecast/Ap.dat`
+to point to the current values.
+
+Copy these to the current working directory:
+`cp /opt/USGS/AVOG2S/ExternalData/Ap_Forecast/F107.dat .`
+`cp /opt/USGS/AVOG2S/ExternalData/Ap_Forecast/Ap.dat .`
+
+To download the high-resolution forecast data over the Alaska region (NAM grid 91), run
+  `get_nam91.sh YYYY MM DD FChour HH`
+For example `get_nam91.sh 2018 04 10 12 00` will download the file
+`nam.t12z.alaskanest.hiresf00.tm00.avo.grib2` into
+`/data/WindFiles/nam/ak03km/20180410_12`
+
+To download the mesospheric forecasts from NASA, run
+  `get_gmao.sh YYYY MM DD HH`
+For example `get_gmao.sh 2018 04 10 12` will download the file
+`GEOS.fp.fcst.inst3_3d_asm_Np.20180410_00+20180410_1200.V01.nc4` into
+`/data/WindFiles/NASA/GEOS/20180410`
+
+##### Step 1:
+Generate a coefficient file.  This example directory has a control file
+
+`example2_step1_genSC_FC_NAM091_GEOS.ctr`:
+
+`2018 4 10 12.0                  ! Specifies date and time`
+`0 1 -150.0 90.0 0.933 6371.229   ! Projected coordinates will be used`
+`5.950 120 -2172.922 512 -4214.803 340 !`
+`20 200 2.5                       ! Empirical model from 20-200 km`
+`2                                ! One NWP group`
+`13 1                             ! NAM ID with one filename`
+`0.0 25.0 1.0                     ! NWP data from 0-25km`
+`nam.t12z.alaskanest.hiresf00.tm00.avo.grib2.nc ! Name of windfile`
+`41 1                             ! NAM ID with one filename`
+`20.0 58.0 1.0                    ! NWP data from 20-58km`
+`GEOS.fp.fcst.inst3_3d_asm_Np.20180410_00+20180410_1200.V01.nc4`
+`Ap.dat                           ! Ap name, in this case, the name of directory with NGDC data`
+`F107.dat                         ! F107 name, in this case, the name of directory with NGDC data`
+`G2S_SC_20180410_12Z_wf13.nc      ! output spectral coefficient file name`
+
+To generate the coefficient file, run
+
+  `/opt/USGS/AVOG2S/bin/g2s_genSC example2_step1_genSC_FC_NAM091_GEOS.ctr`
+
+##### Step 2: Create gridded binary files from the coefficient file.
+  `/opt/USGS/AVOG2S/bin/g2s_ResampleAtmos G2S_SC_20180410_12Z_wf13wf41.nc 26 1.0 50 1.5 50 2.0`
+
+##### Step 3: Extract atmospheric profile(s) from the gridded binary files.
+
+For the stratified atmosphere case:
+
+  `cd volcano-avog2s/examples/ex02_regional/Stratified`
+  `./setup.sh`
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Sonde example2_step3_ext1d_FC.ctr`
+
+This will create the 1-D profile `Clev0.met`.
+
+Alternatively, for the 3-D range-dependent case:
+
+  `cd volcano-avog2s/examples/ex02_global/RangeDependent`
+  `./setup.sh`
+  `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example2_step3_ext3d_FC.ctr`
+
+This will create a grid of profiles around the Aleutian Islands and the Alaskan Peninsula.
+
+##### Step 4: Run a forward modeling code
+
+For the Cartesian ray-tracing analysis in a stratified atmosphere, , run (from the examples/ex02_regional/Stratified folder)
+
+  `GeoAc2D -prop Clev0.met theta_min=-30.0 theta_max=55.0 theta_step=1.0 azimuth=41 bounces=10 z_src=1.73 CalcAmp=False`
+
+Results from this program can be plotted with `plot_GeoAc_profile.m` as before (with `Pref='Clev'`)
+
+The 3-d Cartesian ray-tracing analysis in a range-dependent atmosphere, run
+(from the examples/ex02_regional/RangeDependent folder)
+
+  `GeoAc3D.RngDep -prop Bogo Bogo.xloc Bogo.yloc theta_min=0.0 theta_max=10.0 theta_step=0.5 phi_min=75.0 phi_max=230.0 phi_step=5.0 bounces=10 x_src=-1198.7 y_src=-3680.87 z_src=0.0 CalcAmp=False`
+
+The resulting ray paths can be plotted with `plot_GeoAc3d.m` in either MatLab or octave.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

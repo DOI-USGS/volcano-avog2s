@@ -65,6 +65,7 @@
       logical :: WRITE_SONDE = .false.
       logical :: WRITE_XSEC  = .false.
       logical :: WRITE_GRID  = .false.
+      integer :: file_size 
 
       !===================================================
       !  Set the default values here
@@ -190,6 +191,13 @@
           !   topo_fn    : (OPTIONAL) topography filename
           call getarg(1,lllinebuffer)
           read(lllinebuffer,*)controlfile
+          inquire(file=controlfile, exist=IsThere )
+          if(.not.IsThere)then
+            ! Control file does not exits, issue error message and exit
+            write(G2S_global_error,*)"ERROR: Only one argument given (assumed to be a"
+            write(G2S_global_error,*)"       control file), but it cannot be read."
+            stop 1
+          endif
           open(unit=ct_unit,FILE=controlfile,STATUS='old')
           read(ct_unit,*)x_in,y_in
           write(G2S_global_info,*)"x_in,y_in: ",x_in,y_in
@@ -267,7 +275,7 @@
           write(G2S_global_info,*)"      "
           write(G2S_global_info,*)"        x_in,y_in      #lon,lat (or x,y) of sonde point"
           write(G2S_global_info,*)"        zmax, dz_prof  #maximum altitude of output, vertical increment"
-          write(G2S_global_info,*)"        IsLatLon       #0 for global (lat,lon) grids, >0 for projected"
+          write(G2S_global_info,*)"        IsLatLon       #1 for global (lat,lon) grids, 0 for projected"
           write(G2S_global_info,*)"        nx, dx, xmin   #number, spacing, and start of gridpoints in x"
           write(G2S_global_info,*)"        ny, dy, ymin   #number, spacing, and start of gridpoints in y"
           write(G2S_global_info,*)"        nz1, dz1       #number and spacing of low alt points"
@@ -402,6 +410,13 @@
           !   topo_fn                : topography filename
           call getarg(1,lllinebuffer)
           read(lllinebuffer,*)controlfile
+          inquire(file=controlfile, exist=IsThere )
+          if(.not.IsThere)then
+            ! Control file does not exits, issue error message and exit
+            write(G2S_global_error,*)"ERROR: Only one argument given (assumed to be a"
+            write(G2S_global_error,*)"       control file), but it cannot be read."
+            stop 1
+          endif
           open(unit=ct_unit,FILE=controlfile,STATUS='old')
           read(ct_unit,*)x_in,y_in
           write(G2S_global_info,*)"x_in,y_in: ",x_in,y_in
@@ -651,6 +666,13 @@
           !   topo_fn    : (OPTIONAL) topography filename
           call getarg(1,lllinebuffer)
           read(lllinebuffer,*)controlfile
+          inquire(file=controlfile, exist=IsThere )
+          if(.not.IsThere)then
+            ! Control file does not exits, issue error message and exit
+            write(G2S_global_error,*)"ERROR: Only one argument given (assumed to be a"
+            write(G2S_global_error,*)"       control file), but it cannot be read."
+            stop 1
+          endif
           open(unit=ct_unit,FILE=controlfile,STATUS='old')
           read(ct_unit,*)LatStart,LatEnd,LatCnt
           write(G2S_global_info,*)"LatStart,LatEnd,LatCnt: ",LatStart,LatEnd,LatCnt
@@ -730,7 +752,7 @@
           write(G2S_global_info,*)"        LatStart,LatEnd,LatCnt    #start, end and count of lat grid"
           write(G2S_global_info,*)"        LongStart,LongEnd,LongCnt #start, end and count of lon grid"
           write(G2S_global_info,*)"        zmax, dz_prof  #maximum altitude of output, vertical increment"
-          write(G2S_global_info,*)"        IsLatLon       #0 for global (lat/lon) grids, >0 for projected"
+          write(G2S_global_info,*)"        IsLatLon       #1 for global (lat/lon) grids, 0 for projected"
           write(G2S_global_info,*)"        nx, dx, xmin   #number, spacing, and start of gridpoints in x"
           write(G2S_global_info,*)"        ny, dy, ymin   #number, spacing, and start of gridpoints in y"
           write(G2S_global_info,*)"        nz1, dz1       #number and spacing of low alt points"
@@ -809,18 +831,74 @@
       ! First read in resampled atmosphere generated from G2S_ResampleAtmos
       write(G2S_global_info,*)"Reading output for resampled data files"
       write(G2S_global_info,*)"  Opening ",FILE_U_RES
+      inquire(file=FILE_U_RES, exist=IsThere )
+      if(.not.IsThere)then
+        ! FILE_U_RES file does not exits, issue error message and exit
+        write(G2S_global_error,*)"ERROR: FILE_U_RES not found."
+        stop 1
+      endif
       open (unit=20,file=FILE_U_RES,access='direct', &
                    recl=2*nxmax_g2s*nymax_g2s*data_len*4)
+      inquire(file=FILE_U_RES, size=file_size)
+      if(file_size.ne.2*nxmax_g2s*nymax_g2s*data_len*4)then
+        ! FILE_U_RES does not have the right size
+        write(G2S_global_error,*)"ERROR: FILE_U_RES does not have the expected size."
+        write(G2S_global_error,*)"       Double-check the nz1,nz2,nz3 specification."
+        write(G2S_global_error,*)"       Actual filesize = ",file_size
+        write(G2S_global_error,*)"       8*nx*ny*(nz1+nz2+nz3) = ",    8*nxmax_g2s*nymax_g2s*(nz1+nz2+nz3)
+        write(G2S_global_error,*)"       if nz1=15,nz2=18,nz3=30  => ",8*nxmax_g2s*nymax_g2s*(61)
+        write(G2S_global_error,*)"       if nz1=26,nz2=50,nz3=50  => ",8*nxmax_g2s*nymax_g2s*(126)
+        write(G2S_global_error,*)"       if nz1=50,nz2=50,nz3=101 => ",8*nxmax_g2s*nymax_g2s*(201)
+        stop 1
+      endif
       read(20,rec=1)(((vx_OUT_dp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,data_len)
       close (20)
+
       write(G2S_global_info,*)"  Opening ",FILE_V_RES
+      inquire(file=FILE_V_RES, exist=IsThere )
+      if(.not.IsThere)then
+        ! FILE_v_RES file does not exits, issue error message and exit
+        write(G2S_global_error,*)"ERROR: FILE_v_RES not found."
+        stop 1
+      endif
       open (unit=20,file=FILE_V_RES,access='direct', &
                    recl=2*nxmax_g2s*nymax_g2s*data_len*4)
+      inquire(file=FILE_V_RES, size=file_size)
+      if(file_size.ne.2*nxmax_g2s*nymax_g2s*data_len*4)then
+        ! FILE_U_RES does not have the right size
+        write(G2S_global_error,*)"ERROR: FILE_V_RES does not have the expected size."
+        write(G2S_global_error,*)"       Double-check the nz1,nz2,nz3 specification."
+        write(G2S_global_error,*)"       Actual filesize = ",file_size
+        write(G2S_global_error,*)"       8*nx*ny*(nz1+nz2+nz3) = ",    8*nxmax_g2s*nymax_g2s*(nz1+nz2+nz3)
+        write(G2S_global_error,*)"       if nz1=15,nz2=18,nz3=30  => ",8*nxmax_g2s*nymax_g2s*(61)
+        write(G2S_global_error,*)"       if nz1=26,nz2=50,nz3=50  => ",8*nxmax_g2s*nymax_g2s*(126)
+        write(G2S_global_error,*)"       if nz1=50,nz2=50,nz3=101 => ",8*nxmax_g2s*nymax_g2s*(201)
+        stop 1
+      endif
       read(20,rec=1)(((vy_OUT_dp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,data_len)
       close (20)
+
       write(G2S_global_info,*)"  Opening ",FILE_T_RES
+      inquire(file=FILE_T_RES, exist=IsThere )
+      if(.not.IsThere)then
+        ! FILE_T_RES file does not exits, issue error message and exit
+        write(G2S_global_error,*)"ERROR: FILE_T_RES not found."
+        stop 1
+      endif
       open (unit=20,file=FILE_T_RES,access='direct', &
                    recl=2*nxmax_g2s*nymax_g2s*data_len*4)
+      inquire(file=FILE_T_RES, size=file_size)
+      if(file_size.ne.2*nxmax_g2s*nymax_g2s*data_len*4)then
+        ! FILE_U_RES does not have the right size
+        write(G2S_global_error,*)"ERROR: FILE_T_RES does not have the expected size."
+        write(G2S_global_error,*)"       Double-check the nz1,nz2,nz3 specification."
+        write(G2S_global_error,*)"       Actual filesize = ",file_size
+        write(G2S_global_error,*)"       8*nx*ny*(nz1+nz2+nz3) = ",    8*nxmax_g2s*nymax_g2s*(nz1+nz2+nz3)
+        write(G2S_global_error,*)"       if nz1=15,nz2=18,nz3=30  => ",8*nxmax_g2s*nymax_g2s*(61)
+        write(G2S_global_error,*)"       if nz1=26,nz2=50,nz3=50  => ",8*nxmax_g2s*nymax_g2s*(126)
+        write(G2S_global_error,*)"       if nz1=50,nz2=50,nz3=101 => ",8*nxmax_g2s*nymax_g2s*(201)
+        stop 1
+      endif
       read(20,rec=1)(((temperature_OUT_dp(i,j,k),i=1,nxmax_g2s),j=1,nymax_g2s),k=1,data_len)
       close (20)
 
@@ -1241,7 +1319,7 @@
         density_sonde(k) = dens_MKS / 1000.0
       enddo
 
-      write(G2S_global_info,*)"Now writing file ",FILE_OUT_Sonde
+      write(G2S_global_info,*)"Now writing Z,T,U,V,rho,P to file ",FILE_OUT_Sonde
 
       open(unit=12, file=FILE_OUT_Sonde,status='replace')
       ! write met file
@@ -1254,7 +1332,7 @@
         write(12,50)z_prof(k),temper_sonde(k),Uwind_sonde(k),Vwind_sonde(k),&
                               density_sonde(k),pressure_sonde(k)
       enddo
- 50   format(6E15.8)
+ 50   format(6E15.7)
 
       close(12)
 

@@ -1,0 +1,8 @@
+rm -f Bogo*.met
+rm -f Bogo_raypaths.dat
+rm -f Bogo_results.dat
+rm -f Bogo.*loc
+rm -f G2S_SC*_T_res.raw
+rm -f G2S_SC*_U_res.raw
+rm -f G2S_SC*_V_res.raw
+rm -f plot_GeoAc3d.m

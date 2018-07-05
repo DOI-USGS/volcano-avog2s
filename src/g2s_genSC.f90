@@ -161,7 +161,13 @@
 
           write(G2S_global_info,*)"Input arg #1 is NOT a number : ",controlfile
           write(G2S_global_info,*)"Assume this is a control file."
-
+          inquire(file=controlfile, exist=IsThere )
+          if(.not.IsThere)then
+            ! Control file does not exits, issue error message and exit
+            write(G2S_global_error,*)"ERROR: Only one argument given (assumed to be a"
+            write(G2S_global_error,*)"       control file), but it cannot be read."
+            stop 1
+          endif
           open(unit=ct_unit,file=controlfile,status='old')
           read(ct_unit,*)inyear,inmonth,inday,inhour
           !READ PROJECTION PARAMETERS
@@ -322,9 +328,21 @@
 
           if(apfile.ne.f107file)then
             ! Open and read individual Ap and F107files
+            inquire(file=apfile, exist=IsThere )
+            if(.not.IsThere)then
+              ! Ap file does not exits, issue error message and exit
+              write(G2S_global_error,*)"ERROR: Ap file cannot be read."
+              stop 1
+            endif
             open(unit=ap_unit,file=apfile,status='old')
             read(ap_unit,*)ap
             close(ap_unit)
+            inquire(file=f107file, exist=IsThere )
+            if(.not.IsThere)then
+              ! F107 file does not exits, issue error message and exit
+              write(G2S_global_error,*)"ERROR: F107 file cannot be read."
+              stop 1
+            endif
             open(unit=f107_unit,file=f107file,status='old')
             read(f107_unit,*)f107
             close(f107_unit)
@@ -333,6 +351,12 @@
             ! Open archive file and get find the line for the requested day
             write(apfile,115)trim(adjustl(apfile)),'/',inyear
  115        format(a4,a1,i4)
+            inquire(file=apfile, exist=IsThere )
+            if(.not.IsThere)then
+              ! Ap file does not exits, issue error message and exit
+              write(G2S_global_error,*)"ERROR: Ap file cannot be read."
+              stop 1
+            endif
             open(unit=ap_unit,file=apfile,status='old')
             read(ap_unit,'(a71)')linebuffer
             read(linebuffer,102)iy,im,id, &
@@ -571,8 +595,8 @@
       enddo
 
       HoursIntoInterval = Met_needed_StartHour - MR_MetStep_Hour_since_baseyear(MR_iMetStep_Now)
-      MR_ForecastInterval = MR_MetStep_Interval(MR_iMetStep_Now)
-      Interval_Frac = HoursIntoInterval / MR_ForecastInterval
+      ForecastInterval = MR_MetStep_Interval(MR_iMetStep_Now)
+      Interval_Frac = HoursIntoInterval / ForecastInterval
 
       ! This subroutine sets both last and next geoH arrays so call with
       MR_iMetStep_Now = 1
@@ -817,8 +841,8 @@
           endif
         enddo
         HoursIntoInterval = Met_needed_StartHour - MR_MetStep_Hour_since_baseyear(MR_iMetStep_Now)
-        MR_ForecastInterval = MR_MetStep_Interval(MR_iMetStep_Now)
-        Interval_Frac = HoursIntoInterval / MR_ForecastInterval
+        ForecastInterval = MR_MetStep_Interval(MR_iMetStep_Now)
+        Interval_Frac = HoursIntoInterval / ForecastInterval
   
         ! This subroutine sets both last and next geoH arrays so call with MR_iMetStep_Now
         MR_iMetStep_Now = 1
