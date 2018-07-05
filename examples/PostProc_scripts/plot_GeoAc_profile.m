@@ -3,8 +3,8 @@
 % cat plot_GeoAc_profile.m | matlab -nodesktop -nosplash
 
 
-%Pref='Clev0';
-Pref='Bering';
+Pref='Clev0';
+%Pref='Bering';
 
 
 % Source location

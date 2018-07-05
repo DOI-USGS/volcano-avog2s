@@ -1319,7 +1319,7 @@
         density_sonde(k) = dens_MKS / 1000.0
       enddo
 
-      write(G2S_global_info,*)"Now writing file ",FILE_OUT_Sonde
+      write(G2S_global_info,*)"Now writing Z,T,U,V,rho,P to file ",FILE_OUT_Sonde
 
       open(unit=12, file=FILE_OUT_Sonde,status='replace')
       ! write met file
