@@ -21,8 +21,9 @@ The work-flow is as follows.
 1. Run `g2s_genSC_HWM14` to create a spectral coefficient file
 2. Rebuild a grid of atmospheric values from the coefficient file
 3. Extract the needed 1, 2, or 3-d values from the rebuilt grid
-4. Use the extracted output in an infrasound propagation model such as Art2d or
-[GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc).
+4. Use the extracted output in an infrasound propagation model such as Art2d,
+[GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc), or
+[NCPA codes](https://github.com/chetzer-ncpa/ncpaprop).
 
 Step 1: Create the spectral coefficient file
 --------------------------------------------
@@ -296,7 +297,8 @@ model GeoAc.
 
 For example, to extract a grid of values to encompass the region between Cleveland
 Volcano and the Dillingham infrasound array:  
-     ./g2s_Extract_Grid  50.0 60.0 3 185.0 205.0 5 180.0 0.2 Clev  
+     `./g2s_Extract_Grid  50.0 60.0 3 185.0 205.0 5 180.0 0.2 Clev`
+
 This produces 15 vertical profile files: `Clev[0-14].met`;
 and two files giving the coordinates of the grid points: `Clev.loclat`, `Clev.loclon`.
 
@@ -403,7 +405,7 @@ To create a grid of ASCII profiles and the loclon/loclat files that can be read 
 
   `/opt/USGS/AVOG2S/bin/g2s_Extract_Grid example1_step3_ext3d.ctr`
 
-##### Step 4: Run a foreward modeling code
+##### Step 4: Run a forward modeling code
 
 For ray-tracing in a stratified atmosphere analysis, run (from the examples/ex01_global/Stratified folder)
   `GeoAcGlobal -prop Clev0.met theta_min=-30.0 theta_max=55.0 theta_step=1.0 azimuth=41 bounces=10 lat_src=52.8222 lon_src=-169.945 z_src=1.73 CalcAmp=False WriteAtmo=True`
@@ -516,7 +518,7 @@ Alternatively, for the 3-D range-dependent case:
 
 This will create a grid of profiles around the Aleutian Islands and the Alaskan Peninsula.
 
-##### Step 4: Run a foreward modeling code
+##### Step 4: Run a forward modeling code
 
 For the Cartesian ray-tracing analysis in a stratified atmosphere, , run (from the examples/ex02_regional/Stratified folder)
 
