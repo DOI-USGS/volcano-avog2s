@@ -14,9 +14,9 @@
 !      publishing or distributing derivative products.
 !
 !      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
-!         AVO-G2S:  A modified Ground-to-Space model for volcano monitoring in Alaska,
-!         submitted. 
-
+!         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
+!           for infrasound model; submitted. 
+!
 !      We make no guarantees, expressed or implied, as to the usefulness of the software
 !      and its documentation for any purpose.  We assume no responsibility to provide
 !      technical support to users of this software.
@@ -29,7 +29,7 @@
 !     g2s_Extract_Sonde, g2s_Extract_Xsec, and g2s_Extract_Grid
 !    for sampling the gridded binary U,V,T files and created 1,2,and 3-d
 !    output files, respectively.  These output files can them be used in
-!    infrasound propagation software suce as GeoAc or Art2D.
+!    infrasound propagation software suce as GeoAc, Art2D or NCPAprop.
 !
 !##############################################################################
 

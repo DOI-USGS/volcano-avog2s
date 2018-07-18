@@ -463,6 +463,7 @@ Copy these to the current working directory:
 
 To download the high-resolution forecast data over the Alaska region (NAM grid 91), run
   `get_nam91.sh YYYY MM DD FChour HH`
+This script is installed in the `autorun_scripts` folder of the MetReader installation.
 For example `get_nam91.sh 2018 04 10 12 00` will download the file
 `nam.t12z.alaskanest.hiresf00.tm00.avo.grib2` into
 `/data/WindFiles/nam/ak03km/20180410_12`

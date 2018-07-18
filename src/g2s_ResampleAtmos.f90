@@ -14,8 +14,8 @@
 !      publishing or distributing derivative products.
 !
 !      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
-!         AVO-G2S:  A modified Ground-to-Space model for volcano monitoring in Alaska,
-!         submitted. 
+!         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
+!           for infrasound model; submitted.
 
 !      We make no guarantees, expressed or implied, as to the usefulness of the software
 !      and its documentation for any purpose.  We assume no responsibility to provide

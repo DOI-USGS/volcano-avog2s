@@ -10,6 +10,12 @@ srcnam ='Clev.';
 srclon =-169.945;
 srclat = 52.822;
 srcz   = 1.73;
+
+
+srcsrcnam ='Bogo.';
+srclon = -168.0381;
+srclat = 53.928
+srcz   = 0.0;
 Az     = 41.0;
 freq   = 0.1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,7 +80,7 @@ Z2 =reshape(z2,nz,nr);
 TL2=reshape(tl2,nz,nr);
 
 fig1=figure;
-subplot(10,1,2:6),imagesc(R2(1,:),Z2(:,1),TL2,[-130 -90]);
+subplot(10,1,2:6),imagesc(R2(1,:),Z2(:,1),TL2,[-130 -60]);
 ylabel('Altitude (km)')
 set(gca,'XTick',[])
 titstr=sprintf('%s : 2d transmission loss: %.2f Hz\nSource=%s, Az=%0.1f',NMeth,freq,srcnam,Az);
