@@ -247,9 +247,9 @@
                 write(G2S_global_info,*)" Currently only netcdf reader implemented, resetting idf to 2"
                 idf = 2
               endif
-              read(10,'(a80)')linebuffer
+              read(ct_unit,'(a80)')linebuffer
               read(linebuffer,'(a80)') MR_iwf_template
-              call MR_Read_Met_Template
+              !call MR_Read_Met_Template
             endif
             read(ct_unit,*) zmin_Met1, zmax_Met1, dz_Met1
             allocate(windfile1(nwindfiles1))
@@ -279,9 +279,8 @@
                 write(G2S_global_info,*)" Currently only netcdf reader implemented, resetting idf to 2"
                 idf = 2
               endif
-              read(10,'(a80)')linebuffer
+              read(ct_unit,'(a80)')linebuffer
               read(linebuffer,'(a80)') MR_iwf_template
-              call MR_Read_Met_Template
             endif
             read(ct_unit,*) zmin_Met2, zmax_Met2, dz_Met2
             allocate(windfile2(nwindfiles2))
@@ -483,10 +482,19 @@
         iw      = 4   ! read from single file
         igrid   = 91 ! nam 2.95km AK
         !idf     = 2   ! netcdf
+      elseif(iwf1.eq.50)then
+        ! WRF file
+        iw      = 4   ! read from single file
+        !idf     = 2   ! netcdf
+      elseif(iwf1.eq.0)then
+        ! this is for the user-provided netcdf file with a teamplate
+        iw      = 4   ! read from single file
+        !idf     = 2   ! netcdf
       else
-        write(G2S_global_error,*)"ERROR: Only iwf2 = 3,4,12,13,20,21,22,24,25,26,28,40,41 implemented."
+        write(G2S_global_error,*)"ERROR: Only iwf1 = 0,3,4,12,13,20,21,22,24,25,26,28,40,41,50 implemented."
         stop 1
       endif
+      write(*,*)iw,iwf1,igrid,idf,nwindfiles1
       Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)
       Simtime_in_hours     = 0.0
       call MR_Allocate_FullMetFileList(iw,iwf1,igrid,idf,nwindfiles1)
@@ -788,8 +796,16 @@
           iw      = 4   ! read from single file
           igrid   = 91 ! nam 5.9km AK
           idf     = 2   ! netcdf
+        elseif(iwf2.eq.50)then
+          ! WRF file
+          iw      = 4   ! read from single file
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.0)then
+          ! this is for the user-provided netcdf file with a teamplate
+          iw      = 4   ! read from single file
+          !idf     = 2   ! netcdf
         else
-          write(G2S_global_error,*)"ERROR: Only iwf2 = 3,12,13,20,21,22,24,25,26,28,40,41 implemented."
+          write(G2S_global_error,*)"ERROR: Only iwf2 = 0,3,4,12,13,20,21,22,24,25,26,28,40,41,50 implemented."
           stop 1
         endif
         Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)

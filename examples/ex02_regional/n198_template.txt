@@ -1,0 +1,14 @@
+0 1 -150.0 90.0 0.933 6371.229                                                                               Projection params line
+1.0                                                                                                          Time interval
+6  5                                                                                                         ndims, nvars
+d      1        1.0 time                                                                                     hours since
+d      2        1.0 isobaric2                                                                                Pa
+d      3        1.0 y                                                                                        km or deg
+d      4        1.0 x                                                                                        km or deg
+d      5        1.0 isobaric2                                                                                Pa
+d      6        1.0 isobaric2                                                                                Pa
+v 4  2 1        1.0    HGT   Geopotential_height_isobaric                                                    gpm
+v 4  2 2        1.0   UGRD   u-component_of_wind_isobaric                                                    m/s
+v 4  2 3        1.0   VGRD   v-component_of_wind_isobaric                                                    m/s
+v 4  5 4        1.0   VVEL   Vertical_velocity_pressure_isobaric                                             Pa/s
+v 4  2 5        1.0    TMP   Temperature_isobaric                                                            K

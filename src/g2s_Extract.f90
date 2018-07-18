@@ -44,6 +44,7 @@
       real(kind=8) :: x_in,y_in,zmax
       real(kind=8) :: az
       real(kind=8) :: ds_xsec,dz_prof,len_xsec
+      logical      :: IsCentered
       integer      :: ns_xsec,nz_prof
       real(kind=8) :: LatStart,LatEnd
       integer      :: LatCnt
@@ -57,6 +58,7 @@
       integer :: nargs
 
       integer      :: ilatlonflag
+      integer      :: dum_i
       real(kind=8) :: x2,y2
       real(kind=8) :: tmp1
       integer      :: ioerr
@@ -100,6 +102,7 @@
       nymax_g2s = 361
       dy_g2s    = 0.5
       ymin_g2s  = -90.0
+      IsCentered = .false.
 
       !===================================================
 
@@ -394,7 +397,7 @@
           !   x_in,y_in              : lon, lat (or x,y) of reference point of cross-section
           !   zmax, dz_prof          : maximum altitude of output, vertical increment
           !   IsLatLon   : 1 for global (lat/lon) grids, 0 for projected
-          !   az, len_xsec, ds_xsec  : azimuth, length and increment of xsec (if global)
+          !   az, len_xsec, ds_xsec, [IsCent]  : azimuth, length, increment of xsec, centering flag (if global)
           !       - or -
           !   x2, y2, len_xsec, dx_xsec : coordinate of in-line point, length and increment of xsec (if projected)
           !   nx, dx, xmin           : number, spacing, and start of gridpoints in x"
@@ -426,7 +429,27 @@
           if(ilatlonflag.eq.1)then
             IsLatLon = .true.
             ! For global grids, xsec are given by azimuth with the input point as the center
-            read(ct_unit,*)az, len_xsec, ds_xsec
+            read(ct_unit,'(a80)')lllinebuffer
+            read(ct_unit,*,iostat=ioerr)az, len_xsec, ds_xsec
+            if (ioerr.eq.0)then
+              ! Succeeded in reading the three required values, try for four
+              read(ct_unit,*,iostat=ioerr)az, len_xsec, ds_xsec, dum_i
+              if (ioerr.eq.0)then
+                if (dum_i.eq.1)then
+                  IsCentered = .true.
+                else
+                  IsCentered = .false.
+                endif
+              else
+                IsCentered = .false.
+              endif
+            else
+              ! Could not successfully read the required three values
+              write(G2S_global_error,*)"ERROR: Could not parse control file."
+              write(G2S_global_error,*)lllinebuffer
+              stop 1
+            endif
+
             write(G2S_global_info,*)"az, len_xsec, ds_xsec =",az, len_xsec, ds_xsec
             ! If grid is global, then assume the start grid is lon=0 and lat=-90
             !  Only read in two values to specify the grid
@@ -928,7 +951,7 @@
 
         call Extract_Profile(x_in,y_in,az,       &
                              ds_xsec,ns_xsec,    &
-                             dz_prof,nz_prof)
+                             dz_prof,nz_prof,IsCentered)
       endif
 
       if(WRITE_GRID)then
@@ -1344,7 +1367,7 @@
 
       subroutine Extract_Profile(x_in,y_in,az, &
                            ds_xsec,ns_xsec,    &
-                           dz_prof,nz_prof)
+                           dz_prof,nz_prof,IsCentered)
 
       use G2S_globvar
 
@@ -1353,6 +1376,7 @@
       real(kind=8) :: x_in,y_in,az
       real(kind=8) :: ds_xsec,dz_prof
       integer      :: ns_xsec,nz_prof
+      logical      :: IsCentered
 
       real(kind=8) :: x,y
       integer      :: ia,ix,iy
@@ -1429,7 +1453,11 @@
         ! Get pole of plane defining azimuth vector at this lon/lat
         call get_pole(x_in,y_in,az,lon_pole,lat_pole)
         ! Now get start lon/lat of this profile
-        deg_rot = -0.5*(ns_xsec-1)*ds_xsec
+        if(IsCentered)then
+          deg_rot = -0.5*(ns_xsec-1)*ds_xsec
+        else
+          deg_rot = 0.0
+        endif
         call back_rotate(x_in,y_in,lon_pole,lat_pole,deg_rot,&
                          lon_start,lat_start)
         open(unit=12, file=FILE_LL,status='replace')
