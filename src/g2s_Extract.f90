@@ -430,10 +430,10 @@
             IsLatLon = .true.
             ! For global grids, xsec are given by azimuth with the input point as the center
             read(ct_unit,'(a80)')lllinebuffer
-            read(ct_unit,*,iostat=ioerr)az, len_xsec, ds_xsec
+            read(lllinebuffer,*,iostat=ioerr)az, len_xsec, ds_xsec
             if (ioerr.eq.0)then
               ! Succeeded in reading the three required values, try for four
-              read(ct_unit,*,iostat=ioerr)az, len_xsec, ds_xsec, dum_i
+              read(lllinebuffer,*,iostat=ioerr)az, len_xsec, ds_xsec, dum_i
               if (ioerr.eq.0)then
                 if (dum_i.eq.1)then
                   IsCentered = .true.
