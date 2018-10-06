@@ -38,7 +38,7 @@
 !       ap   : Ap planetary index
 !       f107 : F107 value
 !       zmax : maximum altitude of profile
-!       dz   : verticle increment
+!       dz   : vertical increment
 !
 !    probe_HWT 2013 5 13 19.6 -161.887 55.42 4.0 153.5 200.0 2.5
 !
@@ -86,7 +86,7 @@
         !   ap      : Ap value
         !   f107    : F107 value
         !   zmax    : maximum altitude of profile
-        !   dz_prof : verticle increment
+        !   dz_prof : vertical increment
         ! Optionally, we can just feed it a command file with these 4 values
         ! along with all values for all these other variables
       if (nargs.eq.10)then
@@ -206,7 +206,7 @@
         write(G2S_global_info,*)"      ap   : Ap planetary index"
         write(G2S_global_info,*)"      f107 : F107 value"
         write(G2S_global_info,*)"      zmax : maximum altitude of profile"
-        write(G2S_global_info,*)"      dz   : verticle increment"
+        write(G2S_global_info,*)"      dz   : vertical increment"
         write(G2S_global_info,*)"  (2) control file"
         write(G2S_global_info,*)"    probe_HWT input_HWTprobe.ctr"
         write(G2S_global_info,*)"      where input_HWTprobe.ctr has the following format:"

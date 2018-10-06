@@ -38,7 +38,8 @@
       real(kind=4), parameter :: R_GAS_DRYAIR = 286.98_4    ! Specific gas constant of R=286.98 J /(kg K)
 
       integer, parameter ::     P_ord   = 3    ! This is the order of the B-Spline
-      integer, parameter ::     Nknots  = 28   ! Number of knots in the B-Splines
+!      integer, parameter ::     Nknots  = 28   ! Number of knots in the B-Splines
+      integer, parameter ::     Nknots  = 37   ! Number of knots in the B-Splines
 
         ! These are useful for writing out cross-sections of the Met1/2, HWT, and reconctructed data
       logical, parameter ::     write_test_output = .false.
@@ -154,12 +155,33 @@
 
       integer :: full_data_len
 
-      data iknots/0.0,  5.0, 10.0, 15.0, 20.0, &
-                 25.0, 30.0, 35.0, 40.0, 45.0, &
+      ! B-spline knot (28) points suitable for thermosphere (similare to NRL-G2S)
+!      data iknots/0.0,  5.0, 10.0, 15.0, 20.0, &
+!                 25.0, 30.0, 35.0, 40.0, 45.0, &
+!                 50.0, 55.0, 60.0, 65.0, 70.0, &
+!                 75.0, 80.0, 85.0, 90.0, 95.0, &
+!                100.0, 105.0, 110.0, 117.5, 125.0, &
+!                135.0, 150.0, 225.0/
+
+      ! B-spline knot points (37) suitable for thermosphere with higher resolution in
+      ! the troposphere
+      data iknots/0.0,  2.5, 5.0, 7.5, 10.0, 12.5, 15.0, 17.5, 20.0, &
+                 22.5, 25.0, 27.5, 30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, &
                  50.0, 55.0, 60.0, 65.0, 70.0, &
                  75.0, 80.0, 85.0, 90.0, 95.0, &
                 100.0, 105.0, 110.0, 117.5, 125.0, &
                 135.0, 150.0, 225.0/
+
+      ! B-spline knot points (37) suitable for exosphere
+!      data iknots/0.0,  5.0, 10.0, 15.0, 20.0, &
+!                 25.0, 30.0, 35.0, 40.0, 45.0, &
+!                 50.0, 55.0, 60.0, 65.0, 70.0, &
+!                 75.0, 80.0, 85.0, 90.0, 95.0, &
+!                100.0, 105.0, 110.0, 117.5, 125.0, &
+!                135.0, 150.0, 175.0, 225.0, 275.0, &
+!                300.0, 375.0, 450.0, 525.0, 600.0, &
+!                675.0, 750.0/
+
 
       integer :: fc_hour = 0
       real(kind=4) :: ap,f107

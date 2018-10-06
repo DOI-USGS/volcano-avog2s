@@ -640,33 +640,64 @@
                  tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1)) * &
                                          real(Interval_Frac,kind=4)
       else
+        ! Grids are different, we will need to rotate vectors
         allocate(tmp3d_1_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
         allocate(tmp3d_2_2_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
 
-        ! If this is not a global case (Met_Case=1) then we can assume the comp
-        ! grid is projected.  If the met grid is also projected, and the same
-        ! projection, then the above branch also applied.  So either we have met
-        ! data that is projected differently that comp data (Map_case=5) or we
-        ! have LL Met data and projected comp grid.
-        if(Map_Case.eq.5)then
-          ! In this case, we first need to rotate the projected Met data to
-          ! Earth-relative on the MetP grid
-          call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now)
-        endif
-        call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now)
-        ! U for comp grid is stored in MR_dum3d_compH
-        tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-        ! V for comp grid is stored in MR_dum3d_compH_2
-        tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
+        if(Map_case.eq.3)then
+            ! Met grid is natively LL and Comp grid is projected
+          call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now)
+          ! U for comp grid is stored in MR_dum3d_compH
+          tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+          ! V for comp grid is stored in MR_dum3d_compH_2
+          tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
 
-        if(Map_Case.eq.5)then
+          call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now+1)
+          ! U for comp grid is stored in MR_dum3d_compH
+          tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+          ! V for comp grid is stored in MR_dum3d_compH_2
+          tmp3d_2_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
+        elseif(Map_case.eq.4)then
+            ! Met grid is projected and comp grid is LL
+          if(isGridRelative)then
+            call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now,.true.) ! optional argument returns data on compH
+            ! U for comp grid is stored in MR_dum3d_compH
+            tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+            ! V for comp grid is stored in MR_dum3d_compH_2
+            tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
+
+            call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now+1,.true.) ! optional argument returns data on compH
+            ! U for comp grid is stored in MR_dum3d_compH
+            tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+            ! V for comp grid is stored in MR_dum3d_compH_2
+            tmp3d_2_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
+          else
+            ivar = 2 ! Vx
+            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+            tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+
+            ivar = 3 ! Vy
+            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+            tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+            tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+          endif
+        elseif(Map_Case.eq.5)then
+          call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now)
+          call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now)
+          ! U for comp grid is stored in MR_dum3d_compH
+          tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+          ! V for comp grid is stored in MR_dum3d_compH_2
+          tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
+
           call MR_Rotate_UV_GR2ER_Met(MR_iMetStep_Now+1)
+          call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now+1)
+          ! U for comp grid is stored in MR_dum3d_compH
+          tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
+          ! V for comp grid is stored in MR_dum3d_compH_2
+          tmp3d_2_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
         endif
-        call MR_Rotate_UV_ER2GR_Comp(MR_iMetStep_Now+1)
-        ! U for comp grid is stored in MR_dum3d_compH
-        tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-        ! V for comp grid is stored in MR_dum3d_compH_2
-        tmp3d_2_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
 
         vx_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) = &
                 tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) + &
@@ -716,7 +747,7 @@
           enddo
         enddo
         close(40)
-        ! Dump out meridonal cross-section of Met grid
+        ! Dump out meridional cross-section of Met grid
         open(unit=40,file='ysec_Met.dat',status='replace')
         do j=1,nymax_g2s
           do k=1,nzmax_Met1
@@ -756,9 +787,13 @@
         day     = day_of_year(start_year,start_month,start_day)
   
         ! Use MetReader library
-        if(iwf2.eq.20.or.iwf2.eq.21.or.iwf2.eq.26)then
+        if(iwf2.eq.20)then
           iw      = 4   ! read from multiple files
           igrid   = 4   ! 0.5 degree global
+          idf     = 2   ! netcdf
+        elseif(iwf2.eq.21)then
+          iw      = 4   ! read from single file
+          igrid   = 3   ! 1.0 degree global
           idf     = 2   ! netcdf
         elseif(iwf2.eq.22)then
           iw      = 4   ! read from single file
@@ -778,15 +813,15 @@
           idf     = 2   ! netcdf
         elseif(iwf2.eq.40)then
           iw      = 4   ! read from single file
-          igrid   = 1040 ! MERRA
+          igrid   = 1040 ! NASA GEOS 5 Cp
           idf     = 2   ! netcdf
         elseif(iwf2.eq.41)then
           iw      = 4   ! read from single file
-          igrid   = 1041 ! MERRA
+          igrid   = 1041 !  NASA GEOS 5 Np
           idf     = 2   ! netcdf
         elseif(iwf2.eq.3)then
           iw      = 3   ! read from single file
-          igrid   = 221 ! NARR 32-km
+          igrid   = 1221 ! NARR 32-km
           idf     = 2   ! netcdf
         elseif(iwf2.eq.12)then
           iw      = 4   ! read from single file
@@ -1049,7 +1084,8 @@
 #ifdef useHWM14
         write(G2S_global_info,*)"Computing vx,vy,temperature from HWM14 and MSIS"
 #endif
-
+        write(G2S_global_info,*)"  F107 = ",f107
+        write(G2S_global_info,*)"  ap   = ",ap
 
         do i = 1,nxmax_g2s
           write(G2S_global_info,*)"Calculating x=",i," of ",nxmax_g2s
