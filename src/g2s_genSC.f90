@@ -999,7 +999,7 @@
           open(unit=40,file='xsec_Met2.dat',status='replace')
           do i=1,nxmax_g2s
             do k=1,nzmax_Met2
-              write(40,*)x_g2s_sp(i),y_g2s_sp(j),z_Met2_sp(k),&
+              write(40,*)x_g2s_sp(i),y_g2s_sp(jout),z_Met2_sp(k),&
                          temperature_Met_loc_sp(i,jout,k),&
                          vx_Met_loc_sp(i,jout,k),vy_Met_loc_sp(i,jout,k)
             enddo
