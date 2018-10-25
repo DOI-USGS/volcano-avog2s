@@ -732,8 +732,11 @@
         open(unit=30,file='plan_Met.dat',status='replace')
         do i=1,nxmax_g2s
           do j=1,nymax_g2s
-            write(30,*)x_g2s_sp(i),y_g2s_sp(j),temperature_Met_loc_sp(i,j,1),&
-                      vx_Met_loc_sp(i,j,1),vy_Met_loc_sp(i,j,1)
+            write(30,*)x_g2s_sp(i),                   &
+                       y_g2s_sp(j),                   &
+                       temperature_Met_loc_sp(i,j,1), &
+                       vx_Met_loc_sp(i,j,1),          &
+                       vy_Met_loc_sp(i,j,1)
           enddo
         enddo
         close(30)
@@ -741,9 +744,12 @@
         open(unit=40,file='xsec_Met.dat',status='replace')
         do i=1,nxmax_g2s
           do k=1,nzmax_Met1
-            write(40,*)x_g2s_sp(i),y_g2s_sp(jout),z_Met1_sp(k),&
-                       temperature_Met_loc_sp(i,jout,k),&
-                       vx_Met_loc_sp(i,jout,k),vy_Met_loc_sp(i,jout,k)
+            write(40,*)x_g2s_sp(i),                      &
+                       y_g2s_sp(jout),                   &
+                       z_Met1_sp(k),                     &
+                       temperature_Met_loc_sp(i,jout,k), &
+                       vx_Met_loc_sp(i,jout,k),          &
+                       vy_Met_loc_sp(i,jout,k)
           enddo
         enddo
         close(40)
@@ -751,9 +757,12 @@
         open(unit=40,file='ysec_Met.dat',status='replace')
         do j=1,nymax_g2s
           do k=1,nzmax_Met1
-            write(40,*)x_g2s_sp(iout),y_g2s_sp(j),z_Met1_sp(k),& 
-                       temperature_Met_loc_sp(iout,j,k),&
-                       vx_Met_loc_sp(iout,j,k),vy_Met_loc_sp(iout,j,k)
+            write(40,*)x_g2s_sp(iout),                   &
+                       y_g2s_sp(j),                      &
+                       z_Met1_sp(k),                     &
+                       temperature_Met_loc_sp(iout,j,k), &
+                       vx_Met_loc_sp(iout,j,k),          &
+                       vy_Met_loc_sp(iout,j,k)
           enddo
         enddo
         close(40)
@@ -990,8 +999,11 @@
           open(unit=30,file='plan_Met2.dat',status='replace')
           do i=1,nxmax_g2s
             do j=1,nymax_g2s
-              write(30,*)x_g2s_sp(i),y_g2s_sp(j),temperature_Met_loc_sp(i,j,1),&
-                        vx_Met_loc_sp(i,j,1),vy_Met_loc_sp(i,j,1)
+              write(30,*)x_g2s_sp(i),                    &
+                         y_g2s_sp(j),                    &
+                         temperature_Met_loc_sp(i,j,1),  &
+                         vx_Met_loc_sp(i,j,1),           &
+                         vy_Met_loc_sp(i,j,1)
             enddo
           enddo
           close(30)
@@ -999,9 +1011,12 @@
           open(unit=40,file='xsec_Met2.dat',status='replace')
           do i=1,nxmax_g2s
             do k=1,nzmax_Met2
-              write(40,*)x_g2s_sp(i),y_g2s_sp(jout),z_Met2_sp(k),&
-                         temperature_Met_loc_sp(i,jout,k),&
-                         vx_Met_loc_sp(i,jout,k),vy_Met_loc_sp(i,jout,k)
+              write(40,*)x_g2s_sp(i),                      &
+                         y_g2s_sp(jout),                   &
+                         z_Met2_sp(k),                     &
+                         temperature_Met_loc_sp(i,jout,k), &
+                         vx_Met_loc_sp(i,jout,k),          &
+                         vy_Met_loc_sp(i,jout,k)
             enddo
           enddo
           close(40)
@@ -1009,9 +1024,12 @@
           open(unit=40,file='ysec_Met2.dat',status='replace')
           do j=1,nymax_g2s
             do k=1,nzmax_Met2
-              write(40,*)x_g2s_sp(iout),y_g2s_sp(j),z_Met2_sp(k),&
-                         temperature_Met_loc_sp(iout,j,k),&
-                         vx_Met_loc_sp(iout,j,k),vy_Met_loc_sp(iout,j,k)
+              write(40,*)x_g2s_sp(iout),                   &
+                         y_g2s_sp(j),                      &
+                         z_Met2_sp(k),                     &
+                         temperature_Met_loc_sp(iout,j,k), &
+                         vx_Met_loc_sp(iout,j,k),          &
+                         vy_Met_loc_sp(iout,j,k)
             enddo
           enddo
           close(40)

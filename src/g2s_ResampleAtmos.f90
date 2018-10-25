@@ -687,9 +687,10 @@
         open(unit=32,file='plan_res.dat',status='replace')
         do i=1,nxmax_g2s
           do j=1,nymax_g2s
-            write(32,*)x_g2s_sp(i),y_g2s_sp(j),         &
+            write(32,*)x_g2s_sp(i),                             &
+                       y_g2s_sp(j),                             &
                        real(temperature_OUT_dp(i,j,1),kind=4),  &
-                       real(         vx_OUT_dp(i,j,1),kind=4),           &
+                       real(         vx_OUT_dp(i,j,1),kind=4),  &
                        real(         vy_OUT_dp(i,j,1),kind=4)
           enddo
         enddo
@@ -698,9 +699,11 @@
         open(unit=42,file='xsec_res.dat',status='replace')
         do i=1,nxmax_g2s
           do k=1,data_len
-            write(42,*)x_g2s_sp(i),real(new_data_alt(k),kind=4), &
-                       real(temperature_OUT_dp(i,jout,k),kind=4),     &
-                       real(         vx_OUT_dp(i,jout,k),kind=4),              &
+            write(42,*)x_g2s_sp(i),                               &
+                       y_g2s_sp(jout),                            &
+                       real(new_data_alt(k),kind=4),              &
+                       real(temperature_OUT_dp(i,jout,k),kind=4), &
+                       real(         vx_OUT_dp(i,jout,k),kind=4), &
                        real(         vy_OUT_dp(i,jout,k),kind=4)
           enddo
         enddo
@@ -709,9 +712,11 @@
         open(unit=42,file='ysec_res.dat',status='replace')
         do j=1,nymax_g2s
           do k=1,data_len
-            write(42,*)y_g2s_sp(j),real(new_data_alt(k),kind=4), &
-                       real(temperature_OUT_dp(iout,j,k),kind=4),     &
-                       real(         vx_OUT_dp(iout,j,k),kind=4),              &
+            write(42,*)x_g2s_sp(iout),                            &
+                       y_g2s_sp(j),                               &
+                       real(new_data_alt(k),kind=4),              &
+                       real(temperature_OUT_dp(iout,j,k),kind=4), &
+                       real(         vx_OUT_dp(iout,j,k),kind=4), &
                        real(         vy_OUT_dp(iout,j,k),kind=4)
           enddo
         enddo
