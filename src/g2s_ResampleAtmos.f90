@@ -54,19 +54,19 @@
         !dz2 = 2.0
         !dz3 = 5.0
           ! This one is good for operations
-        !nz1 = 26
-        !nz2 = 50
-        !nz3 = 50
-        !dz1 = 1.0
-        !dz2 = 1.5
-        !dz3 = 2.0
-          ! Here the three segments all have dz=1.0
-        nz1 = 50
+        nz1 = 26
         nz2 = 50
-        nz3 = 101
+        nz3 = 50
         dz1 = 1.0
-        dz2 = 1.0
-        dz3 = 1.0
+        dz2 = 1.5
+        dz3 = 2.0
+          ! Here the three segments all have dz=1.0
+        !nz1 = 50
+        !nz2 = 50
+        !nz3 = 101
+        !dz1 = 1.0
+        !dz2 = 1.0
+        !dz3 = 1.0
 
        !===================================================
 
