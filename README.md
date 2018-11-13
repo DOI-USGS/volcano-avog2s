@@ -18,13 +18,13 @@ software packages must be built and installed before the AVOG2S software
 suite can be built.
 
 1. To download and read the NWP data, several USGS libraries must be installed:  
-   [HoursSince](https://github.com/hschwaiger-usgs/HoursSince)  
-   [projection](https://github.com/hschwaiger-usgs/projection)  
-   [MetReader](https://github.com/hschwaiger-usgs/MetReader)
+   [HoursSince](https://github.com/usgs/volcano-ash3d-hourssince)  
+   [projection](https://github.com/usgs/volcano-ash3d-projection)  
+   [MetReader](https://github.com/usgs/volcano-ash3d-metreader)
 
 2. Upper-atmospheric empirical models are available separately for horizontal
 winds and temperature  
-   [HWM14](http://onlinelibrary.wiley.com/store/10.1002/2014EA000089/asset/supinfo/ess224-sup-0002-supinfo.tgz?v=1&s=2a957ba70b7cf9dd0612d9430076297c3634ea75)  
+   [HWM14](https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2F2014EA000089&file=ess224-sup-0002-supinfo.tgz)  
    [NRLMSIS-00](https://github.com/graziano-giuliani/Meteostuff/tree/master/NRLMSIS_F90)
 
 3. Spectral decomposition of the data utilize two libraries, one for spherical
@@ -45,22 +45,22 @@ harmonic decompositions, and one for Fourier decomposition
       <ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/>
 2. Numerical Weather Prediction data  
     Forecast and reanalysis data available from many sources.  See documentation
-    in [MetReader](https://github.com/hschwaiger-usgs/MetReader).
+    in [MetReader](https://github.com/usgs/volcano-ash3d-metreader).
 
 
 Preliminary Software Installation
 ---------------------------------
 
 ### USGS libraries  
-  Three libraries from the Ash3d package are needed: [HoursSince](https://github.com/hschwaiger-usgs/HoursSince), 
-   [projection](https://github.com/hschwaiger-usgs/projection), 
-   [MetReader](https://github.com/hschwaiger-usgs/MetReader).
+  Three libraries from the Ash3d package are needed: [HoursSince](https://github.com/usgs/volcano-ash3d-hourssince), 
+   [projection](https://github.com/usgs/volcano-ash3d-projection), 
+   [MetReader](https://github.com/usgs/volcano-ash3d-metreader).
 These libraries are currently available at the locations given above.
 Installation instructions are given in the repositories for each of these libraries.
 
 ### Empirical models  
 ##### HWM14
- HWM14 is available as supplemental material for [Drob et al., 2015](https://doi.org/10.1002/2014EA000089).  The build
+ HWM14 is available as supplemental material for [Drob et al., 2015](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2014EA000089).  The build
 of AVOG2S expects that this be compiled as a library with the data files installed in a specified location.  The makefile
 `src/ExternalDataSoftware/makefile_HWM14.gfortran` is provided which can be used to
 build the HWM14 library.  The install location can be changed by editing the top
@@ -68,8 +68,8 @@ of this file.
 
 To build the library, type:  
   `cd src/ExternalDataSoftware/`  
-  `wget http://onlinelibrary.wiley.com/store/10.1002/2014EA000089/asset/supinfo/ess224-sup-0002-supinfo.tgz?v=1&s=2a957ba70b7cf9dd0612d9430076297c3634ea75`  
-Or open the [article page](http://onlinelibrary.wiley.com/doi/10.1002/2014EA000089/abstract)
+  `wget https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2F2014EA000089&file=ess224-sup-0002-supinfo.tgz`  
+Or open the [article page](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2014EA000089)
 and download `ess224-sup-0002-supinfo.tgz` from Supporting Information.
 
   `gunzip ess224-sup-0002-supinfo.tgz`  
@@ -87,7 +87,7 @@ To use software that links to this library, you will need to add the following t
 
 If you have difficulty installing HWM14 (e.g. if you are using an older compiler), you
 can optionally install HWM07.  The fortran source files and data files are available
-from <https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/>
+from <https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/>. (**This link and those used in the `wget` calls below are broken.**)
 
 To build this library, type:  
 `cd src/ExternalDataSoftware/HWM07`  
