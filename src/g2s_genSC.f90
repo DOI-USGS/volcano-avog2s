@@ -494,9 +494,10 @@
         write(G2S_global_error,*)"ERROR: Only iwf1 = 0,3,4,12,13,20,21,22,24,25,26,28,40,41,50 implemented."
         stop 1
       endif
-      write(*,*)iw,iwf1,igrid,idf,nwindfiles1
       Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)
       Simtime_in_hours     = 0.0
+      MR_Comp_StartHour    = Met_needed_StartHour
+      MR_Comp_Time_in_hours = Simtime_in_hours
       call MR_Allocate_FullMetFileList(iw,iwf1,igrid,idf,nwindfiles1)
       do iw = 1,nwindfiles1
         MR_windfiles(iw) = trim(ADJUSTL(windfile1(iw)))
@@ -2438,7 +2439,6 @@
       f107_dp  = real(f107,kind=8)
       f107a_dp = f107_dp
       aph_dp   = real(ap,kind=8)
-
       call gtd7(day,ut_dp,alt_dp,xlat_dp,xlon_dp,xlst_dp,f107a_dp,f107_dp,aph_dp,48,d_dp,t_dp)
 
       u_g2s       = vx_new
