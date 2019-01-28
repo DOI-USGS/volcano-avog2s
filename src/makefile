@@ -90,7 +90,10 @@ HWTLIB=-L$(AVOG2SINSTALLDIR)/lib -lnrlmsis -lHWM$(HWMv) -I$(AVOG2SINSTALLDIR)/in
 
 # Netcdf is required, but MetReader may have been compiled with grib2 support
 ifeq ($(USEGRIB2), T)
+ # These are the libraries for grib_api
  DATALIBS =  -lnetcdf -lnetcdff -lgrib_api_f90 -lgrib_api
+ # These are the libraries for ecCodes
+ #DATALIBS =  -lnetcdf -lnetcdff -leccodes -leccodes_f90
  grb2FPPFLAG = -DUSEGRIB2
 else
  DATALIBS =  -lnetcdf -lnetcdff

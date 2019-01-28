@@ -23,7 +23,7 @@ The work-flow is as follows.
 3. Extract the needed 1, 2, or 3-d values from the rebuilt grid
 4. Use the extracted output in an infrasound propagation model such as Art2d,
 [GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc), or
-[NCPA codes](https://github.com/chetzer-ncpa/ncpaprop).
+[NCPA Atmospheric Acoustic Propagation Modeling Package](https://github.com/chetzer-ncpa/ncpaprop).
 
 Step 1: Create the spectral coefficient file
 --------------------------------------------
