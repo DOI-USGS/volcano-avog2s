@@ -41,7 +41,7 @@
 !      integer, parameter ::     Nknots  = 28   ! Number of knots in the B-Splines
       integer, parameter ::     Nknots  = 37   ! Number of knots in the B-Splines
 
-        ! These are useful for writing out cross-sections of the Met1/2, HWT, and reconctructed data
+        ! These are useful for writing out cross-sections of the Met1/2, HWT, and reconstructed data
       logical, parameter ::     write_test_output = .false.
       integer, parameter ::     jout              = 180   ! This is for a equatorial cross-section
       integer, parameter ::     iout              = 366   ! This is x=0 for the subgrid of the nam198 used in Fig.4
@@ -158,7 +158,7 @@
 
       integer :: full_data_len
 
-      ! B-spline knot (28) points suitable for thermosphere (similare to NRL-G2S)
+      ! B-spline knot (28) points suitable for thermosphere (similar to NRL-G2S)
 !      data iknots/0.0,  5.0, 10.0, 15.0, 20.0, &
 !                 25.0, 30.0, 35.0, 40.0, 45.0, &
 !                 50.0, 55.0, 60.0, 65.0, 70.0, &
@@ -218,7 +218,7 @@
       integer(kind=2), dimension(:,:) ,allocatable :: topo_raw
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-      logical :: IsThere     ! variable used for checking existance of files.
+      logical :: IsThere     ! variable used for checking existence of files.
 
       integer      :: nxmax_g2s ! number of x points in the g2s grid
       integer      :: nymax_g2s ! number of y points in the g2s grid

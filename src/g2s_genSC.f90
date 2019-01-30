@@ -26,7 +26,7 @@
 !  g2s_genSC
 !
 !  This program reads one or more groups of NWP files and smoothly merges them
-!  with empirical values taken from HWM14 and NRLMSIS-00.  The spectral (either
+!  with empirical values taken from HWM14 and NRLMSISE-00.  The spectral (either
 !  spherical harmonic or Fourier) coefficients of this smoothed atmospheric
 !  conditions is written out to a netcdf file.
 !
@@ -128,7 +128,7 @@
           !! Edit this format line to point to your coefficient files
           !file_SH = "/data/Ground2Space/Model_SH/G2S_SH.nc"
 
-          !! Read the latest 3-hourly Ap megnetic index which are downloaded and
+          !! Read the latest 3-hourly Ap magnetic index which are downloaded and
           !! extracted from http://www.swpc.noaa.gov/ftpdir/latest/wwv.txt
           !! www.swpc.noaa.gov/products/geophysical-alert-wwv-text
           !open(unit=ap_unit,file=apfile,status='old')
@@ -346,7 +346,7 @@
             read(f107_unit,*)f107
             close(f107_unit)
           else
-            write(G2S_global_info,*)"Ap and F107 are equivalant, assume it is a directory to archive."
+            write(G2S_global_info,*)"Ap and F107 are equivalent, assume it is a directory to archive."
             ! Open archive file and get find the line for the requested day
             write(apfile,115)trim(adjustl(apfile)),'/',inyear
  115        format(a4,a1,i4)
@@ -487,7 +487,7 @@
         iw      = 4   ! read from single file
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.0)then
-        ! this is for the user-provided netcdf file with a teamplate
+        ! this is for the user-provided netcdf file with a template
         iw      = 4   ! read from single file
         !idf     = 2   ! netcdf
       else
@@ -502,7 +502,7 @@
       do iw = 1,nwindfiles1
         MR_windfiles(iw) = trim(ADJUSTL(windfile1(iw)))
       enddo
-        ! Now check for existance and compatibility with simulation time requirements
+        ! Now check for existence and compatibility with simulation time requirements
       call MR_Read_Met_DimVars(inyear)
 
         ! Note: the Met files will always be on the g2s grid, possibly resampled
@@ -565,7 +565,7 @@
               ! Get lon/lat of point in question
             ptlon = Lon_of_proj_node_dp(i,j)
             ptlat = Lat_of_proj_node_dp(i,j)
-              ! Get projected coordinate of de at the currrent point
+              ! Get projected coordinate of de at the current point
             call PJ_proj_for(ptlon+1.0_8/60.0_8,ptlat, iprojflag, &
                        lam0,phi0,phi1,phi2,k0_scale,radius_earth, &
                        x_out,y_out)
@@ -846,7 +846,7 @@
           iw      = 4   ! read from single file
           !idf     = 2   ! netcdf
         elseif(iwf2.eq.0)then
-          ! this is for the user-provided netcdf file with a teamplate
+          ! this is for the user-provided netcdf file with a template
           iw      = 4   ! read from single file
           !idf     = 2   ! netcdf
         else
@@ -859,7 +859,7 @@
         do iw = 1,nwindfiles2
           MR_windfiles(iw) = trim(ADJUSTL(windfile2(iw)))
         enddo
-          ! Now check for existance and compatibility with simulation time requirements
+          ! Now check for existence and compatibility with simulation time requirements
         call MR_Read_Met_DimVars(inyear)
 
         nzmax_Met2 = nint((zmax_Met2-zmin_Met2)/dz_Met2) + 1
@@ -1021,7 +1021,7 @@
             enddo
           enddo
           close(40)
-          ! Dump out meridonal cross-section of Met grid
+          ! Dump out meridional cross-section of Met grid
           open(unit=40,file='ysec_Met2.dat',status='replace')
           do j=1,nymax_g2s
             do k=1,nzmax_Met2
@@ -1098,10 +1098,10 @@
       else
 
 #ifdef useHWM07
-        write(G2S_global_info,*)"Computing vx,vy,temperature from HWM07 and MSIS"
+        write(G2S_global_info,*)"Computing vx,vy,temperature from HWM07 and MSISE-00"
 #endif
 #ifdef useHWM14
-        write(G2S_global_info,*)"Computing vx,vy,temperature from HWM14 and MSIS"
+        write(G2S_global_info,*)"Computing vx,vy,temperature from HWM14 and MSISE-00"
 #endif
         write(G2S_global_info,*)"  F107 = ",f107
         write(G2S_global_info,*)"  ap   = ",ap
@@ -1161,7 +1161,7 @@
           enddo
         enddo
         close(41)
-        ! Dump out meridonal cross-section of HWT grid
+        ! Dump out meridional cross-section of HWT grid
         open(unit=41,file='ysec_HWT.dat',status='replace')
         do j=1,nymax_g2s
           do k=1,nzmax_HWT
@@ -1979,7 +1979,7 @@
             !    using the singular value decomposition (SVD) of A. A is an M-by-N
             !    matrix which may be rank-deficient.
             !call dgelss(m, n, nrhs, a, lda, b, ldb, s, rcond, rank, work, lwork, iwork, info)
-            !    Here's using the SVD via divide and conquere
+            !    Here's using the SVD via divide and conquer
             call dgelsd(m, n, nrhs, a, lda, b, ldb, s, rcond, rank, work, lwork, iwork, info)
 
             if( INFO.GT.0 ) then
@@ -2328,8 +2328,8 @@
 !     Get_WindTemp_Empir
 !
 !     This subroutine is the interface to the empirical models HWM07 and
-!     NRLMSIS.  This takes as arguments, the full coordinates (x,y,z,t) as well
-!     as the space-weather indicies Ap and F107, then returns the Vx, Vy, and T
+!     NRLMSISE-00.  This takes as arguments, the full coordinates (x,y,z,t) as well
+!     as the space-weather indices Ap and F107, then returns the Vx, Vy, and T
 !     values.
 !
 !     No global variables are filled.  Vx,Vy, and T are returned through the

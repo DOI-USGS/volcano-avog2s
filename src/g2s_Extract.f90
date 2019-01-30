@@ -845,7 +845,7 @@
       enddo
       if(new_data_alt(nz1+nz2+nz3).le.zmax)then
         write(G2S_global_error,*)"ERROR:  The requested zmax must be strictly less than the"
-        write(G2S_global_error,*)"reconstitued atmosphere"
+        write(G2S_global_error,*)"reconstituted atmosphere"
         write(G2S_global_error,*)"     requested zmax = ",zmax
         write(G2S_global_error,*)" reconstituted zmax = ",new_data_alt(nz1+nz2+nz3)
         stop 1
