@@ -69,7 +69,7 @@ HWMv=14
 #SHTlib=SHTOOLS$(SHTv)
 #SHTOOLINC=${SHTOOLROOT}/modules
 #  Current version is 4.0 and installs by default to /usr/local
-#SHTv=4.0
+SHTv=4.0
 SHTlib=SHTOOLS
 SHTOOLROOT=/usr/local
 SHTOOLINC=${SHTOOLROOT}/include
@@ -90,7 +90,10 @@ HWTLIB=-L$(AVOG2SINSTALLDIR)/lib -lnrlmsis -lHWM$(HWMv) -I$(AVOG2SINSTALLDIR)/in
 
 # Netcdf is required, but MetReader may have been compiled with grib2 support
 ifeq ($(USEGRIB2), T)
+ # These are the libraries for grib_api
  DATALIBS =  -lnetcdf -lnetcdff -lgrib_api_f90 -lgrib_api
+ # These are the libraries for ecCodes
+ #DATALIBS =  -lnetcdf -lnetcdff -leccodes -leccodes_f90
  grb2FPPFLAG = -DUSEGRIB2
 else
  DATALIBS =  -lnetcdf -lnetcdff
@@ -102,7 +105,7 @@ USGSLIBDIR = -L$(USGSROOT)/lib
 USGSLIB = -lMetReader -lhourssince -lprojection
 USGSINC = -I$(USGSROOT)/include
 
-EXTRALIBS = -L$(SHTOOLROOT)/lib -I$(SHTOOLINC) $(DATALIBS) -l$(SHTlib) -lfftw3 -lfftw3f -lm -llapack
+EXTRALIBS = -L$(SHTOOLROOT)/lib -I$(SHTOOLINC) $(DATALIBS) -l$(SHTlib) -lfftw3 -lm -llapack
 
 ###############################################################################
 ###########  GNU Fortran Compiler  #############################################
@@ -110,8 +113,8 @@ EXTRALIBS = -L$(SHTOOLROOT)/lib -I$(SHTOOLINC) $(DATALIBS) -l$(SHTlib) -lfftw3 -
     FCHOME=/usr
     FC = /usr/bin/gfortran
 
-    COMPINC = -I$(FCHOME)/include -I$(FCHOME)/lib64/gfortran/modules
-    COMPLIBS = -L$(FCHOME)/lib -L$(FCHOME)/lib64
+    COMPINC = -I$(FCHOME)/include -I$(FCHOME)/local/include -I$(FCHOME)/lib64/gfortran/modules
+    COMPLIBS = -L$(FCHOME)/lib64 -L$(FCHOME)/lib -L$(FCHOME)/local/lib
 
     #COMPLIBS = -I/usr/lib64/gfortran/modules -I/usr/include -L/usr/lib/x86_64-linux-gnu
 

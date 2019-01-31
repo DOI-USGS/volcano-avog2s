@@ -27,7 +27,7 @@
 !
 !    This is a stand-alone program that exports a vertical profile of 
 !    Z, T, U, V, RelHum, and P using the empirical models HWM[07/14] and
-!    NRLMSIS-00.  This program takes 10 command-line arguments:
+!    NRLMSISE-00.  This program takes 10 command-line arguments:
 !     
 !       year : integer
 !       month: integer
@@ -42,7 +42,7 @@
 !
 !    probe_HWT 2013 5 13 19.6 -161.887 55.42 4.0 153.5 200.0 2.5
 !
-!    Output is writen to the file sonde_ztuvrp.dat
+!    Output is written to the file sonde_ztuvrp.dat
 !
 !##############################################################################
 
@@ -151,7 +151,7 @@
           read(f107_unit,*)f107
           close(f107_unit)
         else
-          write(G2S_global_info,*)"Ap and F107 are equivalant, assume it is a directory to archive."
+          write(G2S_global_info,*)"Ap and F107 are equivalent, assume it is a directory to archive."
           ! Open archive file and get find the line for the requested day
           write(apfile,115)trim(adjustl(apfile)),'/',inyear
  115      format(a4,a1,i4)
@@ -266,8 +266,8 @@
 !     Get_WindTempRho_Empir
 !
 !     This subroutine is the interface to the empirical models HWM07 and
-!     NRLMSIS.  This takes as arguments, the full coordinates (x,y,z,t) as well
-!     as the space-weather indicies Ap and F107, then returns the Vx, Vy, and T
+!     NRLMSISE.  This takes as arguments, the full coordinates (x,y,z,t) as well
+!     as the space-weather indices Ap and F107, then returns the Vx, Vy, and T
 !     values.
 !
 !     No global variables are filled.  Vx,Vy, and T are returned through the
@@ -389,7 +389,7 @@
       density     = real(d_dp(6),kind=4)
       pressure    = real((d_dp(6)*1000.0_8) & ! convert to kg/m3
                     * t_dp(2)               & ! in K
-                    * 287.05_8              & ! R = Specifig gas const dry air J/kgK
+                    * 287.05_8              & ! R = Specific gas const dry air J/kgK
                     * 0.01_8,kind=4)          ! convert Pa to mbar
 
       end subroutine Get_WindTempRhoP_Empir

@@ -528,7 +528,7 @@
           write(G2S_global_info,*)"        x_in,y_in              #lon,lat (or x,y) of reference point"
           write(G2S_global_info,*)"        zmax, dz_prof          #maximum altitude of output, vertical increment"
           write(G2S_global_info,*)"        IsLatLon               # 1 for global (lat/lon) grids, 0 for projected"
-          write(G2S_global_info,*)"        az, len , ds_xsec      #azimuth, length and increment of xsec"
+          write(G2S_global_info,*)"        az, len , ds_xsec [IsCent] #azimuth, length and increment of xsec [centered flag]"
           write(G2S_global_info,*)"            - or - "
           write(G2S_global_info,*)&
           "        x2, y2, len_xsec, dx_xsec # coordinate of in-line point, length and increment of xsec (if projected)"
@@ -845,7 +845,7 @@
       enddo
       if(new_data_alt(nz1+nz2+nz3).le.zmax)then
         write(G2S_global_error,*)"ERROR:  The requested zmax must be strictly less than the"
-        write(G2S_global_error,*)"reconstitued atmosphere"
+        write(G2S_global_error,*)"reconstituted atmosphere"
         write(G2S_global_error,*)"     requested zmax = ",zmax
         write(G2S_global_error,*)" reconstituted zmax = ",new_data_alt(nz1+nz2+nz3)
         stop 1

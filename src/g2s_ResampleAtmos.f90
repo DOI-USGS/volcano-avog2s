@@ -695,7 +695,7 @@
           enddo
         enddo
         close(32)
-        ! Dump out equitorial cross-section of Met grid
+        ! Dump out equatorial cross-section of Met grid
         open(unit=42,file='xsec_res.dat',status='replace')
         do i=1,nxmax_g2s
           do k=1,data_len
@@ -708,7 +708,7 @@
           enddo
         enddo
         close(42)
-        ! Dump out meridonal cross-section of Met grid
+        ! Dump out meridional cross-section of Met grid
         open(unit=42,file='ysec_res.dat',status='replace')
         do j=1,nymax_g2s
           do k=1,data_len

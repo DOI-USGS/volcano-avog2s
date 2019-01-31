@@ -7,8 +7,9 @@ model of the atmosphere in a similar style to that outlined by Drob et al.,
 by smoothly merging 1 or 2 
 numerical weather prediction (NWP) models (either forecast or reanalysis) with
 empirical models of the upper atmosphere.  This Ground-2-Space model can be used
-for forward modeling of infrasound propagation.  This model is described in Schwaiger
-et al., (submitted) and can be used as both global as well as a regional G2S model.
+for forward modeling of infrasound propagation.  This model is described in
+[Schwaiger et al.](https://doi.org/10.1016/j.cageo.2018.12.013)
+and can be used as both global as well as a regional G2S model.
 This model is used by the Alaska Volcano Observatory for infrasound propagation
 modeling.
 
@@ -18,14 +19,13 @@ software packages must be built and installed before the AVOG2S software
 suite can be built.
 
 1. To download and read the NWP data, several USGS libraries must be installed:  
-   [HoursSince](https://github.com/hschwaiger-usgs/HoursSince)  
-   [projection](https://github.com/hschwaiger-usgs/projection)  
-   [MetReader](https://github.com/hschwaiger-usgs/MetReader)
+   [HoursSince](https://github.com/usgs/volcano-ash3d-hourssince)  
+   [projection](https://github.com/usgs/volcano-ash3d-projection)  
+   [MetReader](https://github.com/usgs/volcano-ash3d-metreader)
 
-2. Upper-atmospheric empirical models are available separately for horizontal
-winds and temperature  
-   [HWM14](http://onlinelibrary.wiley.com/store/10.1002/2014EA000089/asset/supinfo/ess224-sup-0002-supinfo.tgz?v=1&s=2a957ba70b7cf9dd0612d9430076297c3634ea75)  
-   [NRLMSIS-00](https://github.com/graziano-giuliani/Meteostuff/tree/master/NRLMSIS_F90)
+2. Upper-atmospheric empirical models are available separately for horizontal winds and temperature  
+   [HWM14](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2014EA000089) (supplementary material)
+   [NRLMSISE-00](https://github.com/graziano-giuliani/Meteostuff/tree/master/NRLMSIS_F90)
 
 3. Spectral decomposition of the data utilize two libraries, one for spherical
 harmonic decompositions, and one for Fourier decomposition  
@@ -35,7 +35,7 @@ harmonic decompositions, and one for Fourier decomposition
 4. Additional libraries needed:  
    lapack  
    netcdf  
-   grib2
+   grib2 (or ecCodes)
 
 ### Required Data
 1. Solar-terrestrial indices (Ap and F107)  
@@ -45,16 +45,16 @@ harmonic decompositions, and one for Fourier decomposition
       <ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/>
 2. Numerical Weather Prediction data  
     Forecast and reanalysis data available from many sources.  See documentation
-    in [MetReader](https://github.com/hschwaiger-usgs/MetReader).
+    in [MetReader](https://github.com/usgs/volcano-ash3d-metreader).
 
 
 Preliminary Software Installation
 ---------------------------------
 
 ### USGS libraries  
-  Three libraries from the Ash3d package are needed: [HoursSince](https://github.com/hschwaiger-usgs/HoursSince), 
-   [projection](https://github.com/hschwaiger-usgs/projection), 
-   [MetReader](https://github.com/hschwaiger-usgs/MetReader).
+  Three libraries from the Ash3d package are needed: [HoursSince](://github.com/usgs/volcano-ash3d-hourssince), 
+   [projection](https://github.com/usgs/volcano-ash3d-projection), 
+   [MetReader](https://github.com/usgs/volcano-ash3d-metreader).
 These libraries are currently available at the locations given above.
 Installation instructions are given in the repositories for each of these libraries.
 
@@ -111,15 +111,15 @@ and change the data file names to include the full path, such as
 This version of HWM does not require an environment variable to be set, but expects
 that the data files are at the hardwired location.
 
-##### NRLMSIS-00
-The NRLMSIS-00 code has been ported to fortran 90 and is available from
+##### NRLMSISE-00
+The NRLMSISE-00 code has been ported to fortran 90 and is available from
 <https://github.com/graziano-giuliani/Meteostuff>
 
 After downloading the software bundle into `src/ExternalDataSoftware`, the code can
 be compiled into a library using the makefile provided at:
 `src/ExternalDataSoftware/makefile_NRLMSIS.gfortran`
 
-Note: NRLMSIS from the link above can return erroneous values if a requested altitude
+Note: NRLMSISE from the link above can return erroneous values if a requested altitude
 equals an internal bracketing value.  To correct this, change line 2067 of
 `physics_msis.f90` from  
 `if ( dabs(v1-d_1) < nearzero .or. alt > zn2(1) .or. &`  
@@ -147,7 +147,7 @@ variable `PREFIX = /usr/local` to your preferred install location.
 fftw is available as a distribution package
 
 ### Other required packages
- netcdf4, lapack and grib-api are available as distribution libraries.
+ netcdf4, lapack and grib-api (or ecCodes) are available as distribution libraries.
 
 
 AVOG2S Installation
@@ -155,8 +155,8 @@ AVOG2S Installation
 
 To compile, edit the makefile to be consistent with the install directory and options
 used in the installation of the preliminary software.  Double-check the HWM version
-number, the SHTOOL version number if you are using an older version, and whether or not
-grib2 support should be built.  Then simply type:
+number, the SHTOOLS version number if you are using an older version, and whether or not
+grib2/ecCodes support should be built.  Then simply type:
 
   `make all`
 
@@ -169,7 +169,7 @@ You will need to have write permission in `${INSTALLDIR}` or install as root.
 This will install the following in `${INSTALLDIR}/bin/`:  
  `g2s_genSC_HWM14`   : program to calculate spectral coefficients for G2S model  
  `g2s_ResampleAtmos` : program to reconstruct a gridded atmosphere from the coefficients  
- `probe_HWT14`       : stand-along program to calculate empirical HWM and NRLMSIS values  
+ `probe_HWT14`       : stand-along program to calculate empirical HWM and NRLMSISE values  
  `g2s_Extract_Sonde` : program to resample the gridded atmosphere onto a 1-d profile  
  `g2s_Extract_Xsec`  : program to resample the gridded atmosphere onto a 2-d cross-section  
  `g2s_Extract_Grid`  : program to resample the gridded atmosphere onto a 3-d grid  
@@ -179,7 +179,8 @@ and the following scripts in `${INSTALLDIR}/ExternalData/Ap_Forecast/`
 
 Output from the extraction tools is designed to be used with the
 [GeoAc](https://github.com/LANL-Seismoacoustics/GeoAc) forward
-modeling software.
+modeling software or the NCPA Atmospheric Acoustic Propagation Modeling
+package [ncpaprop](https://github.com/chetzer-ncpa/ncpaprop).
 
 Please see the user's guide for more information on using this software.
 
