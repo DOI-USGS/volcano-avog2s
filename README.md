@@ -92,16 +92,16 @@ from <https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/>
 To build this library, type:  
 `cd src/ExternalDataSoftware/HWM07`  
 `wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/checkhwm07.f90`  
-`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/dwm07b_104i.dat` 
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/dwm07b_104i.dat`  
 `wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/gd2qd.dat`  
-`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/hwm071308e.dat` 
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/hwm071308e.dat`  
 `wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/hwm07.01d.f90`  
 `wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/readme.txt`
 
   You will have to edit the source file
 and change the data file names in the source file to include the full path, such as
-`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/hwm071308e.dat'`
-`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/dwm07b_104i.dat'`
+`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/hwm071308e.dat'`  
+`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/dwm07b_104i.dat'`  
 `character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/gd2qd.dat'`
 
 `make -f ../makefile_HWM07.gfortran libra`  
