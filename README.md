@@ -71,7 +71,7 @@ To build the library, type:
   `wget http://onlinelibrary.wiley.com/store/10.1002/2014EA000089/asset/supinfo/ess224-sup-0002-supinfo.tgz?v=1&s=2a957ba70b7cf9dd0612d9430076297c3634ea75`  
 Or open the [article page](http://onlinelibrary.wiley.com/doi/10.1002/2014EA000089/abstract)
 and download `ess224-sup-0002-supinfo.tgz` from Supporting Information.
-These files are also provided at [NRL](https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM14/)
+These files are also provided at [NRL](https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM14/)  
   `gunzip ess224-sup-0002-supinfo.tgz`  
   `tar -xvf ess224-sup-0002-supinfo.tar`  
   `cd HWM14`  
