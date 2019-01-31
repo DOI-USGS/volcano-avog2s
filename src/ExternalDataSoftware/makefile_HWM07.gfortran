@@ -2,8 +2,20 @@
 INSTALLDIR=/opt/USGS/AVOG2S
 HWMPATH=${INSTALLDIR}/ExternalData/HWM07
 
+# This makefile was designed for the version of HWM07 dated 13 July, 2008 and posted
+# as https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/
+# Source files from this link were checkhwm07.f90, apexcord.f90, dwm07b.f90, hwm07e.f90
+# and data files apexgrid.dat, dwm07b_104i.dat, hwm071308e.dat
+# This link is no longer valid, but a consolodated version of the HWM files are provided at
+# https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/ (dated 6 April, 2009).
+# Source files here are checkhwm07.f90 and hwm07.01d.f90 with 
+# data files gd2qd.dat, dwm07b_104i.dat, hwm071308e.dat
+# With either of these, the variables providing the paths to the data files in the source code must be
+# changed to the full path on your system.
+# i.e. `character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/hwm071308e.dat'`
+
 FOR95 = gfortran
-# Note: "signal 8 (SIGFPE): Floating-point exception" will occure if:
+# Note: "signal 8 (SIGFPE): Floating-point exception" will occur if:
 #         Optimization level 2 or 3 is used
 #         -fdefault-real-8
 #FCFLAGS = -O0 -g3 -Wall -fbounds-check -pedantic -fbacktrace -fimplicit-none -Wunderflow -Wuninitialized -ffpe-trap=invalid,zero,overflow -fdefault-real-8
@@ -14,9 +26,19 @@ FCFLAGS =  -O1 -w -fno-math-errno -funsafe-math-optimizations -fno-trapping-math
 #FFLAGS = -cpp -fno-whole-file
 FFLAGS = -cpp
 
+#SRC=hwm07e.f90 \
+#    dwm07b.f90 \
+#    apexcord.f90
+#OBJ=hwm07e.o \
+#    dwm07b.o \
+#    apexcord.o
+
+SRC=hwm07.01d.f90
+OBJ=hwm07.01d.o
+
 libra:
-	${FOR95} ${FCFLAGS} ${FFLAGS} hwm07e.f90 dwm07b.f90 apexcord.f90 -c
-	ar rcs libHWM07.a hwm07e.o dwm07b.o apexcord.o
+	${FOR95} ${FCFLAGS} ${FFLAGS} ${SRC} -c
+	ar rcs libHWM07.a ${OBJ}
 
 install: libra
 	install -d ${INSTALLDIR}/lib
@@ -27,7 +49,7 @@ install: libra
 	install -m 644 *.dat ${HWMPATH}
 
 check:
-	$(FOR95) $(FFLAGS) checkhwm07.f90 hwm07e.f90 dwm07b.f90 apexcord.f90 -o checkhwm
+	$(FOR95) $(FFLAGS) checkhwm07.f90 ${SRC} -o checkhwm
 
 clean:
 	rm *.mod checkhwm
