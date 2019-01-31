@@ -87,23 +87,22 @@ To use software that links to this library, you will need to add the following t
 
 If you have difficulty installing HWM14 (e.g. if you are using an older compiler), you
 can optionally install HWM07.  The fortran source files and data files are available
-from <https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/>
+from <https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/>
 
 To build this library, type:  
 `cd src/ExternalDataSoftware/HWM07`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/apexcord.f90`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/apexgrid.dat`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/checkhwm07.f90`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/dwm07b.f90`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/dwm07b_104i.dat`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/hwm07e.f90`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/hwm071308e.dat`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/makefile.ifort`  
-`wget https://spdf.gsfc.nasa.gov/pub/models/old_models_from_nssdc/atmospheric/hwm07/HWM07_all_files/readme.txt`
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/checkhwm07.f90`  
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/dwm07b_104i.dat` 
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/gd2qd.dat`  
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/hwm071308e.dat` 
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/hwm07.01d.f90`  
+`wget https://map.nrl.navy.mil/map/pub/nrl/HWM/HWM07/readme.txt`
 
-  You will have to edit `apexcord.f90` (line 76), `dwm07b.f90` (line 53), and `hwm07e.f90` (line 126)
-and change the data file names to include the full path, such as
-`/opt/USGS/AVOG2S/ExternalData/HWM07/apexgrid.dat`
+  You will have to edit the source file
+and change the data file names in the source file to include the full path, such as
+`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/hwm071308e.dat'`
+`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/dwm07b_104i.dat'`
+`character(128), parameter  :: datafile = '/opt/USGS/AVOG2S/ExternalData/HWM07/gd2qd.dat'`
 
 `make -f ../makefile_HWM07.gfortran libra`  
 `make -f ../makefile_HWM07.gfortran install`
