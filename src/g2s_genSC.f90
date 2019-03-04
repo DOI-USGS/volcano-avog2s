@@ -243,6 +243,7 @@
             if(iwf1.eq.0)then
               ! If iwindformat = 0, then the input file is a not a known format
               ! Read an extra line given the name of a template file.
+              write(*,*)"Windfile defined by custom template."
               if(idf.ne.2)then
                 write(G2S_global_info,*)" Currently only netcdf reader implemented, resetting idf to 2"
                 idf = 2
@@ -442,56 +443,64 @@
       day     = day_of_year(start_year,start_month,start_day)
 
       ! Use MetReader library
-      if(iwf1.eq.20.or.iwf1.eq.21.or.iwf1.eq.26)then
-        iw      = 4   ! read from multiple files
+      if(iwf1.eq.20)then  ! GFS
+        iw      = 4
         igrid   = 4   ! 0.5 degree global
         !idf     = 2   ! netcdf
-      elseif(iwf1.eq.22)then
-        iw      = 4   ! read from single file
+      elseif(iwf1.eq.21)then  ! GFS
+        iw      = 4
+        igrid   = 3 ! 1.0 degree global
+        !idf     = 2   ! netcdf
+      elseif(iwf1.eq.22)then  ! GFS
+        iw      = 4
         igrid   = 193 ! 0.25 degree global
         !idf     = 2   ! netcdf
-      elseif(iwf1.eq.24)then
-        iw      = 3   ! read from single file
+      elseif(iwf1.eq.24)then  ! NASA-MERRA-2 reanalysis 0.625/0.5 degree files
+        iw      = 3
         igrid   = 1024 ! MERRA
         !idf     = 2   ! netcdf
-      elseif(iwf1.eq.25)then
+      elseif(iwf1.eq.25)then  ! NCEP/NCAR reanalysis 2.5 degree files 
         iw      = 5   ! read from multiple files
-        igrid   = 2   ! 0.5 degree global
+        igrid   = 2   ! 2.5 degree global
         !idf     = 2   ! netcdf
-      elseif(iwf1.eq.28)then
-        iw      = 4   ! read from multiple files
-        igrid   = 170   ! 0.5 degree global
+      elseif(iwf1.eq.28)then  ! ECMWF Interim Reanalysis (ERA-Interim)
+        iw      = 4
+        igrid   = 170 ! 0.7 degree global
+        idf     = 2   ! netcdf
+      elseif(iwf1.eq.29)then  ! ECMWF ERA5
+        iw      = 5
+        igrid   = 1029   ! 0.25 degree global
         idf     = 2   ! netcdf
       elseif(iwf1.eq.40)then
-        iw      = 4   ! read from single file
+        iw      = 4
         igrid   = 1040 ! NASA GMAO Cp
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.41)then
-        iw      = 4   ! read from single file
+        iw      = 4
         igrid   = 1041 ! NASA GMAO Np
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.3.or.iwf1.eq.4)then
-        iw      = 3   ! read from single file
+        iw      = 3
         igrid   = 221 ! NARR 32-km
         idf     = 2   ! netcdf
       elseif(iwf1.eq.12)then
-        iw      = 4   ! read from single file
+        iw      = 4
         igrid   = 198 ! nam 5.9km AK
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.13)then
-        iw      = 4   ! read from single file
+        iw      = 4
         igrid   = 91 ! nam 2.95km AK
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.50)then
         ! WRF file
-        iw      = 4   ! read from single file
+        iw      = 4
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.0)then
         ! this is for the user-provided netcdf file with a template
-        iw      = 4   ! read from single file
+        iw      = 4
         !idf     = 2   ! netcdf
       else
-        write(G2S_global_error,*)"ERROR: Only iwf1 = 0,3,4,12,13,20,21,22,24,25,26,28,40,41,50 implemented."
+        write(G2S_global_error,*)"ERROR: Only iwf1 = 0,3,4,12,13,20,21,22,24,25,28,29,40,41,50 implemented."
         stop 1
       endif
       Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)
@@ -795,62 +804,66 @@
         start_month= inmonth
         start_day  = inday
         day     = day_of_year(start_year,start_month,start_day)
-  
+ 
         ! Use MetReader library
-        if(iwf2.eq.20)then
-          iw      = 4   ! read from multiple files
+        if(iwf2.eq.20)then  ! GFS
+          iw      = 4
           igrid   = 4   ! 0.5 degree global
-          idf     = 2   ! netcdf
-        elseif(iwf2.eq.21)then
-          iw      = 4   ! read from single file
-          igrid   = 3   ! 1.0 degree global
-          idf     = 2   ! netcdf
-        elseif(iwf2.eq.22)then
-          iw      = 4   ! read from single file
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.21)then  ! GFS
+          iw      = 4
+          igrid   = 3 ! 1.0 degree global
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.22)then  ! GFS
+          iw      = 4
           igrid   = 193 ! 0.25 degree global
-          idf     = 2   ! netcdf
-        elseif(iwf2.eq.24)then
-          iw      = 3   ! read from single file
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.24)then  ! NASA-MERRA-2 reanalysis 0.625/0.5 degree files
+          iw      = 3
           igrid   = 1024 ! MERRA
-          idf     = 2   ! netcdf
-        elseif(iwf2.eq.25)then
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.25)then  ! NCEP/NCAR reanalysis 2.5 degree files 
           iw      = 5   ! read from multiple files
-          igrid   = 2   ! 0.5 degree global
+          igrid   = 2   ! 2.5 degree global
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.28)then  ! ECMWF Interim Reanalysis (ERA-Interim)
+          iw      = 4
+          igrid   = 170 ! 0.7 degree global
           idf     = 2   ! netcdf
-        elseif(iwf2.eq.28)then
-          iw      = 4   ! read from multiple files
-          igrid   = 170   ! 0.5 degree global
+        elseif(iwf2.eq.29)then  ! ECMWF ERA5
+          iw      = 5
+          igrid   = 1029   ! 0.25 degree global
           idf     = 2   ! netcdf
         elseif(iwf2.eq.40)then
-          iw      = 4   ! read from single file
-          igrid   = 1040 ! NASA GEOS 5 Cp
-          idf     = 2   ! netcdf
+          iw      = 4
+          igrid   = 1040 ! NASA GMAO Cp
+          !idf     = 2   ! netcdf
         elseif(iwf2.eq.41)then
-          iw      = 4   ! read from single file
-          igrid   = 1041 !  NASA GEOS 5 Np
-          idf     = 2   ! netcdf
-        elseif(iwf2.eq.3)then
-          iw      = 3   ! read from single file
-          igrid   = 1221 ! NARR 32-km
+          iw      = 4
+          igrid   = 1041 ! NASA GMAO Np
+          !idf     = 2   ! netcdf
+        elseif(iwf2.eq.3.or.iwf2.eq.4)then
+          iw      = 3
+          igrid   = 221 ! NARR 32-km
           idf     = 2   ! netcdf
         elseif(iwf2.eq.12)then
-          iw      = 4   ! read from single file
+          iw      = 4
           igrid   = 198 ! nam 5.9km AK
-          idf     = 2   ! netcdf
+          !idf     = 2   ! netcdf
         elseif(iwf2.eq.13)then
-          iw      = 4   ! read from single file
-          igrid   = 91 ! nam 5.9km AK
-          idf     = 2   ! netcdf
+          iw      = 4
+          igrid   = 91 ! nam 2.95km AK
+          !idf     = 2   ! netcdf
         elseif(iwf2.eq.50)then
           ! WRF file
-          iw      = 4   ! read from single file
+          iw      = 4
           !idf     = 2   ! netcdf
         elseif(iwf2.eq.0)then
           ! this is for the user-provided netcdf file with a template
-          iw      = 4   ! read from single file
+          iw      = 4
           !idf     = 2   ! netcdf
         else
-          write(G2S_global_error,*)"ERROR: Only iwf2 = 0,3,4,12,13,20,21,22,24,25,26,28,40,41,50 implemented."
+          write(G2S_global_error,*)"ERROR: Only iwf2 = 0,3,4,12,13,20,21,22,24,25,28,29,40,41,50 implemented."
           stop 1
         endif
         Met_needed_StartHour = HS_hours_since_baseyear(inyear,inmonth,inday,inhour,MR_BaseYear,MR_useLeap)
