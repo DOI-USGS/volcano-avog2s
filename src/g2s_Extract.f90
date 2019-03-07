@@ -263,7 +263,7 @@
           write(G2S_global_info,*)"      zmax    : maximum altitude of profile"
           write(G2S_global_info,*)"      dz_prof : vertical increment"
           write(G2S_global_info,*)"    This mode assumes a global model with 0.5 degree resolution (720x361)"
-          write(G2S_global_info,*)"    and 63 irregularly-spaced nodes in z defining the"
+          write(G2S_global_info,*)"    and 126 irregularly-spaced nodes in z defining the"
           write(G2S_global_info,*)"    resampled files.  The resampled files are assumed to"
           write(G2S_global_info,*)"    be in the current working directory with names:"
           write(G2S_global_info,*)"     [U,V,T]_res.raw"
@@ -293,17 +293,17 @@
           write(G2S_global_info,*)" Note: the assumed values for the geometry are:"
           write(G2S_global_info,*)"  IsLatLon  = ",IsLatLon
           write(G2S_global_info,*)"         nx = ",nxmax_g2s
-          write(G2S_global_info,*)"         dx = ",dx_g2s
-          write(G2S_global_info,*)"       xmin = ",xmin_g2s
+          write(G2S_global_info,*)"         dx = ",real(dx_g2s,kind=4)
+          write(G2S_global_info,*)"       xmin = ",real(xmin_g2s,kind=4)
           write(G2S_global_info,*)"         ny = ",nymax_g2s
-          write(G2S_global_info,*)"         dy = ",dy_g2s
-          write(G2S_global_info,*)"       ymin = ",ymin_g2s
+          write(G2S_global_info,*)"         dy = ",real(dy_g2s,kind=4)
+          write(G2S_global_info,*)"       ymin = ",real(ymin_g2s,kind=4)
           write(G2S_global_info,*)"        nz1 = ",nz1
-          write(G2S_global_info,*)"        dz1 = ",dz1
+          write(G2S_global_info,*)"        dz1 = ",real(dz1,kind=4)
           write(G2S_global_info,*)"        nz2 = ",nz2
-          write(G2S_global_info,*)"        dz2 = ",dz2
+          write(G2S_global_info,*)"        dz2 = ",real(dz2,kind=4)
           write(G2S_global_info,*)"        nz3 = ",nz3
-          write(G2S_global_info,*)"        dz3 = ",dz3
+          write(G2S_global_info,*)"        dz3 = ",real(dz3,kind=4)
           write(G2S_global_info,*)" "
           write(G2S_global_info,*)" For example:"
           write(G2S_global_info,*)" "
@@ -512,7 +512,7 @@
           write(G2S_global_info,*)"      len_xsec  : length (deg or km) of cross-section"
           write(G2S_global_info,*)"      ds_xsec : degree increment of cross-section"
           write(G2S_global_info,*)"    This mode assumes a global 0.5 degree resolution (720x361)"
-          write(G2S_global_info,*)"    and 63 irregularly-spaced nodes in z defining the"
+          write(G2S_global_info,*)"    and 126 irregularly-spaced nodes in z defining the"
           write(G2S_global_info,*)"    resampled files.  The resampled files are assumed to"
           write(G2S_global_info,*)"    be in the current working directory with names:"
           write(G2S_global_info,*)"     [U,V,T]_res.raw"
@@ -759,7 +759,7 @@
           write(G2S_global_info,*)"      zmax                      : maximum altitude of profile"
           write(G2S_global_info,*)"      dz_prof                   : vertical increment"
           write(G2S_global_info,*)"    This mode assumes a 0.5 degree resolution (720x361)"
-          write(G2S_global_info,*)"    and 63 irregularly-spaced nodes in z defining the"
+          write(G2S_global_info,*)"    and 126 irregularly-spaced nodes in z defining the"
           write(G2S_global_info,*)"    resampled files.  The resampled files are assumed to"
           write(G2S_global_info,*)"    be in the current working directory with names:"
           write(G2S_global_info,*)"     [U,V,T]_res.raw"

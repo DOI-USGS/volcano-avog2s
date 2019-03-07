@@ -441,6 +441,9 @@
       start_month= inmonth
       start_day  = inday
       day     = day_of_year(start_year,start_month,start_day)
+      ihour      = floor(inhour)
+      iminute    = floor((inhour-ihour)*60.0)
+      isecond    = floor((inhour - ihour - iminute/60.0)*3600.0)
 
       ! Use MetReader library
       if(iwf1.eq.20)then  ! GFS
@@ -592,22 +595,20 @@
       allocate(temperature_Met_loc_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
 
       Spec_MaxOrder = min(Spec_MaxOrder,nymax_g2s/2-1)
-      ihour     = start_hour
-      iminute   = start_min
-      isecond   = start_sec
+      !ihour     = start_hour
+      !iminute   = start_min
+      !isecond   = start_sec
 
       !Load the 3d arrays for uwind, vwind, temperature, geopotential
       write(G2S_global_info,*)"   **Now read in the state variables from met file.**"
       write(G2S_global_info,*)"     Find MR_iMetStep_Now for ",Met_needed_StartHour
       MR_iMetStep_Now = 1
       do i = 1,MR_MetSteps_Total-1
-        write(G2S_global_info,*)Met_needed_StartHour,MR_MetStep_Hour_since_baseyear(i:i+1)
+        !write(G2S_global_info,*)Met_needed_StartHour,MR_MetStep_Hour_since_baseyear(i:i+1)
         if(Met_needed_StartHour.ge.MR_MetStep_Hour_since_baseyear(i).and.&
            Met_needed_StartHour.lt.MR_MetStep_Hour_since_baseyear(i+1))then
           MR_iMetStep_Now = i
-          write(G2S_global_info,*)i,MR_MetStep_Hour_since_baseyear(i)
-          !write(G2S_global_info,*)MR_iMetStep_Now,TimeNow_fromRefTime,&
-          !    MR_MetStep_Hour_since_baseyear(MR_iMetStep_Now)
+          !write(G2S_global_info,*)i,MR_MetStep_Hour_since_baseyear(i)
           cycle
         endif
       enddo
@@ -617,7 +618,6 @@
       Interval_Frac = HoursIntoInterval / ForecastInterval
 
       ! This subroutine sets both last and next geoH arrays so call with
-      MR_iMetStep_Now = 1
       call MR_Read_HGT_arrays(MR_iMetStep_Now)
 
       allocate(tmp3d_1_sp(nxmax_g2s,nymax_g2s,nzmax_Met1))
@@ -804,6 +804,9 @@
         start_month= inmonth
         start_day  = inday
         day     = day_of_year(start_year,start_month,start_day)
+        ihour      = floor(inhour)
+        iminute    = floor((inhour-ihour)*60.0)
+        isecond    = floor((inhour - ihour - iminute/60.0)*3600.0)
  
         ! Use MetReader library
         if(iwf2.eq.20)then  ! GFS
@@ -899,9 +902,9 @@
         allocate(vy_Met_loc_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
         allocate(temperature_Met_loc_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
   
-        ihour     = start_hour
-        iminute   = start_min
-        isecond   = start_sec
+        !ihour     = start_hour
+        !iminute   = start_min
+        !isecond   = start_sec
   
         !Load the 3d arrays for uwind, vwind, temperature, geopotential
         write(G2S_global_info,*)"   **Now read in the state variables from met file.**"
@@ -919,7 +922,7 @@
         Interval_Frac = HoursIntoInterval / ForecastInterval
   
         ! This subroutine sets both last and next geoH arrays so call with MR_iMetStep_Now
-        MR_iMetStep_Now = 1
+        !MR_iMetStep_Now = 1
         call MR_Read_HGT_arrays(MR_iMetStep_Now,.true.)
  
         allocate(tmp3d_1_sp(nxmax_g2s,nymax_g2s,nzmax_Met2))
@@ -1116,8 +1119,8 @@
 #ifdef useHWM14
         write(G2S_global_info,*)"Computing vx,vy,temperature from HWM14 and MSISE-00"
 #endif
-        write(G2S_global_info,*)"  F107 = ",f107
-        write(G2S_global_info,*)"  ap   = ",ap
+        write(G2S_global_info,*)"  F107 = ",real(f107,kind=4)
+        write(G2S_global_info,*)"  ap   = ",real(ap  ,kind=4)
 
         do i = 1,nxmax_g2s
           write(G2S_global_info,*)"Calculating x=",i," of ",nxmax_g2s
@@ -1139,6 +1142,8 @@
                           start_year,day,ihour,iminute,isecond, &
                           ap,f107,                              &
                           u_g2s,v_g2s,temperature)
+              !write(*,*)lon,lat,alt,start_year,day,ihour,iminute,isecond,ap,f107,u_g2s,v_g2s,temperature
+
               if (IsLatLon_CompGrid.eqv..true.)then
                 vx_HWT_sp(i,j,k)          = u_g2s
                 vy_HWT_sp(i,j,k)          = v_g2s

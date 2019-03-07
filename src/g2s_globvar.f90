@@ -44,9 +44,9 @@
         ! These are useful for writing out cross-sections of the Met1/2, HWT, and reconstructed data
       logical, parameter ::     write_test_output = .false.
       integer, parameter ::     jout              = 180   ! This is for a equatorial cross-section
-      integer, parameter ::     iout              = 366   ! This is x=0 for the subgrid of the nam198 used in Fig.4
+      !integer, parameter ::     iout              = 366   ! This is x=0 for the subgrid of the nam198 used in Fig.4
                                                           !    x ~= 0 in the projection (lon=210)
-      !integer, parameter ::     iout              = 421   ! This is lat=210 in the GFS 0.5-degree
+      integer, parameter ::     iout              = 385   ! This is lat=192 in the GFS 0.5-degree
 
 
       integer        :: G2S_global_essential    = 6
