@@ -8,12 +8,68 @@ clear all;
 %  Edit only the fields below
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nmethid= 1;
-srcnam ='Clev.';
-srclon =-169.945;
-srclat = 52.822;
-srcz   = 1.73;
+srcnam ='Bogo.';
+srclon = -168.0381;
+srclat = 53.928;
+srcz   = 0.0;
 Az     = 41.0;
 freq   = 0.1;
+YYYY = 2016;
+MM   = 12;
+DD   = 12;
+HH   = 18;
+
+% Over-ride if these files exist
+c1 = exist ("tmp.nmethid", "file");
+c2 = exist ("tmp.SrcName", "file");
+c3 = exist ("tmp.Srclon", "file");
+c4 = exist ("tmp.Srclat", "file");
+c5 = exist ("tmp.SrcAlt", "file");
+c6 = exist ("tmp.SrcFreq", "file");
+c7 = exist ("tmp.SrcAz", "file");
+c8  = exist ("tmp.year", "file");
+c9  = exist ("tmp.month", "file");
+c10 = exist ("tmp.day", "file");
+c11 = exist ("tmp.hour", "file");
+
+if c1==2
+  nmethid = load('tmp.nmethid');
+end
+if c2==2
+  fid = fopen('tmp.SrcName');
+  srcnam = fgetl(fid);
+  fclose(fid);
+end
+if c3==2
+  srclon = load('tmp.Srclon');
+end
+if c4==2
+  srclat = load('tmp.Srclat');
+end
+if c5==2
+  srcz = load('tmp.SrcAlt');
+end
+if c6==2
+  freq = load('tmp.SrcFreq');
+end
+if c7==2
+  Az = load('tmp.SrcAz');
+end
+
+if c8==2
+  YYYY = load('tmp.year');
+end
+if c9==2
+  MM = load('tmp.month');
+end
+if c10==2
+  DD = load('tmp.day');
+end
+if c11==2
+  HH = load('tmp.hour');
+end
+
+
 na=361;
 nr=1000;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,6 +132,9 @@ ylabel(h, 'Tloss (Db)')
 colormap(flipud(hot));
 caxis([-150 -80]);
 titstr=sprintf('%s : 2d transmission loss: %.2f Hz\nSource=%s',NMeth,freq,srcnam);
+
+titstr=sprintf('%s : 2d transmission loss: %.1f Hz\n%i/%i/%i : %i UTC\nSource=%s, (%.2fE,%.2fN,%.1f km)',...
+NMeth,freq,YYYY,MM,DD,HH,srcnam,srclon,srclat,srcz);
 title(titstr);
 
 %print -dpng DLL.png
@@ -85,33 +144,33 @@ title(titstr);
 %  writing out a netcdf
 %  This section requires the mapping toolbox
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%outdat=zeros(nr*na,3);
-%for ia = 1:na
-% for ir = 1:nr
-%   ii = nr*(ia-1)+ir;
-%   [outdat(ii,1) outdat(ii,2)] = reckon(srclat,srclon,S1(ir,ia),AZ1(ir,ia));
-%   outdat(ii,3) = TL1(ir,ia);
-% end
-%end
-%
-%[xq,yq] = meshgrid(-180:0.02:-150, 45:0.02:65);
-%vq=griddata(outdat(:,2),outdat(:,1),outdat(:,3),xq,yq);  
-%
-%surf(xq,yq,vq,'edgecolor','none')
-%view(2)
-%colormap(flipud(hot));
-%
-%a=size(xq);
-%ncid=netcdf.create('tloss.nc','CLOBBER');
-%londimid=netcdf.defDim(ncid,'lon',a(2));
-%latdimid=netcdf.defDim(ncid,'lat',a(1));
-%lonvarid=netcdf.defVar(ncid,'lon','NC_DOUBLE',londimid);
-%latvarid=netcdf.defVar(ncid,'lat','NC_DOUBLE',latdimid);
-%tlsvarid=netcdf.defVar(ncid,'tloss','NC_DOUBLE',[londimid latdimid]);
-%netcdf.endDef(ncid);
-%netcdf.putVar(ncid,lonvarid,xq(1,:));
-%netcdf.putVar(ncid,latvarid,yq(:,1));
-%netcdf.putVar(ncid,tlsvarid,vq');
-%netcdf.close(ncid);
+outdat=zeros(nr*na,3);
+for ia = 1:na
+ for ir = 1:nr
+   ii = nr*(ia-1)+ir;
+   [outdat(ii,1) outdat(ii,2)] = reckon(srclat,srclon,S1(ir,ia),AZ1(ir,ia));
+   outdat(ii,3) = TL1(ir,ia);
+ end
+end
+
+[xq,yq] = meshgrid(-180:0.02:-150, 45:0.02:65);
+vq=griddata(outdat(:,2),outdat(:,1),outdat(:,3),xq,yq);  
+
+surf(xq,yq,vq,'edgecolor','none')
+view(2)
+colormap(flipud(hot));
+
+a=size(xq);
+ncid=netcdf.create('tloss.nc','CLOBBER');
+londimid=netcdf.defDim(ncid,'lon',a(2));
+latdimid=netcdf.defDim(ncid,'lat',a(1));
+lonvarid=netcdf.defVar(ncid,'lon','NC_DOUBLE',londimid);
+latvarid=netcdf.defVar(ncid,'lat','NC_DOUBLE',latdimid);
+tlsvarid=netcdf.defVar(ncid,'tloss','NC_DOUBLE',[londimid latdimid]);
+netcdf.endDef(ncid);
+netcdf.putVar(ncid,lonvarid,xq(1,:));
+netcdf.putVar(ncid,latvarid,yq(:,1));
+netcdf.putVar(ncid,tlsvarid,vq');
+netcdf.close(ncid);
 
 

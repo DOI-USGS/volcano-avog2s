@@ -2,7 +2,8 @@
 
 rc=0
 
-echo "Cleveland:-169.945:52.822:1.73" > Volcs.txt
+#echo "Cleveland:-169.945:52.822:1.73" > Volcs.txt
+echo "Bogoslof:191.9619:53.928:0.0" > Volcs.txt
 
 nvolcs=`wc -l Volcs.txt | cut -c1-2`
 nv=1
@@ -37,7 +38,7 @@ cpt="GMT_hotinv.cpt"
 echo "0.0   255     255     255 0.375 255     255     0"   > ${cpt}
 echo "0.375 255     255     0   0.75  255       0     0"  >> ${cpt}
 echo "0.75  255     0       0   1.0     0       0     0"  >> ${cpt}
-makecpt -C${cpt} -T${zmin}/${zmax}/${dz} > tl.cpt
+${GMTpre[GMTv]} makecpt -C${cpt} -T${zmin}/${zmax}/${dz} > tl.cpt
 
 #${GMTpre[GMTv]} pscoast $AREAp $PROJp $DETAILp -Sc -K > temp.ps
 # Filter results to strip out 'inf', blank lines and the header
@@ -64,17 +65,17 @@ Dilx=-158.51
 Dily=59.047
 Adkx=-176.6581
 Adky=51.88
-echo "${Clevx} ${Clevy} 1.0"   | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Gblack -W0.5,0/0/0  >> temp.ps
-echo "${SndPtx} ${SndPty} 1.0" | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Gblack -W0.5,0/0/0  >> temp.ps
-echo "${Aktx} ${Akty} 1.0"     | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Gblack -W0.5,0/0/0  >> temp.ps
-echo "${Okx} ${Oky} 1.0"       | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Gblack -W0.5,0/0/0  >> temp.ps
-echo "${Dilx} ${Dily} 1.0"     | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Gblack -W0.5,0/0/0  >> temp.ps
-echo "${Adkx} ${Adky} 1.0"     | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Gblack -W0.5,0/0/0  >> temp.ps
+echo "${Clevx} ${Clevy} 1.0"   | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Ggreen -W0.5,0/0/0  >> temp.ps
+echo "${SndPtx} ${SndPty} 1.0" | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Ggreen -W0.5,0/0/0  >> temp.ps
+echo "${Aktx} ${Akty} 1.0"     | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Ggreen -W0.5,0/0/0  >> temp.ps
+echo "${Okx} ${Oky} 1.0"       | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Ggreen -W0.5,0/0/0  >> temp.ps
+echo "${Dilx} ${Dily} 1.0"     | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Ggreen -W0.5,0/0/0  >> temp.ps
+echo "${Adkx} ${Adky} 1.0"     | ${GMTpre[GMTv]} psxy $AREAp $PROJp -K -O  -Ss10.0p -Ggreen -W0.5,0/0/0  >> temp.ps
 
-psscale -D2.75i/-0.4i/4i/0.15ih -Ctl.cpt -B20f20/:"TLoss (Db)": -O -K >> temp.ps
+${GMTpre[GMTv]} psscale -D2.75i/-0.4i/4i/0.15ih -Ctl.cpt -B20f20/:"TLoss (Db)": -O -K >> temp.ps
 
-#${GMTpre[GMTv]} psbasemap -B5g5:."Strat-Modess-${Volc} ": $AREAp $PROJp -O >> temp.ps
-${GMTpre[GMTv]} psbasemap -B5g5:."Strat-WMod-${Volc} ": $AREAp $PROJp -O >> temp.ps
+${GMTpre[GMTv]} psbasemap -B5g5:."Strat-Modess-${Volc} ": $AREAp $PROJp -O >> temp.ps
+#${GMTpre[GMTv]} psbasemap -B5g5:."Strat-WMod-${Volc} ": $AREAp $PROJp -O >> temp.ps
 ps2epsi temp.ps
 epstopdf temp.epsi
 mv temp.pdf ${Volc}_tloss.pdf

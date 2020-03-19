@@ -1548,8 +1548,18 @@
           write(G2S_global_info,*)"iy too large",iy,y
         endif
 
+        ! HFS fix this so that it calculated ix,iy by marching through the list rather than
+        !     calculating indecies
         xfrac=(x-x_g2s_dp(ix))/dx_g2s
         yfrac=(y-y_g2s_dp(iy))/dx_g2s
+        if (xfrac.lt.0.0_8.and.abs(xfrac).lt.1.0e3_8)then
+          x = x_g2s_dp(ix)
+          xfrac = 0.0_8
+        endif
+        if (yfrac.lt.0.0_8.and.abs(yfrac).lt.1.0e3_8)then
+          y = y_g2s_dp(iy)
+          yfrac = 0.0_8
+        endif
         xc = 1.0-xfrac
         yc = 1.0-yfrac
         a1=xc    * yc
