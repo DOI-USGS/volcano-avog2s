@@ -47,8 +47,7 @@ INSTALLDIR=/opt/USGS
 #  For each data format you want to include in the library, set the corresponding
 #  variable below to 'T'.  Set to 'F' any you do not want compiled or any unavailable
 #  Note: netcdf is required.
-USEGRIB2 = T
-#USEHDF = F   # Note: the hdf reader is not yet functional
+USEGRIB = T
 
 # HWM07 from http://nssdcftp.gsfc.nasa.gov/models/atmospheric/hwm07/HWM07_all_files.zip
 # NRLMSISE from https://github.com/graziano-giuliani/Meteostuff/tree/master/NRLMSIS_F90
@@ -89,12 +88,12 @@ HWMPATH=$(AVOG2SINSTALLDIR)/ExternalData/HWM$(HWMv)
 HWTLIB=-L$(AVOG2SINSTALLDIR)/lib -lnrlmsis -lHWM$(HWMv) -I$(AVOG2SINSTALLDIR)/include
 
 # Netcdf is required, but MetReader may have been compiled with grib2 support
-ifeq ($(USEGRIB2), T)
+ifeq ($(USEGRIB), T)
  # These are the libraries for grib_api
- DATALIBS =  -lnetcdf -lnetcdff -lgrib_api_f90 -lgrib_api
+ #DATALIBS =  -lnetcdf -lnetcdff -lgrib_api_f90 -lgrib_api
  # These are the libraries for ecCodes
- #DATALIBS =  -lnetcdf -lnetcdff -leccodes -leccodes_f90
- grb2FPPFLAG = -DUSEGRIB2
+ DATALIBS =  -lnetcdf -lnetcdff -leccodes -leccodes_f90
+ grb2FPPFLAG = -DUSEGRIB
 else
  DATALIBS =  -lnetcdf -lnetcdff
  grb2FPPFLAG=

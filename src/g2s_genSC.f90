@@ -233,7 +233,7 @@
                 igrid = ivalue3
                 read(linebuffer,*,iostat=ioerr) iwf1,nwindfiles1, igrid, ivalue4
                 if (ioerr.eq.0)then
-                  ! Success!, set data format (ascii, netcdf, hdf, grib)
+                  ! Success!, set data format (ascii, netcdf, grib)
                   idf = ivalue4
                 endif
               else
@@ -460,7 +460,7 @@
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.24)then  ! NASA-MERRA-2 reanalysis 0.625/0.5 degree files
         iw      = 3
-        igrid   = 1024 ! MERRA
+        igrid   = 1024 ! MERRA2
         !idf     = 2   ! netcdf
       elseif(iwf1.eq.25)then  ! NCEP/NCAR reanalysis 2.5 degree files 
         iw      = 5   ! read from multiple files
