@@ -17,11 +17,12 @@
 #      into derivative products.  However as a matter of scientific courtesy we ask that
 #      you credit the authors and cite published documentation of this model (below) when
 #      publishing or distributing derivative products.
-
+#
 #      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
-#         AVO-G2S:  A modified Ground-to-Space model for volcano monitoring in Alaska,
-#         submitted. 
-
+#         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
+#           for infrasound model; Computers and Geosciences, v125, p90-97, 2019,
+#           doi:10.1016/j.cageo.2018.12.013
+#
 #      We make no guarantees, expressed or implied, as to the usefulness of the software
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
