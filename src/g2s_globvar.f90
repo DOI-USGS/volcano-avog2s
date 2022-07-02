@@ -15,8 +15,9 @@
 !
 !      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
 !         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
-!           for infrasound model; submitted.
-
+!           for infrasound model; Computers and Geosciences, v125, p90-97, 2019,
+!           doi:10.1016/j.cageo.2018.12.013
+!
 !      We make no guarantees, expressed or implied, as to the usefulness of the software
 !      and its documentation for any purpose.  We assume no responsibility to provide
 !      technical support to users of this software.
@@ -42,11 +43,11 @@
       integer, parameter ::     Nknots  = 37   ! Number of knots in the B-Splines
 
         ! These are useful for writing out cross-sections of the Met1/2, HWT, and reconstructed data
-      logical, parameter ::     write_test_output = .false.
+      logical, parameter ::     write_test_output = .true.
       integer, parameter ::     jout              = 180   ! This is for a equatorial cross-section
-      integer, parameter ::     iout              = 366   ! This is x=0 for the subgrid of the nam198 used in Fig.4
+      !integer, parameter ::     iout              = 366   ! This is x=0 for the subgrid of the nam198 used in Fig.4
                                                           !    x ~= 0 in the projection (lon=210)
-      !integer, parameter ::     iout              = 421   ! This is lat=210 in the GFS 0.5-degree
+      integer, parameter ::     iout              = 385   ! This is lon=192 in the GFS 0.5-degree
 
 
       integer        :: G2S_global_essential    = 6

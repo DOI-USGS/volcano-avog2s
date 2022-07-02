@@ -2,16 +2,89 @@
 %  or to use matlab
 % cat plot_GeoAc_profile.m | matlab -nodesktop -nosplash
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Edit only the fields below
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Defaults
+nmethid= 1;
+srcnam ='Bogo.';
+srclon = -168.0381;
+srclat = 53.928;
+srcz   = 0.0;
+Az     = 41.0;
+freq   = 0.1;
+YYYY = 2016;
+MM   = 12;
+DD   = 12;
+HH   = 18;
 
-Pref='Clev0';
+% Over-ride if these files exist
+c1 = exist ("tmp.nmethid", "file");
+c2 = exist ("tmp.SrcName", "file");
+c3 = exist ("tmp.Srclon", "file");
+c4 = exist ("tmp.Srclat", "file");
+c5 = exist ("tmp.SrcAlt", "file");
+c6 = exist ("tmp.SrcFreq", "file");
+c7 = exist ("tmp.SrcAz", "file");
+c8  = exist ("tmp.year", "file");
+c9  = exist ("tmp.month", "file");
+c10 = exist ("tmp.day", "file");
+c11 = exist ("tmp.hour", "file");
+c12 = exist ("tmp.dist", "file");
+
+if c1==2
+  nmethid = load('tmp.nmethid');
+end
+if c2==2
+  fid = fopen('tmp.SrcName');
+  srcnam = fgetl(fid);
+  fclose(fid);
+end
+if c3==2
+  srclon = load('tmp.Srclon');
+end
+if c4==2
+  srclat = load('tmp.Srclat');
+end
+if c5==2
+  srcz = load('tmp.SrcAlt');
+end
+if c6==2
+  freq = load('tmp.SrcFreq');
+end
+if c7==2
+  Az = load('tmp.SrcAz');
+end
+
+if c8==2
+  YYYY = load('tmp.year');
+end
+if c9==2
+  MM = load('tmp.month');
+end
+if c10==2
+  DD = load('tmp.day');
+end
+if c11==2
+  HH = load('tmp.hour');
+end
+if c12==2
+  dist = load('tmp.dist');
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Pref=[srcnam '0']
 %Pref='Bering';
-
+Pref=srcnam
 
 % Source location
 %  Note: the source lon/lat is needed for calculating ranges and azimuths to stations
 %        the source z is needed for calculating sound_speed at source in load_GeoAc_atmo.m
-Srcx=-169.945;  Srcy=52.822; Srcz=1.73;
-
+%Srcx=-169.945;  Srcy=52.822; Srcz=1.73;
+Srcx=srclon;
+Srcy=srclat;
+Srcz=srcz;
 % Get the location of the infrasound arrays
 load_StationInfo
 
@@ -94,6 +167,7 @@ hold off;
 for it = 1:ntheta
   subplot(1,10,4:10),plot(r(:,it,ip),z(:,it,ip),'k-'); hold on;
 end
+subplot(1,10,4:10),plot(dist,0,'gs')
 axis([rmin,rmax,zmin,zmax]);
 subplot(1,10,4:10),plot(0.0,0.0,'r^','MarkerSize',5,'MarkerFaceColor','r');
 subplot(1,10,4:10),plot(Dil_r,0.0,'gs','MarkerSize',5,'MarkerFaceColor','g');
@@ -103,4 +177,5 @@ hold off
 %print "-S750,350" -dpng Clev_DLL_GeoAc.png
 %print('Clev_DLL_GeoAc.png','-dpng')
 
+saveas(gcf,'Bogo.png')
 

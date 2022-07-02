@@ -17,11 +17,12 @@
 #      into derivative products.  However as a matter of scientific courtesy we ask that
 #      you credit the authors and cite published documentation of this model (below) when
 #      publishing or distributing derivative products.
-
+#
 #      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
-#         AVO-G2S:  A modified Ground-to-Space model for volcano monitoring in Alaska,
-#         submitted. 
-
+#         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
+#           for infrasound model; Computers and Geosciences, v125, p90-97, 2019,
+#           doi:10.1016/j.cageo.2018.12.013
+#
 #      We make no guarantees, expressed or implied, as to the usefulness of the software
 #      and its documentation for any purpose.  We assume no responsibility to provide
 #      technical support to users of this software.
@@ -47,8 +48,7 @@ INSTALLDIR=/opt/USGS
 #  For each data format you want to include in the library, set the corresponding
 #  variable below to 'T'.  Set to 'F' any you do not want compiled or any unavailable
 #  Note: netcdf is required.
-USEGRIB2 = T
-#USEHDF = F   # Note: the hdf reader is not yet functional
+USEGRIB = T
 
 # HWM07 from http://nssdcftp.gsfc.nasa.gov/models/atmospheric/hwm07/HWM07_all_files.zip
 # NRLMSISE from https://github.com/graziano-giuliani/Meteostuff/tree/master/NRLMSIS_F90
@@ -89,12 +89,12 @@ HWMPATH=$(AVOG2SINSTALLDIR)/ExternalData/HWM$(HWMv)
 HWTLIB=-L$(AVOG2SINSTALLDIR)/lib -lnrlmsis -lHWM$(HWMv) -I$(AVOG2SINSTALLDIR)/include
 
 # Netcdf is required, but MetReader may have been compiled with grib2 support
-ifeq ($(USEGRIB2), T)
+ifeq ($(USEGRIB), T)
  # These are the libraries for grib_api
- DATALIBS =  -lnetcdf -lnetcdff -lgrib_api_f90 -lgrib_api
+ #DATALIBS =  -lnetcdf -lnetcdff -lgrib_api_f90 -lgrib_api
  # These are the libraries for ecCodes
- #DATALIBS =  -lnetcdf -lnetcdff -leccodes -leccodes_f90
- grb2FPPFLAG = -DUSEGRIB2
+ DATALIBS =  -lnetcdf -lnetcdff -leccodes -leccodes_f90
+ grb2FPPFLAG = -DUSEGRIB
 else
  DATALIBS =  -lnetcdf -lnetcdff
  grb2FPPFLAG=
@@ -162,19 +162,16 @@ g2s_Extract_Sonde: g2s_Extract.f90 g2s_globvar.o makefile
 	$(FC) -x f95-cpp-input -DSONDE $(FFLAGS) $(LIBS) -c g2s_Extract.f90
 	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(LIBS) -o g2s_Extract_Sonde
 	mkdir -p ../bin
-	cp g2s_Extract_Sonde $(HOME)/gcc/bin
 	mv g2s_Extract_Sonde ../bin/
 g2s_Extract_Xsec: g2s_Extract.f90 g2s_globvar.o makefile
 	$(FC) -x f95-cpp-input -DXSEC $(FFLAGS) $(LIBS) -c g2s_Extract.f90
 	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(LIBS) -o g2s_Extract_Xsec
 	mkdir -p ../bin
-	cp g2s_Extract_Xsec $(HOME)/gcc/bin
 	mv g2s_Extract_Xsec ../bin/
 g2s_Extract_Grid: g2s_Extract.f90 g2s_globvar.o makefile
 	$(FC) -x f95-cpp-input -DGRID $(FFLAGS) $(LIBS) -c g2s_Extract.f90
 	$(FC) $(FFLAGS) g2s_Extract.o g2s_globvar.o $(LIBS) -o g2s_Extract_Grid
 	mkdir -p ../bin
-	cp g2s_Extract_Grid $(HOME)/gcc/bin
 	mv g2s_Extract_Grid ../bin/
 g2s_globvar.o: g2s_globvar.f90 makefile
 	$(FC) $(FFLAGS) g2s_globvar.f90 -c
