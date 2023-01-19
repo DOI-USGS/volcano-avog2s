@@ -2,7 +2,7 @@
 !
 !      This file is a component of the volcanic infrasound monitoring software
 !      written at the U.S. Geological Survey by Hans F. Schwaiger (hschwaiger@usgs.gov)
-!      and Alexandra M. Iezzi (amiezzi@alaska.edu).  These programs relies on tools
+!      and Alexandra M. Iezzi (aiezzi@usgs.gov).  These programs relies on tools
 !      developed for the ash transport and dispersion model Ash3d, written at the
 !      U.S. Geological Survey by Hans F. Schwaiger (hschwaiger@usgs.gov), Larry G.
 !      Mastin (lgmastin@usgs.gov), and Roger P. Denlinger (roger@usgs.gov).
