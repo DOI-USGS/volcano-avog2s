@@ -40,7 +40,10 @@ SYSTEM = gfortran
 #      PROF  : includes profiling flags with some optimization
 #      OPT   : includes optimizations flags for fastest runtime
 #    This variable cannot be left blank
+#RUN = DEBUG
+#RUN = PROF
 RUN = OPT
+#RUN = OMPOPT
 #
 INSTALLDIR=/opt/USGS
 #
@@ -132,6 +135,10 @@ endif
 ifeq ($(RUN), OPT)
     FFLAGS = -O3 -w -fno-math-errno -funsafe-math-optimizations -fno-trapping-math -fno-signaling-nans -fcx-limited-range -fno-rounding-math -fdefault-real-8
 endif
+ifeq ($(RUN), OMPOPT)
+    FFLAGS = -O3 -w -fno-math-errno -funsafe-math-optimizations -fno-trapping-math -fno-signaling-nans -fcx-limited-range -fno-rounding-math -fdefault-real-8 -fopenmp -lgomp
+endif
+
 FPPFLAGS = -x f95-cpp-input -DuseHWM$(HWMv) $(grb2FPPFLAG)
 
 ###############################################################################
