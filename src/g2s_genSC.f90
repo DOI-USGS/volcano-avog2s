@@ -188,7 +188,7 @@
             ilatlonflag  = PJ_ilatlonflag
             iprojflag    = PJ_iprojflag
             k0_scale     = PJ_k0
-            radius_earth = PJ_radius_earth
+            radius_earth = PJ_Re
             lam0         = PJ_lam0
             lam1         = PJ_lam1
             lam2         = PJ_lam2
