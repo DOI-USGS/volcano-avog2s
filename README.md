@@ -8,7 +8,8 @@ by smoothly merging 1 or 2
 numerical weather prediction (NWP) models (either forecast or reanalysis) with
 empirical models of the upper atmosphere.  This Ground-2-Space model can be used
 for forward modeling of infrasound propagation.  This model is described in
-[Schwaiger et al.](https://doi.org/10.1016/j.cageo.2018.12.013)
+[Schwaiger et al.]
+(Computers and Geosciences, v125, p90-97, 2019, [doi:10.1016/j.cageo.2018.12.013)](https://doi.org/10.1016/j.cageo.2018.12.013))
 and can be used as both global as well as a regional G2S model.
 This model is used by the Alaska Volcano Observatory for infrasound propagation
 modeling.
