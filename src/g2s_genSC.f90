@@ -188,7 +188,7 @@
             ilatlonflag  = PJ_ilatlonflag
             iprojflag    = PJ_iprojflag
             k0_scale     = PJ_k0
-            radius_earth = PJ_radius_earth
+            radius_earth = PJ_Re
             lam0         = PJ_lam0
             lam1         = PJ_lam1
             lam2         = PJ_lam2
@@ -630,9 +630,9 @@
         ! we can read the velocity components individually and interpolate onto
         ! the computational (g2s) grid
         ivar = 2 ! Vx
-        call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+        call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
         tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-        call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+        call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
         tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
         vx_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) = &
                 tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) + &
@@ -641,9 +641,9 @@
                                          real(Interval_Frac,kind=4)
   
         ivar = 3 ! Vy
-        call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+        call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
         tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-        call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+        call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
         tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
         vy_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) = &
                 tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) + &
@@ -684,14 +684,14 @@
             tmp3d_2_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH_2(1:nxmax_g2s,:,:)
           else
             ivar = 2 ! Vx
-            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+            call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
             tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+            call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
 
             ivar = 3 ! Vy
-            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+            call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
             tmp3d_1_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-            call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+            call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
             tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
           endif
         elseif(Map_Case.eq.5)then
@@ -726,9 +726,9 @@
 
       endif
       ivar = 5 ! Temperature
-      call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+      call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
       tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-      call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+      call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
       tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
       temperature_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) = &
               tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met1) + &
@@ -936,9 +936,9 @@
           ! the computational (g2s) grid
 
           ivar = 2 ! Vx
-          call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+          call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
           tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-          call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+          call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
           tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
           vx_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) = &
                   tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) + &
@@ -946,9 +946,9 @@
                    tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2)) * &
                                          real(Interval_Frac,kind=4)
           ivar = 3 ! Vy
-          call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+          call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
           tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-          call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+          call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
           tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
           vy_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) = &
                   tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) + &
@@ -1001,9 +1001,9 @@
         endif
 
         ivar = 5 ! Temperature
-        call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now)
+        call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now)
         tmp3d_1_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
-        call MR_Read_3d_Met_Variable_to_CompGrid(ivar,MR_iMetStep_Now+1)
+        call MR_Read_3d_Met_Variable_to_CompH(ivar,MR_iMetStep_Now+1)
         tmp3d_2_sp(1:nxmax_g2s,:,:) = MR_dum3d_compH(1:nxmax_g2s,:,:)
         temperature_Met_loc_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) = &
                 tmp3d_1_sp(1:nxmax_g2s,1:nymax_g2s,1:nzmax_Met2) + &
