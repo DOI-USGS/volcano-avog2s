@@ -13,9 +13,10 @@
 APHOME=/opt/USGS/AVOG2S/ExternalData/Ap_Forecast
 cd ${APHOME}
 
-rm wwv.txt
+rm wwv.tx*
 # Download latest value from NOAA Space Weather Prediction Center
 wget http://services.swpc.noaa.gov/text/wwv.txt
+chmod 664 wwv.txt
 
 # Note: if you miss some, you can back fill 30 days from this link
 #http://services.swpc.noaa.gov/text/daily-geomagnetic-indices.txt

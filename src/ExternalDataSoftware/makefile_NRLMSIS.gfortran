@@ -9,6 +9,7 @@ all: libnrlmsis.a testgtd7
 LIBOBJS = physics_constants.o utils_spline.o physics_msis.o utils_constants.o
 
 %.o: %.f90
+	#patch -f < ../../physics_msis.patch
 	$(FC) $(FCFLAGS) -c $<
 
 %.o: %.F90

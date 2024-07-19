@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]
+  then
+  echo "No arguments supplied"
+  echo "Usage: get_NGDC YYYY"
+  echo "       where YYYY = year"
+  exit
+fi
+
 APHOME=/opt/USGS/AVOG2S/ExternalData/Ap_Forecast
 cd ${APHOME}
 

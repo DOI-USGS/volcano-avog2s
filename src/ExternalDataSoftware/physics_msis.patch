@@ -1,0 +1,11 @@
+--- physics_msis.f90	2012-11-22 07:30:49.000000000 -0900
++++ ../../../Meteostuff-master/NRLMSIS_F90/physics_msis.f90	2020-04-01 16:24:02.965647347 -0800
+@@ -2064,7 +2064,7 @@
+       if ( alt < zmix .and. mass > 0 ) mss = 28
+       ! Only calculate thermosphere if input parameters changed
+       ! or altitude above ZN2(1) in mesosphere
+-      if ( dabs(v1-d_1) < nearzero .or. alt > zn2(1) .or. &
++      if ( dabs(v1-d_1) < nearzero .or. alt >= zn2(1) .or. &
+            alast > zn2(1) .or. mss /= mssl ) then
+         call gts7(iyd,sec,altt,glat,glong,stl,f107a,f107,ap,mss,ds,ts)
+         dm28m = dm28

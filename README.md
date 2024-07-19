@@ -19,9 +19,9 @@ software packages must be built and installed before the AVOG2S software
 suite can be built.
 
 1. To download and read the NWP data, several USGS libraries must be installed:  
-   [HoursSince](https://github.com/usgs/volcano-ash3d-hourssince)  
-   [projection](https://github.com/usgs/volcano-ash3d-projection)  
-   [MetReader](https://github.com/usgs/volcano-ash3d-metreader)
+   [HoursSince](https://github.com/DOI-USGS/volcano-ash3d-hourssince)  
+   [projection](https://github.com/DOI-USGS/volcano-ash3d-projection)  
+   [MetReader](https://github.com/DOI-USGS/volcano-ash3d-metreader)
 
 2. Upper-atmospheric empirical models are available separately for horizontal winds and temperature  
    [HWM14](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/2014EA000089) (supplementary material)
@@ -45,16 +45,16 @@ harmonic decompositions, and one for Fourier decomposition
       <ftp://ftp.ngdc.noaa.gov/STP/GEOMAGNETIC_DATA/INDICES/KP_AP/>
 2. Numerical Weather Prediction data  
     Forecast and reanalysis data available from many sources.  See documentation
-    in [MetReader](https://github.com/usgs/volcano-ash3d-metreader).
+    in [MetReader](https://github.com/DOI-USGS/volcano-ash3d-metreader).
 
 
 Preliminary Software Installation
 ---------------------------------
 
 ### USGS libraries  
-  Three libraries from the Ash3d package are needed: [HoursSince](://github.com/usgs/volcano-ash3d-hourssince), 
-   [projection](https://github.com/usgs/volcano-ash3d-projection), 
-   [MetReader](https://github.com/usgs/volcano-ash3d-metreader).
+  Three libraries from the Ash3d package are needed: [HoursSince](://github.com/DOI-USGS/volcano-ash3d-hourssince), 
+   [projection](https://github.com/DOI-USGS/volcano-ash3d-projection), 
+   [MetReader](https://github.com/DOI-USGS/volcano-ash3d-metreader).
 These libraries are currently available at the locations given above.
 Installation instructions are given in the repositories for each of these libraries.
 
@@ -187,4 +187,4 @@ Authors
 -------
 
 Hans F. Schwaiger <hschwaiger@usgs.gov>  
-Alexandra M. Iezzi <amiezzi@alaska.edu>
+Alexandra M. Iezzi <aiezzi@usgs.gov>

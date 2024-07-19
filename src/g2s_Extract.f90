@@ -2,7 +2,7 @@
 !
 !      This file is a component of the volcanic infrasound monitoring software
 !      written at the U.S. Geological Survey by Hans F. Schwaiger (hschwaiger@usgs.gov)
-!      and Alexandra M. Iezzi (amiezzi@alaska.edu).  These programs relies on tools
+!      and Alexandra M. Iezzi (aiezzi@usgs.gov).  These programs relies on tools
 !      developed for the ash transport and dispersion model Ash3d, written at the
 !      U.S. Geological Survey by Hans F. Schwaiger (hschwaiger@usgs.gov), Larry G.
 !      Mastin (lgmastin@usgs.gov), and Roger P. Denlinger (roger@usgs.gov).
@@ -15,7 +15,8 @@
 !
 !      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
 !         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
-!           for infrasound model; submitted. 
+!           for infrasound model; Computers and Geosciences, v125, p90-97, 2019,
+!           doi:10.1016/j.cageo.2018.12.013
 !
 !      We make no guarantees, expressed or implied, as to the usefulness of the software
 !      and its documentation for any purpose.  We assume no responsibility to provide
@@ -263,7 +264,7 @@
           write(G2S_global_info,*)"      zmax    : maximum altitude of profile"
           write(G2S_global_info,*)"      dz_prof : vertical increment"
           write(G2S_global_info,*)"    This mode assumes a global model with 0.5 degree resolution (720x361)"
-          write(G2S_global_info,*)"    and 63 irregularly-spaced nodes in z defining the"
+          write(G2S_global_info,*)"    and 126 irregularly-spaced nodes in z defining the"
           write(G2S_global_info,*)"    resampled files.  The resampled files are assumed to"
           write(G2S_global_info,*)"    be in the current working directory with names:"
           write(G2S_global_info,*)"     [U,V,T]_res.raw"
@@ -293,17 +294,17 @@
           write(G2S_global_info,*)" Note: the assumed values for the geometry are:"
           write(G2S_global_info,*)"  IsLatLon  = ",IsLatLon
           write(G2S_global_info,*)"         nx = ",nxmax_g2s
-          write(G2S_global_info,*)"         dx = ",dx_g2s
-          write(G2S_global_info,*)"       xmin = ",xmin_g2s
+          write(G2S_global_info,*)"         dx = ",real(dx_g2s,kind=4)
+          write(G2S_global_info,*)"       xmin = ",real(xmin_g2s,kind=4)
           write(G2S_global_info,*)"         ny = ",nymax_g2s
-          write(G2S_global_info,*)"         dy = ",dy_g2s
-          write(G2S_global_info,*)"       ymin = ",ymin_g2s
+          write(G2S_global_info,*)"         dy = ",real(dy_g2s,kind=4)
+          write(G2S_global_info,*)"       ymin = ",real(ymin_g2s,kind=4)
           write(G2S_global_info,*)"        nz1 = ",nz1
-          write(G2S_global_info,*)"        dz1 = ",dz1
+          write(G2S_global_info,*)"        dz1 = ",real(dz1,kind=4)
           write(G2S_global_info,*)"        nz2 = ",nz2
-          write(G2S_global_info,*)"        dz2 = ",dz2
+          write(G2S_global_info,*)"        dz2 = ",real(dz2,kind=4)
           write(G2S_global_info,*)"        nz3 = ",nz3
-          write(G2S_global_info,*)"        dz3 = ",dz3
+          write(G2S_global_info,*)"        dz3 = ",real(dz3,kind=4)
           write(G2S_global_info,*)" "
           write(G2S_global_info,*)" For example:"
           write(G2S_global_info,*)" "
@@ -512,7 +513,7 @@
           write(G2S_global_info,*)"      len_xsec  : length (deg or km) of cross-section"
           write(G2S_global_info,*)"      ds_xsec : degree increment of cross-section"
           write(G2S_global_info,*)"    This mode assumes a global 0.5 degree resolution (720x361)"
-          write(G2S_global_info,*)"    and 63 irregularly-spaced nodes in z defining the"
+          write(G2S_global_info,*)"    and 126 irregularly-spaced nodes in z defining the"
           write(G2S_global_info,*)"    resampled files.  The resampled files are assumed to"
           write(G2S_global_info,*)"    be in the current working directory with names:"
           write(G2S_global_info,*)"     [U,V,T]_res.raw"
@@ -759,7 +760,7 @@
           write(G2S_global_info,*)"      zmax                      : maximum altitude of profile"
           write(G2S_global_info,*)"      dz_prof                   : vertical increment"
           write(G2S_global_info,*)"    This mode assumes a 0.5 degree resolution (720x361)"
-          write(G2S_global_info,*)"    and 63 irregularly-spaced nodes in z defining the"
+          write(G2S_global_info,*)"    and 126 irregularly-spaced nodes in z defining the"
           write(G2S_global_info,*)"    resampled files.  The resampled files are assumed to"
           write(G2S_global_info,*)"    be in the current working directory with names:"
           write(G2S_global_info,*)"     [U,V,T]_res.raw"
@@ -1548,8 +1549,18 @@
           write(G2S_global_info,*)"iy too large",iy,y
         endif
 
+        ! HFS fix this so that it calculated ix,iy by marching through the list rather than
+        !     calculating indecies
         xfrac=(x-x_g2s_dp(ix))/dx_g2s
         yfrac=(y-y_g2s_dp(iy))/dx_g2s
+        if (xfrac.lt.0.0_8.and.abs(xfrac).lt.1.0e3_8)then
+          x = x_g2s_dp(ix)
+          xfrac = 0.0_8
+        endif
+        if (yfrac.lt.0.0_8.and.abs(yfrac).lt.1.0e3_8)then
+          y = y_g2s_dp(iy)
+          yfrac = 0.0_8
+        endif
         xc = 1.0-xfrac
         yc = 1.0-yfrac
         a1=xc    * yc

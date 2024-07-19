@@ -2,7 +2,7 @@
 !
 !      This file is a component of the volcanic infrasound monitoring software
 !      written at the U.S. Geological Survey by Hans F. Schwaiger (hschwaiger@usgs.gov)
-!      and Alexandra M. Iezzi (amiezzi@alaska.edu).  These programs relies on tools
+!      and Alexandra M. Iezzi (aiezzi@usgs.gov).  These programs relies on tools
 !      developed for the ash transport and dispersion model Ash3d, written at the
 !      U.S. Geological Survey by Hans F. Schwaiger (hschwaiger@usgs.gov), Larry G.
 !      Mastin (lgmastin@usgs.gov), and Roger P. Denlinger (roger@usgs.gov).
@@ -15,8 +15,9 @@
 !
 !      Schwaiger, H.F., Alexandra M. Iezzi and David Fee;
 !         AVO-G2S:  A modified, open-source Ground-to-Space atmospheric specifications
-!           for infrasound model; submitted.
-
+!           for infrasound model; Computers and Geosciences, v125, p90-97, 2019,
+!           doi:10.1016/j.cageo.2018.12.013
+!
 !      We make no guarantees, expressed or implied, as to the usefulness of the software
 !      and its documentation for any purpose.  We assume no responsibility to provide
 !      technical support to users of this software.
@@ -247,6 +248,7 @@
                     u_g2s,v_g2s,temperature,density,pressure)
         pressure = 1013.0_4 * exp(-real(alt,kind=4)/7.4_4) ! Eq 1.5 of Seinfeld/Pandis
         density  = (pressure*100.0_4) / (temperature*287.058_4)/1000.0_4
+        !write(*,*)lon_in,lat_in,alt,start_year,day,ihour,iminute,isecond,ap,f107,u_g2s,v_g2s,temperature
         write(55,"(6E15.5)")alt,temperature,u_g2s,v_g2s,density,pressure
 
       enddo
